@@ -233,7 +233,8 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
                 viewModel.logradouro = newLogradouro
                 viewModel.bairro = newBairro
                 viewModel.cidade = newCidade
-            }
+            },
+            addressRetrieved = "${viewModel.logradouro}"
         )
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
