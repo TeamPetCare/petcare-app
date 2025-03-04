@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/montserrat_regular" /> <!-- Regular -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        android:font="@font/montserrat_bold" /> <!-- Bold -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="900"
+        android:font="@font/montserrat_black" /> <!-- Black -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="800"
+        android:font="@font/montserrat_extrabold" /> <!-- ExtraBold -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="200"
+        android:font="@font/montserrat_extralight" /> <!-- ExtraLight -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="300"
+        android:font="@font/montserrat_light" /> <!-- Light -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="500"
+        android:font="@font/montserrat_medium" /> <!-- Medium -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="600"
+        android:font="@font/montserrat_semibold" /> <!-- SemiBold -->
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="100"
+        android:font="@font/montserrat_thin" /> <!-- Thin -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="900"
+        android:font="@font/montserrat_black_italic" /> <!-- Black Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="700"
+        android:font="@font/montserrat_bold_italic" /> <!-- Bold Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="800"
+        android:font="@font/montserrat_extrabold_italic" /> <!-- ExtraBold Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="200"
+        android:font="@font/montserrat_extralight_italic" /> <!-- ExtraLight Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="300"
+        android:font="@font/montserrat_light_italic" /> <!-- Light Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="500"
+        android:font="@font/montserrat_medium_italic" /> <!-- Medium Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="600"
+        android:font="@font/montserrat_semibold_italic" /> <!-- SemiBold Italic -->
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="100"
+        android:font="@font/montserrat_thin_italic" /> <!-- Thin Italic -->
+
+</font-family>
