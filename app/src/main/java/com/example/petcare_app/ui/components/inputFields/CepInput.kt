@@ -33,10 +33,15 @@ fun CepInput(
     isFormSubmitted: Boolean,
     isError: Boolean,
     onAddressRetrieved: (String, String, String) -> Unit,
+    addressRetrieved: String
 ) {
     var isValid by remember { mutableStateOf(true) }
     var loading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    var previousValue by remember { mutableStateOf("") }
+
+    var addressData by remember { mutableStateOf<AddressData?>(null) }
 
     fun maskCep(input: String): String {
         return input.replace(Regex("(\\d{5})(\\d{3})"), "$1-$2")
@@ -44,27 +49,22 @@ fun CepInput(
 
     val maskedValue = maskCep(value)
 
-//    LaunchedEffect(isFormSubmitted) {
-//        if (isFormSubmitted) {
-//            isValid = value // VALIDAR SE EH UM CEP VALIDO
-//        }
-//    }
-
     LaunchedEffect(value) {
-        if (value.length == 8) {
-            Log.d("CEP_DEBUG", "CEP digitado: $value")
-            loading = true
-            val address = fetchCepData(value)
-            loading = false
-            if (address != null) {
-                Log.d("CEP_DEBUG", "Endereço recebido com sucesso!")
-                onAddressRetrieved(address.logradouro, address.bairro, address.cidade)
-                errorMessage = null
-                isValid = true
-            } else {
-                Log.d("CEP_DEBUG", "Endereço não encontrado ou inválido")
-                errorMessage = "CEP inválido ou não encontrado"
-                isValid = false
+        if (value.isNotEmpty() && addressRetrieved.isNullOrEmpty()) {
+            if (value != previousValue && value.length == 8) {
+                previousValue = value
+                loading = true
+                val address = fetchCepData(value)
+                loading = false
+                if (address != null) {
+                    addressData = address
+                    onAddressRetrieved(address.logradouro, address.bairro, address.cidade)
+                    errorMessage = null
+                    isValid = true
+                } else {
+                    errorMessage = "CEP inválido ou não encontrado"
+                    isValid = false
+                }
             }
         }
     }
@@ -126,11 +126,7 @@ fun CepInput(
 suspend fun fetchCepData(cep: String): AddressData? {
     return withContext(Dispatchers.IO) {
         try {
-            Log.d("CEP_DEBUG", "Buscando CEP: $cep")
-
             val response = URL("https://viacep.com.br/ws/$cep/json/").readText()
-            Log.d("CEP_DEBUG", "Resposta da API: $response")
-
             val jsonObject = JSONObject(response)
 
             if (!jsonObject.has("erro")) {
@@ -139,19 +135,14 @@ suspend fun fetchCepData(cep: String): AddressData? {
                     jsonObject.getString("bairro"),
                     jsonObject.getString("localidade"),
                 )
-                Log.d("CEP_DEBUG", "Endereço encontrado: $address")
                 address
             } else {
-                Log.d("CEP_DEBUG", "Erro: CEP não encontrado na API")
                 null
             }
         } catch (e: Exception) {
-            Log.e("CEP_DEBUG", "Erro ao buscar CEP: ${e.message}")
             null
         }
     }
 }
 
-
 data class AddressData(val logradouro: String, val bairro: String, val cidade: String)
-

@@ -37,8 +37,8 @@ fun PasswordInput(
     var isValid by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
 
-    val eyeOpen: Painter = painterResource(id = R.drawable.eye)
-    val eyeClosed: Painter = painterResource(id = R.drawable.eye_closed)
+    val eyeOpen: Painter = painterResource(id = R.drawable.ic_eye)
+    val eyeClosed: Painter = painterResource(id = R.drawable.ic_eye_closed)
 
     LaunchedEffect(isFormSubmitted) {
         if (isFormSubmitted) {
