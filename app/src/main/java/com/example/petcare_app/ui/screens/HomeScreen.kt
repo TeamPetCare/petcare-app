@@ -19,7 +19,7 @@ fun HomeScreen(navController: NavController) {
     ) {
         Text(text = text, style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate(Screen.Signup.route) }) {
+        Button(onClick = { navController.navigate(Screen.SignUpUser.route) }) {
             Text("Criar Conta")
         }
     }
