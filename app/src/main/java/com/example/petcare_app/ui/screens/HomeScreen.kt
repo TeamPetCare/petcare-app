@@ -24,4 +24,3 @@ fun HomeScreen(navController: NavController) {
         }
     }
 }
-
