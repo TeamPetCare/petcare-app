@@ -13,9 +13,11 @@ retrofit = "2.9.0"
 gson = "2.9.0"
 material3 = "1.0.0"
 lifecycleViewmodelAndroid = "2.8.7"
+coilCompose = "2.4.0"
 
 [libraries]
 
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
 androidx-compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", name = "compose-google-fonts", version.ref = "compose-google-fonts" }
