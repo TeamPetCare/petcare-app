@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.petcare_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.petcare_app"
@@ -41,6 +41,7 @@ android {
 
 dependencies {
 
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.androidx.compose.ui.text.google.fonts)
