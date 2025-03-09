@@ -150,7 +150,7 @@ fun HomeScreen(navController: NavController) {
 
             // Começar button
             Button(
-                onClick = { navController.navigate(Screen.SignUpUser.route) },
+                onClick = { navController.navigate(Screen.Welcome.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 24.dp)
