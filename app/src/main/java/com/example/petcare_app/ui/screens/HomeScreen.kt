@@ -14,6 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.petcare_app.R
 import com.example.petcare_app.navigation.Screen
+import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -98,8 +101,9 @@ fun HomeScreen(navController: NavController) {
                 Text(
                     text = "Agende com ",
                     color = Color.White,
-                    fontSize = 40.sp,
+                    fontSize = 39.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    fontFamily = FontFamily(Font(R.font.montserrat)),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 0.dp)
                 )
@@ -109,6 +113,7 @@ fun HomeScreen(navController: NavController) {
                     color = Color.White,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    fontFamily = FontFamily(Font(R.font.montserrat)),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
@@ -118,9 +123,10 @@ fun HomeScreen(navController: NavController) {
                     text = "Serviços disponíveis para hoje ou amanhã.\nPara o seu pet, sempre que precisar!",
                     color = Color.White,
                     fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.montserrat)),
                     textAlign = TextAlign.Center,
-                    lineHeight = 24.sp,
-                    modifier = Modifier.padding(horizontal = 32.dp)
+                    lineHeight = 18.sp,
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
 
                 // Pagination dots
@@ -163,6 +169,7 @@ fun HomeScreen(navController: NavController) {
                         text = "Começar",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily(Font(R.font.montserrat)),
                         modifier = Modifier.align(Alignment.Center)
                     )
 
@@ -177,7 +184,7 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(35.dp))
         }
     }
 }
