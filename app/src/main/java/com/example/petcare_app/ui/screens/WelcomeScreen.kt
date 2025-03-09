@@ -103,9 +103,7 @@ fun WelcomeScreen(navController: NavController) {
                     // Limitado a 14 caracteres (CPF formatado)
                     if (it.length <= 14) cpf = it
                 },
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(47.dp),
+                modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("___.___.___-__", color = Color.LightGray) },
                 singleLine = true,
                 shape = RoundedCornerShape(10.dp),
