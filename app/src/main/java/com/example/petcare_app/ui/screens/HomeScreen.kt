@@ -29,7 +29,7 @@ import com.example.petcare_app.ui.theme.montserratFontFamily
 fun HomeScreen(navController: NavController) {
     // Define colors
     val darkTeal = Color(0xFF005472)
-    val yellow = Color(0xFFFFD166)
+    val yellow = Color(0xFFFFDC8A)
 
     Box(
         modifier = Modifier

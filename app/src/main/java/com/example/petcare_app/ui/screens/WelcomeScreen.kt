@@ -30,7 +30,7 @@ import com.example.petcare_app.navigation.Screen
 fun WelcomeScreen(navController: NavController) {
     // Cores
     val primaryBlue = Color(0xFF005472)
-    val lightYellow = Color(0xFFFFEABA)
+    val lightYellow = Color(0xFFFFDC8A)
     val lightBlue = Color(0xFFB8E0E9)
     val darkBlue = Color(0xFF00677F)
 
