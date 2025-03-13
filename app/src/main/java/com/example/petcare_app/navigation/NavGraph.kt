@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.petcare_app.ui.screens.HomeScreen
+import com.example.petcare_app.ui.screens.LoadingScreen
 import com.example.petcare_app.ui.screens.LoginScreen
 import com.example.petcare_app.ui.screens.SignUpPetScreen
 import com.example.petcare_app.ui.screens.SignUpUserScreen
@@ -23,6 +24,7 @@ sealed class Screen(val route: String) {
     object SignUpPet : Screen("signuppet")
     object Welcome : Screen("welcome")
     object Login : Screen("login")
+    object Loading : Screen("loading")
 }
 
 @Composable
@@ -35,10 +37,9 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpUserViewModel) }
         composable(Screen.Welcome.route) { WelcomeScreen(navController) }
         composable(Screen.Login.route) { LoginScreen(navController) }
+        composable(Screen.Loading.route) { LoadingScreen(navController, Screen.Home.route) }
     }
 }
-
-
 
 class SignUpViewModel : ViewModel() {
     var nomeCompleto by mutableStateOf("")
@@ -53,4 +54,3 @@ class SignUpViewModel : ViewModel() {
     var complemento by mutableStateOf("")
     var cidade by mutableStateOf("")
 }
-
