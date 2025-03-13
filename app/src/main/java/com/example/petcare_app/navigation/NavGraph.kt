@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.petcare_app.ui.screens.HomeScreen
+import com.example.petcare_app.ui.screens.LoginScreen
 import com.example.petcare_app.ui.screens.SignUpPetScreen
 import com.example.petcare_app.ui.screens.SignUpUserScreen
 import com.example.petcare_app.ui.screens.WelcomeScreen
@@ -21,6 +22,7 @@ sealed class Screen(val route: String) {
     object SignUpUser : Screen("signupuser")
     object SignUpPet : Screen("signuppet")
     object Welcome : Screen("welcome")
+    object Login : Screen("login")
 }
 
 @Composable
@@ -32,8 +34,10 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpUserViewModel) }
         composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpUserViewModel) }
         composable(Screen.Welcome.route) { WelcomeScreen(navController) }
+        composable(Screen.Login.route) { LoginScreen(navController) }
     }
 }
+
 
 
 class SignUpViewModel : ViewModel() {
