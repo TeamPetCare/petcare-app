@@ -119,7 +119,7 @@ fun WelcomeScreen(navController: NavController) {
 
             // Botão Verificar
             Button(
-                onClick = { /* Verificar CPF */ },
+                onClick = { navController.navigate(Screen.Login.route) },  // Alterado para navegar para Login
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -150,7 +150,6 @@ fun WelcomeScreen(navController: NavController) {
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             // Texto informativo
