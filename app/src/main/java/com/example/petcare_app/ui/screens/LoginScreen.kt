@@ -175,7 +175,7 @@ fun LoginScreen(navController: NavController) {
 
             // Botão Entrar
             Button(
-                onClick = { /* Navegar para a tela principal */ },
+                onClick = { navController.navigate(Screen.Loading.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),
@@ -206,7 +206,6 @@ fun LoginScreen(navController: NavController) {
                     )
                 }
             }
-
             // Link para cadastro
             Row(
                 modifier = Modifier
