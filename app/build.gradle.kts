@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.compose.material:material-icons-core:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation(libs.retrofit)
     implementation(libs.gson)
