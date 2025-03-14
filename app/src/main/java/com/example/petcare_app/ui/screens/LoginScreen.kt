@@ -35,8 +35,8 @@ import com.example.petcare_app.navigation.Screen
 @Composable
 fun LoginScreen(navController: NavController) {
     // Cores
-    val primaryBlue = Color(0xFF00677F)
-    val lightYellow = Color(0xFFFFEABA)
+    val primaryBlue = Color(0xFF005472)
+    val lightYellow = Color(0xFFFFDC8A)
 
     // Estados
     var email by remember { mutableStateOf("") }
