@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.petcare_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.petcare_app"
@@ -40,7 +40,9 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.compose.material:material-icons-core:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.androidx.compose.ui.text.google.fonts)
@@ -54,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.coil.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,4 +64,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
