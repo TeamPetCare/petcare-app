@@ -54,3 +54,18 @@ class SignUpViewModel : ViewModel() {
     var complemento by mutableStateOf("")
     var cidade by mutableStateOf("")
 }
+
+class EditUserViewModel : ViewModel() {
+    var nomeCompleto by mutableStateOf("")
+    var cpf by mutableStateOf("")
+    var email by mutableStateOf("")
+    var celular by mutableStateOf("")
+    var senha by mutableStateOf("") //Lembrar de encriptografar
+    var novaSenha by mutableStateOf("")
+    var confirmarSenha by mutableStateOf("")
+    var cep by mutableStateOf("")
+    var logradouro by mutableStateOf("")
+    var bairro by mutableStateOf("")
+    var complemento by mutableStateOf("")
+    var cidade by mutableStateOf("")
+}
