@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.inputFields
+package com.example.petcare_app.ui.components.formFields.inputFields
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,7 @@ import com.example.petcare_app.ui.theme.innerInputTextStyle
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
-fun CustomTextInput(
+fun CustomTextLongInput(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -24,13 +24,19 @@ fun CustomTextInput(
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
     isError: Boolean = false,
+    msgErro: String = "",
     isRequired: Boolean
 ) {
     var isValid by remember { mutableStateOf(true) }
     val labelText = if (isRequired) "$label*" else label
 
     LaunchedEffect(isFormSubmitted) {
-        if (isFormSubmitted && isRequired) isValid = value.length >= 5
+        if (isFormSubmitted && isRequired) {
+            isValid = when (label) {
+                "Nome" -> value.length >= 2
+                else -> value.length >= 4
+            }
+        }
     }
 
     Column (modifier = Modifier) {
@@ -50,7 +56,7 @@ fun CustomTextInput(
             onValueChange = onValueChange,
             placeholder = { Text("$placeholder", style = innerInputTextStyle) },
             modifier = modifier,
-            singleLine = true,
+            singleLine = false,
             isError = isError,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
@@ -67,13 +73,7 @@ fun CustomTextInput(
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp),
-                text = when (label) {
-                    "Nome Completo" -> "*Insira seu nome completo."
-                    "Logradouro" -> "*Insira o nome da rua, avenida e número corretamente."
-                    "Bairro" -> "*Insira o nome do bairro corretamente."
-                    "Cidade" -> "*Insira o nome da cidade corretamente"
-                    else -> ""
-                },
+                text = msgErro,
                 style = errorTextStyle
             )
         }

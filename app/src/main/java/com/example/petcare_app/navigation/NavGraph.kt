@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.ui.screens.HomeScreen
 import com.example.petcare_app.ui.screens.LoadingScreen
 import com.example.petcare_app.ui.screens.LoginScreen
@@ -29,28 +30,15 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    val signUpUserViewModel: SignUpViewModel = viewModel()
+    val signUpViewModel: SignUpViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Screen.SignUpPet.route) {
         composable(Screen.Home.route) { HomeScreen(navController) }
-        composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpUserViewModel) }
-        composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpUserViewModel) }
+        composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpViewModel) }
+        composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpViewModel) }
         composable(Screen.Welcome.route) { WelcomeScreen(navController) }
         composable(Screen.Login.route) { LoginScreen(navController) }
         composable(Screen.Loading.route) { LoadingScreen(navController, Screen.Home.route) }
     }
 }
 
-class SignUpViewModel : ViewModel() {
-    var nomeCompleto by mutableStateOf("")
-    var cpf by mutableStateOf("")
-    var email by mutableStateOf("")
-    var celular by mutableStateOf("")
-    var senha by mutableStateOf("") //Lembrar de encriptografar
-    var confirmarSenha by mutableStateOf("")
-    var cep by mutableStateOf("")
-    var logradouro by mutableStateOf("")
-    var bairro by mutableStateOf("")
-    var complemento by mutableStateOf("")
-    var cidade by mutableStateOf("")
-}
