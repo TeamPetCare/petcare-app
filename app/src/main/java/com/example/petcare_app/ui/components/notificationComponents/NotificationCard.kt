@@ -56,7 +56,7 @@ fun NotificationCard(notification: NotificationItem) {
                 }
 
                 Icon(
-                    modifier = Modifier.size(33.dp), // Aumenta o tamanho do ícone
+                    modifier = Modifier.size(29.dp), // Aumenta o tamanho do ícone
                     painter = painterResource(id = icon),
                     contentDescription = iconDescription,
                     tint = notification.fontColor,
@@ -67,12 +67,13 @@ fun NotificationCard(notification: NotificationItem) {
                 Text(
                     text = notification.title,
                     style = sentenceTitleTextStyle,
+                    fontSize = 18.sp,
                     color = notification.fontColor
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = notification.description,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = notification.fontColor
                 )
             }
