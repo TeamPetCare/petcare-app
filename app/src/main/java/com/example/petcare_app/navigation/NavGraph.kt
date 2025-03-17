@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.ui.screens.HomeScreen
 import com.example.petcare_app.ui.screens.LoadingScreen
 import com.example.petcare_app.ui.screens.LoginScreen
@@ -40,19 +41,19 @@ fun NavGraph(navController: NavHostController) {
     }
 }
 
-class SignUpViewModel : ViewModel() {
-    var nomeCompleto by mutableStateOf("")
-    var cpf by mutableStateOf("")
-    var email by mutableStateOf("")
-    var celular by mutableStateOf("")
-    var senha by mutableStateOf("") //Lembrar de encriptografar
-    var confirmarSenha by mutableStateOf("")
-    var cep by mutableStateOf("")
-    var logradouro by mutableStateOf("")
-    var bairro by mutableStateOf("")
-    var complemento by mutableStateOf("")
-    var cidade by mutableStateOf("")
-}
+//class SignUpViewModel : ViewModel() {
+//    var nomeCompleto by mutableStateOf("")
+//    var cpf by mutableStateOf("")
+//    var email by mutableStateOf("")
+//    var celular by mutableStateOf("")
+//    var senha by mutableStateOf("") //Lembrar de encriptografar
+//    var confirmarSenha by mutableStateOf("")
+//    var cep by mutableStateOf("")
+//    var logradouro by mutableStateOf("")
+//    var bairro by mutableStateOf("")
+//    var complemento by mutableStateOf("")
+//    var cidade by mutableStateOf("")
+//}
 
 class EditUserViewModel : ViewModel() {
     var nomeCompleto by mutableStateOf("")

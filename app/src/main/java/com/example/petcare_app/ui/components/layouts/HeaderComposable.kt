@@ -43,8 +43,8 @@ fun HeaderComposable(userName: String, profileImageUrl: String) {
                         .size(48.dp)
                         .border(2.dp, Color.White, shape = CircleShape)
                         .padding(2.dp),
-                    placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
-                    error = painterResource(id = R.drawable.ic_launcher_foreground)
+                    placeholder = painterResource(id = R.drawable.ic_no_profile_picture),
+                    error = painterResource(id = R.drawable.ic_no_profile_picture)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
