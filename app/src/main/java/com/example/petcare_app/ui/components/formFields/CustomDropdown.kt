@@ -1,9 +1,11 @@
 package com.example.petcare_app.ui.components.formFields
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
@@ -50,7 +52,13 @@ fun CustomDropdown(
         if (isFormSubmitted && isRequired) isValid = value.isNotEmpty() && value != placeholder
     }
 
-    Column(modifier = Modifier) {
+    LaunchedEffect(expanded) {
+        if (expanded) {
+            expanded = true
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier
                 .padding(bottom = 1.dp),
@@ -63,17 +71,20 @@ fun CustomDropdown(
 
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onExpandedChange = { expanded = it }
         ) {
+
             OutlinedTextField(
                 textStyle = innerInputTextStyle,
                 value = value,
                 onValueChange = onValueChange,
                 placeholder = { Text("$placeholder", style = innerInputTextStyle) },
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
                 singleLine = true,
                 isError = isError,
-                readOnly = true, // Não permite edição direta, apenas a seleção do dropdown
+                readOnly = true,
                 shape = MaterialTheme.shapes.small,
                 trailingIcon = {
                     Icon(
@@ -92,6 +103,8 @@ fun CustomDropdown(
             )
 
             ExposedDropdownMenu(
+                modifier = Modifier
+                    .background(Color.White),
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
@@ -101,7 +114,13 @@ fun CustomDropdown(
                             onValueChange(option)
                             expanded = false
                         },
-                        text = { Text(text = option) }
+                        text = { Text(
+                            text = option,
+                            fontFamily = montserratFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp,
+                            color = customColorScheme.surface
+                        ) }
                     )
                 }
             }

@@ -73,6 +73,7 @@ fun DateInput(
         var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
 
         OutlinedTextField(
+            textStyle = innerInputTextStyle,
             value = textFieldValue,
             onValueChange = { newValue ->
                 val unformattedText = newValue.text.filter { it.isDigit() }.take(8)

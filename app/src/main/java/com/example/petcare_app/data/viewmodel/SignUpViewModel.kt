@@ -2,26 +2,29 @@ package com.example.petcare_app.data.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SignUpViewModel : ViewModel() {
+    private val _pets = MutableStateFlow<List<Pet>>(listOf(Pet()))
+    val pets = _pets.asStateFlow()
     var user by mutableStateOf(User())
-    var pets by mutableStateOf<List<Pet>>(listOf(Pet()))
 
-    // Método para atualizar informações de um pet na lista
+
     fun updatePet(index: Int, updatedPet: Pet) {
-        pets = pets.toMutableList().apply {
+        _pets.value = _pets.value.toMutableList().apply {
             this[index] = updatedPet
         }
     }
 
-    // Função para adicionar um novo pet à lista
     fun addPet(pet: Pet) {
-        pets = pets + pet
+        if (!_pets.value.contains(pet)) {
+            _pets.value = _pets.value + pet
+        }
     }
 
-    // Função para remover um pet da lista
     fun removePet(index: Int) {
-        pets = pets.toMutableList().apply {
+        _pets.value = _pets.value.toMutableList().apply {
             removeAt(index)
         }
     }
@@ -38,6 +41,7 @@ data class User(
     var cep: String = "",
     var logradouro: String = "",
     var bairro: String = "",
+    var numero: String = "",
     var complemento: String = "",
     var cidade: String = ""
 )

@@ -64,6 +64,7 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
     val cep = user.cep
     val logradouro = user.logradouro
     val bairro = user.bairro
+    val numero = user.numero
     val complemento = user.complemento
     val cidade = user.cidade
 
@@ -79,6 +80,7 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
     var cepErro by remember { mutableStateOf(false) }
     var logradouroErro by remember { mutableStateOf(false) }
     var bairroErro by remember { mutableStateOf(false) }
+    var numeroErro by remember { mutableStateOf(false) }
     var cidadeErro by remember { mutableStateOf(false) }
 
 //  Função de validação
@@ -92,9 +94,10 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         cepErro = cep.length < 8
         logradouroErro = logradouro.length < 5
         bairroErro = bairro.length < 5
+        numeroErro = numero.length < 4
         cidadeErro = cidade.length < 5
 
-        return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || cidadeErro)
+        return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || numeroErro || cidadeErro)
     }
 
 //  Função para enviar os dados para o banco
@@ -261,6 +264,18 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
             isFormSubmitted = isFormSubmitted,
             isError = bairroErro,
             msgErro = "*Insira o nome do bairro corretamente.",
+            isRequired = true
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        CustomTextInput(
+            value = numero,
+            onValueChange = { user.numero = it },
+            label = "Número",
+            placeholder = "Digite o número do endereço",
+            modifier = Modifier.fillMaxWidth(),
+            isFormSubmitted = isFormSubmitted,
+            isError = numeroErro,
+            msgErro = "*Insira o número do endereço corretamente.",
             isRequired = true
         )
         Spacer(modifier = Modifier.height(12.dp))

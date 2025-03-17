@@ -39,7 +39,7 @@ fun CustomTextInput(
         }
     }
 
-    Column (modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier
                 .padding(bottom = 1.dp),
