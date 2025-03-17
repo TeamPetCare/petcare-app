@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,12 +28,12 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    val signUpUserViewModel: SignUpViewModel = viewModel()
+    val signUpViewModel: SignUpViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Screen.SignUpPet.route) {
         composable(Screen.Home.route) { HomeScreen(navController) }
-        composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpUserViewModel) }
-        composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpUserViewModel) }
+        composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpViewModel) }
+        composable(Screen.SignUpPet.route) { SignUpPetScreen(navController, signUpViewModel) }
         composable(Screen.Welcome.route) { WelcomeScreen(navController) }
         composable(Screen.Login.route) { LoginScreen(navController) }
         composable(Screen.Loading.route) { LoadingScreen(navController, Screen.Home.route) }

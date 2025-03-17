@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.inputFields
+package com.example.petcare_app.ui.components.formFields.inputFields
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -17,29 +16,34 @@ import com.example.petcare_app.ui.theme.innerInputTextStyle
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
-fun EmailInput(
-    label: String,
+fun CustomTextInput(
     value: String,
     onValueChange: (String) -> Unit,
+    label: String,
     placeholder: String,
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
-    isError: Boolean
+    isError: Boolean = false,
+    msgErro: String = "",
+    isRequired: Boolean
 ) {
-    val emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$".toRegex()
     var isValid by remember { mutableStateOf(true) }
+    val labelText = if (isRequired) "$label*" else label
 
     LaunchedEffect(isFormSubmitted) {
-        if (isFormSubmitted) {
-            isValid = value.matches(emailPattern)
+        if (isFormSubmitted && isRequired) {
+            isValid = when (label) {
+                "Nome" -> value.length >= 2
+                else -> value.length >= 4
+            }
         }
     }
 
-    Column(modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier
                 .padding(bottom = 1.dp),
-            text = "$label*",
+            text = labelText,
             fontFamily = montserratFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,
@@ -62,16 +66,18 @@ fun EmailInput(
                 unfocusedIndicatorColor = customColorScheme.onSurface,
                 focusedIndicatorColor = customColorScheme.onSurface,
                 errorContainerColor = Color.Transparent,
-            )
+            ),
         )
 
         if (isError) {
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp),
-                text = "*Insira um e-mail válido.",
+                text = msgErro,
                 style = errorTextStyle
             )
         }
+
     }
+
 }

@@ -107,7 +107,7 @@ val labelInputTextStyle = TextStyle(
 val innerInputTextStyle = TextStyle(
     fontFamily = montserratFontFamily,
     fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
+    fontSize = 14.sp,
     color = customColorScheme.onSurface
 )
 

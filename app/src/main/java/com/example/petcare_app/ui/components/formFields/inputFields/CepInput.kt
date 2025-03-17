@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.inputFields
+package com.example.petcare_app.ui.components.formFields.inputFields
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
