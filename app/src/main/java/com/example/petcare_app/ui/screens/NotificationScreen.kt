@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,26 +44,30 @@ fun NotificationScren(){
             Color(206, 0, 0), "error"),
     )
 
-    Column(Modifier.background(Color(0, 84, 114))) {
-        Box(modifier = Modifier)
-        {
+    Scaffold(
+        topBar = {
             HeaderComposable(
                 userName = "Usuário",
                 profileImageUrl = "https://placekitten.com/200/200"
             )
-        }
-        WhiteCanvas(
-            modifier = Modifier.fillMaxHeight(.92f),
-            icon = ImageVector.vectorResource(R.drawable.ic_x),
-            iconWeight = 20f,
-            title = "Notificações"
-        ){
-            LazyColumn {
-                items(notifications){ notification ->
-                    NotificationCard(notification)
+        },
+        bottomBar = { GadjetBarComposable()}
+    ) { it ->
+        Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
+            WhiteCanvas(
+                modifier = Modifier.fillMaxHeight(),
+                icon = ImageVector.vectorResource(R.drawable.ic_x),
+                iconWeight = 20f,
+                title = "Notificações"
+            ){
+                LazyColumn {
+                    items(notifications){ notification ->
+                        NotificationCard(notification)
+                    }
                 }
             }
         }
-        GadjetBarComposable()
     }
+
+
 }
