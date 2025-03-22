@@ -34,6 +34,7 @@ fun CustomTextInput(
         if (isFormSubmitted && isRequired) {
             isValid = when (label) {
                 "Nome" -> value.length >= 2
+                "Número" -> value.isEmpty()
                 else -> value.length >= 4
             }
         }

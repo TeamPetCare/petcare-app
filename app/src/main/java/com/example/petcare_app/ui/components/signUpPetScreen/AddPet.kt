@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.petcare_app.data.viewmodel.Pet
 import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -39,6 +40,7 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 
 @Composable
 fun AddPet(
+    navController: NavController,
     pets: List<Pet>,
     isPetFormActive: (Boolean) -> Unit,
     resetForm: () -> Unit
@@ -155,6 +157,7 @@ fun AddPet(
         Button(
             onClick = {
                 // Enviar dados para o banco
+                navController.navigate("loadingtoapphome")
             },
             colors = buttonColors(
                 containerColor = customColorScheme.secondary,

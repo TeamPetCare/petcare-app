@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoadingScreen(navController: NavController, nextScreen: String = "home") {
+fun LoadingScreenToSignUpUser(navController: NavController, nextScreen: String = "signupuser") {
     // Cores
     val primaryBlue = Color(0xFF005472)
 
