@@ -175,7 +175,7 @@ fun LoginScreen(navController: NavController) {
 
             // Botão Entrar
             Button(
-                onClick = { navController.navigate(Screen.Loading.route) },
+                onClick = { navController.navigate(Screen.LoadingToSignUpUser.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(45.dp),

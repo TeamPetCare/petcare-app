@@ -30,21 +30,20 @@ class SignUpViewModel : ViewModel() {
     }
 }
 
-
-data class User(
-    var nomeCompleto: String = "",
-    var cpf: String = "",
-    var email: String = "",
-    var celular: String = "",
-    var senha: String = "",
-    var confirmarSenha: String = "",
-    var cep: String = "",
-    var logradouro: String = "",
-    var bairro: String = "",
-    var numero: String = "",
-    var complemento: String = "",
-    var cidade: String = ""
-)
+class User {
+    var nomeCompleto by mutableStateOf("")
+    var cpf by mutableStateOf("")
+    var email by mutableStateOf("")
+    var celular by mutableStateOf("")
+    var senha by mutableStateOf("")
+    var confirmarSenha by mutableStateOf("")
+    var cep by mutableStateOf("")
+    var logradouro by mutableStateOf("")
+    var bairro by mutableStateOf("")
+    var numero by mutableStateOf("")
+    var complemento by mutableStateOf("")
+    var cidade by mutableStateOf("")
+}
 
 data class Pet(
     var nome: String = "",

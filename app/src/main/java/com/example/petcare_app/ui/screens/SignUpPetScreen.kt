@@ -62,7 +62,14 @@
     import com.example.petcare_app.ui.theme.titleTextStyle
 
     @Composable
-    fun petFormComponent(viewModel: SignUpViewModel, index: Int, pet: Pet, isFormSubmitted: Boolean, isPetFormActive: (Boolean) -> Unit) {
+    fun petFormComponent(
+        viewModel: SignUpViewModel,
+        index: Int,
+        pet: Pet,
+        isFormSubmitted: Boolean,
+        isPetFormActive: (Boolean) -> Unit,
+        navController: NavController
+    ) {
         var nomePetErro by remember { mutableStateOf(false) }
         var especiePetErro by remember { mutableStateOf(false) }
         var racaPetErro by remember { mutableStateOf(false) }
@@ -107,7 +114,7 @@
                 isRequired = true
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -147,7 +154,7 @@
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -186,7 +193,7 @@
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Row {
                 Column(modifier = Modifier.weight(1f)) {
                     CustomRadioBox(
@@ -219,7 +226,7 @@
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             CustomTextLongInput(
                 value = petState.observacoes,
                 onValueChange = { novaObs ->
@@ -233,7 +240,7 @@
                 isRequired = false
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             //      Botão de envio
             Button(
                 onClick = {
@@ -255,6 +262,34 @@
                 ) {
                     Text(
                         text = "Próximo",
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        style = buttonTextStyle
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Seta para a direita"
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            //      Botão de pular cadastro
+            Button(
+                onClick = {
+                    navController.navigate("loadingtoapphome")
+                },
+                colors = buttonColors(
+                    containerColor = customColorScheme.primary,
+                    contentColor = Color.White
+                )
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Gostaria de cadastrar depois",
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         style = buttonTextStyle
@@ -345,10 +380,12 @@
                         index = pets.size - 1,
                         pet = petState,
                         isFormSubmitted = isFormSubmitted,
-                        isPetFormActive = { isPetFormActive = it }
+                        isPetFormActive = { isPetFormActive = it },
+                        navController = navController
                     )
                 } else {
                     AddPet (
+                        navController = navController,
                         pets = pets,
                         isPetFormActive = { isPetFormActive = it },
                         resetForm = resetForm,
