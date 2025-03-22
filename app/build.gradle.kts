@@ -39,10 +39,12 @@ android {
     }
 }
 
+
 dependencies {
     implementation("androidx.compose.material:material-icons-core:1.5.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("com.github.yalantis:ucrop:2.2.6")
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.androidx.compose.ui.text.google.fonts)
@@ -65,5 +67,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }

@@ -23,7 +23,6 @@
     import com.example.petcare_app.ui.screens.SignUpUserScreen
     import com.example.petcare_app.ui.screens.WelcomeScreen
 
-
     sealed class Screen(val route: String) {
         object Home : Screen("home")
         object HomeApp : Screen("homeapp")
@@ -56,4 +55,3 @@
             composable(Screen.Settings.route) { SettingsScreen(navController) }
         }
     }
-

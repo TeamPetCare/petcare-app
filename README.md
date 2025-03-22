@@ -24,13 +24,3 @@
 - **Navigation Component** – Navegação entre telas  
 
 ---
-
-## 📂 Estrutura do Projeto
-
-📂 app/src/main/java/com/example/petcare_app/                  
-├── 📁 ui/ → Telas e componentes visuais                  
-├── 📁 data/ → Comunicação com a API                  
-├── 📁 domain/ → Lógica de negócios                  
-├── 📁 di/ → Injeção de dependências                  
-├── 📁 navigation/ → Gerenciamento de rotas                  
-└── 📄 MainActivity.kt → Tela inicial                  

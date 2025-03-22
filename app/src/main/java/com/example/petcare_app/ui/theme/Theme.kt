@@ -84,6 +84,12 @@ val titleTextStyle = TextStyle(
     lineHeight = 31.sp
 )
 
+val sentenceTitleTextStyle = TextStyle(
+    fontFamily = montserratFontFamily,
+    fontWeight = FontWeight.Bold,
+    fontSize = 20.sp
+)
+
 val paragraphTextStyle = TextStyle(
     fontFamily = montserratFontFamily,
     fontWeight = FontWeight.Normal,
