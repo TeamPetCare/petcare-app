@@ -5,10 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
@@ -33,7 +35,7 @@ fun PlansScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize() // Ocupa toda a tela
     ) {
         // Header no topo
-        HeaderComposable(userName = "Usuário", profileImageUrl = "https://placekitten.com/200/200")
+        HeaderComposable(navController, userName = "Usuário")
 
         // Área de conteúdo (ocupa todo o espaço disponível)
         Box(
@@ -41,11 +43,17 @@ fun PlansScreen(navController: NavController) {
                 .weight(1f) // Faz com que o conteúdo ocupe o máximo de espaço
                 .fillMaxWidth()
         ) {
+            Text("TELA PLANOS")
             // Aqui você pode adicionar a lista de planos, textos, botões etc.
         }
 
         // Barra de navegação fixa na parte inferior
-        GadjetBarComposable()
+        GadjetBarComposable(
+            navController = navController,
+            criarAgendamento = {
+                println("Criar agendamento pelo PlansScreen")
+            }
+        )
     }
 }
 

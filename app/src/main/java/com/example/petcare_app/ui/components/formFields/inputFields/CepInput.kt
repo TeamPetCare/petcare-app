@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.inputFields
+package com.example.petcare_app.ui.components.formFields.inputFields
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -33,7 +33,8 @@ fun CepInput(
     isFormSubmitted: Boolean,
     isError: Boolean,
     onAddressRetrieved: (String, String, String) -> Unit,
-    addressRetrieved: String
+    addressRetrieved: String,
+    enabled: Boolean = true
 ) {
     var isValid by remember { mutableStateOf(true) }
     var loading by remember { mutableStateOf(false) }
@@ -109,7 +110,8 @@ fun CepInput(
                 if (loading) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                 }
-            }
+            },
+            enabled = enabled
         )
 
         if (isError || !isValid) {

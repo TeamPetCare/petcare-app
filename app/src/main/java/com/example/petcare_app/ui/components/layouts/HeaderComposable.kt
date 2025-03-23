@@ -1,6 +1,7 @@
 package com.example.petcare_app.ui.components.layouts
 
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -17,16 +18,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+//import coil.compose.AsyncImage
 import com.example.petcare_app.R
+import com.example.petcare_app.navigation.Screen
+import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
-fun HeaderComposable(userName: String, profileImageUrl: String) {
+//fun HeaderComposable(userName: String, profileImageUrl: String) {
+fun HeaderComposable(navController: NavController, userName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFF005472))
-            .padding(16.dp)
+            .padding(vertical = 10.dp, horizontal = 16.dp)
     ) {
 
         // Saudação com Foto e Notificação
@@ -36,28 +42,30 @@ fun HeaderComposable(userName: String, profileImageUrl: String) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                AsyncImage(
-                    Uri.parse(profileImageUrl),
+                Image(
+//                    Uri.parse(profileImageUrl),
+                    painter = painterResource(id = R.drawable.ic_foto_mockado_perfil),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
                         .size(48.dp)
-                        .border(2.dp, Color.White, shape = CircleShape)
+//                        .border(2.dp, Color.White, shape = CircleShape)
                         .padding(2.dp),
-                    placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
-                    error = painterResource(id = R.drawable.ic_launcher_foreground)
+//                    placeholder = painterResource(id = R.drawable.ic_no_profile_picture),
+//                    error = painterResource(id = R.drawable.ic_no_profile_picture)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Olá, $userName!",
+                    fontFamily = montserratFontFamily,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )
             }
 
             // Sino de Notificação ajustado corretamente
             IconButton(
-                onClick = { /* Ação de notificação */ },
+                onClick = { navController.navigate(Screen.Notifications.route) },
                 modifier = Modifier.offset(x = 12.dp) // Ajuste fino para alinhar com a bateria
             ) {
                 Icon(
@@ -73,8 +81,11 @@ fun HeaderComposable(userName: String, profileImageUrl: String) {
 @Preview(showBackground = true)
 @Composable
 fun HeaderPreview() {
+    val navController = rememberNavController()
+
     HeaderComposable(
         userName = "Usuário",
-        profileImageUrl = "https://placekitten.com/200/200" // Imagem de teste
+        navController = navController
+//        profileImageUrl = "https://placekitten.com/200/200" // Imagem de teste
     )
 }
