@@ -16,7 +16,7 @@ fun SettingsScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        HeaderComposable(userName = "Usuário")
+        HeaderComposable(navController, userName = "Usuário")
 
         Box(
             modifier = Modifier

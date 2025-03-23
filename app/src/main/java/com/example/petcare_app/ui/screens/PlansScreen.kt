@@ -35,7 +35,7 @@ fun PlansScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize() // Ocupa toda a tela
     ) {
         // Header no topo
-        HeaderComposable(userName = "Usuário")
+        HeaderComposable(navController, userName = "Usuário")
 
         // Área de conteúdo (ocupa todo o espaço disponível)
         Box(

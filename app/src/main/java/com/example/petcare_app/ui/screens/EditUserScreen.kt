@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +39,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
-import com.example.petcare_app.navigation.EditUserViewModel
+import com.example.petcare_app.data.viewmodel.EditUserViewModel
+import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -60,25 +62,22 @@ import com.example.petcare_app.ui.theme.paragraphTextStyle
 @Composable
 private fun EditUserScreenPreview() {
     val navControllerMock = rememberNavController()
-    val editUserViewModelMock = EditUserViewModel()
+    val editUserViewModelMock = SignUpViewModel()
     EditUserScreen(navControllerMock, editUserViewModelMock)
 }
 
 @Composable
-fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
-    val nomeCompleto = viewModel.nomeCompleto
-    val cpf = viewModel.cpf
-    val email = viewModel.email
-    val celular = viewModel.celular
-    val senha = viewModel.senha
-    val novaSenha = viewModel.novaSenha
-    val confirmarSenha = viewModel.confirmarSenha
-    val cep = viewModel.cep
-    val logradouro = viewModel.logradouro
-    val bairro = viewModel.bairro
-    val complemento = viewModel.complemento
-    val cidade = viewModel.cidade
+fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
+    var editUserViewModel: EditUserViewModel = viewModel()
 
+    // Inicializa o EditUserViewModel com os dados do User do SignUpViewModel
+    LaunchedEffect(signUpViewModel.user) {
+        if (editUserViewModel.editUser.nomeCompleto.isEmpty()) {
+            editUserViewModel.initializeWithUser(signUpViewModel.user)
+        }
+    }
+
+    val user = editUserViewModel.editUser
     var isFormSubmitted by remember { mutableStateOf(false) }
 
 //  Variáveis de erro
@@ -92,90 +91,98 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
     var cepErro by remember { mutableStateOf(false) }
     var logradouroErro by remember { mutableStateOf(false) }
     var bairroErro by remember { mutableStateOf(false) }
+    var numeroErro by remember { mutableStateOf(false) }
     var cidadeErro by remember { mutableStateOf(false) }
 
     //  Função de validação
     fun validateForm(): Boolean {
-        nomeErro = nomeCompleto.length < 5
-        cpfErro = cpf.isEmpty() || !isValidCPF(cpf)
+        nomeErro = user.nomeCompleto.length < 5
+        cpfErro = user.cpf.isEmpty() || !isValidCPF(user.cpf)
         emailErro =
-            email.isEmpty() || !email.matches("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$".toRegex())
+            user.email.isEmpty() || !user.email.matches("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$".toRegex())
         celularErro =
-            celular.isEmpty() || !celular.matches("^\\(?\\d{2}\\)?\\s?9\\d{4}-?\\d{4}\$".toRegex())
+            user.celular.isEmpty() || !user.celular.matches("^\\(?\\d{2}\\)?\\s?9\\d{4}-?\\d{4}\$".toRegex())
         senhaErro =
-            senha.isEmpty() || !senha.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$".toRegex())
-        confirmarSenhaErro = confirmarSenha.isEmpty() || confirmarSenha != novaSenha
-        cepErro = cep.length < 8
-        logradouroErro = logradouro.length < 5
-        bairroErro = bairro.length < 5
-        cidadeErro = cidade.length < 5
+            user.senha.isEmpty() || !user.senha.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$".toRegex())
+        confirmarSenhaErro = user.novaSenha.isNotEmpty() && (user.confirmarSenha.isEmpty() || user.confirmarSenha != user.novaSenha)
+        cepErro = user.cep.length < 8
+        logradouroErro = user.logradouro.length < 5
+        bairroErro = user.bairro.length < 5
+        numeroErro = user.numero.isEmpty()
+        cidadeErro = user.cidade.length < 5
 
-        return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || cidadeErro)
+        return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || numeroErro || cidadeErro)
     }
 
     //  Função para enviar os dados para o banco
     fun sendData() {
         Log.d(
             "FORM_SIGNUP", "Dados: " +
-                    " Nome - $nomeCompleto" +
-                    " CPF - $cpf" +
-                    " E-mail - $email" +
-                    " Celular - $celular" +
-                    " Senha - $novaSenha" +
-                    " Confirmar Senha - $confirmarSenha" +
-                    " CEP - $cep" +
-                    " Logradouro - $logradouro" +
-                    " Bairro - $bairro" +
-                    " Complemento - $complemento" +
-                    " Cidade - $cidade"
-        )
+                    " Nome - ${user.nomeCompleto}" +
+                    " CPF - ${user.cpf}" +
+                    " E-mail - ${user.email}" +
+                    " Celular - ${user.celular}" +
+                    " Senha - ${user.senha}" +
+                    " Nova Senha - ${user.novaSenha}" +
+                    " Confirmar Senha - ${user.confirmarSenha}" +
+                    " CEP - ${user.cep}" +
+                    " Logradouro - ${user.logradouro}" +
+                    " Bairro - ${user.bairro}" +
+                    " Complemento - ${user.complemento}" +
+                    " Cidade - ${user.cidade}")
     }
 
     // var para ver se está no modo de edição
-    var editarInfos = remember { mutableStateOf(false) }
+    var editarInfos by remember { mutableStateOf(false) }
 
     //função para resetar campos ao clicar no botão cancelar
     fun clearForm() {
-        viewModel.nomeCompleto = ""
-        viewModel.cpf = ""
-        viewModel.email = ""
-        viewModel.celular = ""
-        viewModel.senha = ""
-        viewModel.confirmarSenha = ""
-        viewModel.cep = ""
-        viewModel.logradouro = ""
-        viewModel.bairro = ""
-        viewModel.complemento = ""
-        viewModel.cidade = ""
+        editUserViewModel.editUser = editUserViewModel.editUser.copy(
+            nomeCompleto = "",
+            cpf = "",
+            email = "",
+            celular = "",
+            senha = "",
+            confirmarSenha = "",
+            novaSenha = "",
+            cep = "",
+            logradouro = "",
+            bairro = "",
+            numero = "",
+            complemento = "",
+            cidade = ""
+        )
 
         isFormSubmitted = false
-
         nomeErro = false
         cpfErro = false
         emailErro = false
         celularErro = false
         senhaErro = false
         confirmarSenhaErro = false
+        novaSenhaError = false
         cepErro = false
         logradouroErro = false
         bairroErro = false
+        numeroErro = false
         cidadeErro = false
     }
 
+
     Scaffold(topBar = {
         HeaderComposable(
-            userName = "Usuário",
-            profileImageUrl = "https://placekitten.com/200/200"
+            navController,
+            userName = "Usuário"
         )
-    },
-        bottomBar = { GadjetBarComposable() }) { it ->
+    }, bottomBar = { GadjetBarComposable(navController, criarAgendamento = {}) }) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
                 icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture),
                 iconWeight = 30f,
                 "Editar Perfil",
-                true) {
+                true,
+                navController = navController) {
 
 //  Tela de Inscrição - Sobre o Usuário
                 Column(
@@ -191,57 +198,72 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
 //      Campos do formulário
                     Spacer(modifier = Modifier.height(18.dp))
                     CustomTextInput(
-                        value = nomeCompleto,
-                        onValueChange = { viewModel.nomeCompleto = it },
+                        value = user.nomeCompleto,
+                        onValueChange = { novoNome ->
+                            editUserViewModel.updateUser { copy(nomeCompleto = novoNome) }
+                        },
                         label = "Nome Completo",
                         placeholder = "Digite seu nome completo",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = nomeErro,
-                        isRequired = true
+                        isRequired = true,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     MaskedInput(
                         label = "CPF",
-                        value = cpf,
-                        onValueChange = { viewModel.cpf = it },
+                        value = user.cpf,
+                        onValueChange = { novoCpf ->
+                            editUserViewModel.updateUser { copy(cpf = novoCpf) }
+                        },
                         placeholder = "___.___.___-__",
                         type = "CPF",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = cpfErro
+                        isError = cpfErro,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     EmailInput(
                         label = "E-mail",
-                        value = email,
-                        onValueChange = { viewModel.email = it },
+                        value = user.email,
+                        onValueChange = { novoEmail ->
+                            editUserViewModel.updateUser { copy(email = novoEmail) }
+                        },
                         placeholder = "exemplo@gmail.com",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = emailErro
+                        isError = emailErro,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     MaskedInput(
                         label = "Celular",
-                        value = celular,
-                        onValueChange = { viewModel.celular = it },
+                        value = user.celular,
+                        onValueChange = { novoCelular ->
+                            editUserViewModel.updateUser { copy(celular = novoCelular) }
+                        },
                         placeholder = "(__) ____-____",
                         type = "Celular",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = celularErro
+                        isError = celularErro,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     PasswordInput(
                         label = "Senha Atual",
-                        value = senha,
-                        onValueChange = { viewModel.senha = it },
+                        value = user.senha,
+                        onValueChange = { senhaAtual ->
+                            editUserViewModel.updateUser { copy(senha = senhaAtual) }
+                        },
                         placeholder = "Senha atual",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = senhaErro,
-                        confirmarSenha = false
+                        confirmarSenha = false,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -255,28 +277,34 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
                                 // função futura
                             }
                     )
-                    if (editarInfos.value) {
+                    if (editarInfos) {
                         Spacer(modifier = Modifier.height(12.dp))
                         PasswordInput(
                             label = "Nova senha",
-                            value = novaSenha,
-                            onValueChange = { viewModel.novaSenha = it },
+                            value = user.novaSenha,
+                            onValueChange = { novaSenha ->
+                                editUserViewModel.updateUser { copy(novaSenha = novaSenha) }
+                            },
                             placeholder = "Digite a senha",
                             modifier = Modifier.fillMaxWidth(),
                             isFormSubmitted = isFormSubmitted,
                             isError = novaSenhaError,
-                            confirmarSenha = false
+                            confirmarSenha = false,
+                            enabled = editarInfos
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         PasswordInput(
                             label = "Confirme a senha",
-                            value = confirmarSenha,
-                            onValueChange = { viewModel.confirmarSenha = it },
+                            value = user.confirmarSenha,
+                            onValueChange = { confirmarSenha ->
+                                editUserViewModel.updateUser { copy(confirmarSenha = confirmarSenha) }
+                            },
                             placeholder = "Repita a senha",
                             modifier = Modifier.fillMaxWidth(),
                             isFormSubmitted = isFormSubmitted,
                             isError = confirmarSenhaErro,
-                            confirmarSenha = true
+                            confirmarSenha = true,
+                            enabled = editarInfos
                         )
                     }
 
@@ -292,65 +320,95 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     CepInput(
                         label = "CEP",
-                        value = cep,
-                        onValueChange = { viewModel.cep = it },
+                        value = user.cep,
+                        onValueChange = { novoCep ->
+                            editUserViewModel.updateUser { copy(cep = novoCep) }
+                        },
                         placeholder = "Digite seu CEP",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = cepErro,
                         onAddressRetrieved = { newLogradouro, newBairro, newCidade ->
-                            viewModel.logradouro = newLogradouro
-                            viewModel.bairro = newBairro
-                            viewModel.cidade = newCidade
+                            editUserViewModel.updateUser { copy(logradouro = newLogradouro) }
+                            editUserViewModel.updateUser { copy(bairro = newBairro) }
+                            editUserViewModel.updateUser { copy(cidade = newCidade) }
                         },
-                        addressRetrieved = "${viewModel.logradouro}"
+                        addressRetrieved = "${user.logradouro}",
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     CustomTextInput(
-                        value = logradouro,
-                        onValueChange = { viewModel.logradouro = it },
+                        value = user.logradouro,
+                        onValueChange = { novoLogradouro ->
+                            editUserViewModel.updateUser { copy(logradouro = novoLogradouro) }
+                        },
                         label = "Logradouro",
                         placeholder = "Digite o logradouro (rua, avenida, número, etc.)",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = logradouroErro,
-                        isRequired = true
+                        isRequired = true,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     CustomTextInput(
-                        value = bairro,
-                        onValueChange = { viewModel.bairro = it },
+                        value = user.bairro,
+                        onValueChange = { novoBairro ->
+                            editUserViewModel.updateUser { copy(bairro = novoBairro) }
+                        },
                         label = "Bairro",
                         placeholder = "Digite o nome do bairro",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = bairroErro,
-                        isRequired = true
+                        isRequired = true,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     CustomTextInput(
-                        value = complemento,
-                        onValueChange = { viewModel.complemento = it },
+                        value = user.numero,
+                        onValueChange = { novoNumero ->
+                            editUserViewModel.updateUser { copy(numero = novoNumero) }
+                        },
+                        label = "Número",
+                        placeholder = "Digite o número do endereço",
+                        modifier = Modifier.fillMaxWidth(),
+                        isFormSubmitted = isFormSubmitted,
+                        isError = numeroErro,
+                        msgErro = "*Insira o número do endereço corretamente.",
+                        isRequired = true,
+                        enabled = editarInfos
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CustomTextInput(
+                        value = user.complemento,
+                        onValueChange = { novoComplemento ->
+                            editUserViewModel.updateUser { copy(complemento = novoComplemento) }
+                        },
                         label = "Complemento",
                         placeholder = "Digite o complemento (Apartamento, bloco)",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isRequired = false
+                        isRequired = false,
+                        enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     CustomTextInput(
-                        value = cidade,
-                        onValueChange = { viewModel.cidade = it },
+                        value = user.cidade,
+                        onValueChange = { novaCidade ->
+                            editUserViewModel.updateUser { copy(cidade = novaCidade) }
+                        },
                         label = "Cidade",
                         placeholder = "Digite o nome da cidade",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = cidadeErro,
-                        isRequired = true
+                        isRequired = true,
+                        enabled = editarInfos
                     )
 
 
-                    if (editarInfos.value) {
+                    if (editarInfos) {
                         Spacer(modifier = Modifier.height(15.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -359,7 +417,7 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
                         ) {
                             Button(
                                 onClick = {
-                                    editarInfos.value = false
+                                    editarInfos = false
                                     isFormSubmitted = false
 
                                     clearForm()
@@ -390,7 +448,7 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
                                 onClick = {
                                     if (validateForm()) {
                                         sendData()
-                                        editarInfos.value = false
+                                        editarInfos = false
                                     } else isFormSubmitted = true
                                 },
                                 colors = buttonColors(
@@ -421,7 +479,7 @@ fun EditUserScreen(navController: NavController, viewModel: EditUserViewModel) {
                         Spacer(modifier = Modifier.height(15.dp))
                         Button(
                             onClick = {
-                                editarInfos.value = true
+                                editarInfos = true
                             },
                             colors = buttonColors(
                                 containerColor = customColorScheme.primary,
