@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.inputFields
+package com.example.petcare_app.ui.components.formFields.inputFields
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,7 +61,8 @@ fun MaskedInput(
     type: String,
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
-    isError: Boolean
+    isError: Boolean,
+    enabled: Boolean = true
 ) {
     var isValid by remember { mutableStateOf(true) }
 
@@ -120,7 +121,8 @@ fun MaskedInput(
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
-            )
+            ),
+            enabled = enabled
         )
 
         if (isError) {

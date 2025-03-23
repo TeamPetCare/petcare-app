@@ -84,6 +84,12 @@ val titleTextStyle = TextStyle(
     lineHeight = 31.sp
 )
 
+val sentenceTitleTextStyle = TextStyle(
+    fontFamily = montserratFontFamily,
+    fontWeight = FontWeight.Bold,
+    fontSize = 20.sp
+)
+
 val paragraphTextStyle = TextStyle(
     fontFamily = montserratFontFamily,
     fontWeight = FontWeight.Normal,
@@ -101,7 +107,7 @@ val labelInputTextStyle = TextStyle(
 val innerInputTextStyle = TextStyle(
     fontFamily = montserratFontFamily,
     fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
+    fontSize = 14.sp,
     color = customColorScheme.onSurface
 )
 
