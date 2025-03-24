@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.SupervisedUserCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
@@ -178,11 +179,11 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
-                icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture),
-                iconWeight = 30f,
+                icon = Icons.Outlined.SupervisedUserCircle,
                 "Editar Perfil",
                 true,
-                navController = navController) {
+                navController = navController
+            ) {
 
 //  Tela de Inscrição - Sobre o Usuário
                 Column(
