@@ -49,7 +49,7 @@ fun GadjetBarComposable(
             "homeapp" to Pair(Icons.Outlined.Home, Icons.Filled.Home),
             "schedules" to Pair(Icons.Outlined.WatchLater, Icons.Filled.WatchLater),
             "plans" to Pair(Icons.Outlined.CalendarMonth, Icons.Filled.CalendarMonth),
-            "editUser" to Pair(Icons.Outlined.SettingsSuggest, Icons.Filled.SettingsSuggest),
+            "settings" to Pair(Icons.Outlined.SettingsSuggest, Icons.Filled.SettingsSuggest),
         )
         val currentRoute = navController.currentBackStackEntry?.destination?.route
 
