@@ -18,18 +18,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 //import coil.compose.AsyncImage
 import com.example.petcare_app.R
+import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
 //fun HeaderComposable(userName: String, profileImageUrl: String) {
-fun HeaderComposable(userName: String) {
+fun HeaderComposable(navController: NavController, userName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFF005472))
-            .padding(vertical = 10.dp, horizontal = 16.dp)
+            .padding(vertical = 11.dp, horizontal = 16.dp)
     ) {
 
         // Saudação com Foto e Notificação
@@ -44,17 +47,17 @@ fun HeaderComposable(userName: String) {
                     painter = painterResource(id = R.drawable.ic_foto_mockado_perfil),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(45.dp)
 //                        .border(2.dp, Color.White, shape = CircleShape)
                         .padding(2.dp),
-                    placeholder = painterResource(id = R.drawable.ic_no_profile_picture),
-                    error = painterResource(id = R.drawable.ic_no_profile_picture)
+//                    placeholder = painterResource(id = R.drawable.ic_no_profile_picture),
+//                    error = painterResource(id = R.drawable.ic_no_profile_picture)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Olá, $userName!",
                     fontFamily = montserratFontFamily,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )
@@ -62,7 +65,7 @@ fun HeaderComposable(userName: String) {
 
             // Sino de Notificação ajustado corretamente
             IconButton(
-                onClick = { /* Ação de notificação */ },
+                onClick = { navController.navigate(Screen.Notifications.route) },
                 modifier = Modifier.offset(x = 12.dp) // Ajuste fino para alinhar com a bateria
             ) {
                 Icon(
@@ -78,8 +81,11 @@ fun HeaderComposable(userName: String) {
 @Preview(showBackground = true)
 @Composable
 fun HeaderPreview() {
+    val navController = rememberNavController()
+
     HeaderComposable(
         userName = "Usuário",
+        navController = navController
 //        profileImageUrl = "https://placekitten.com/200/200" // Imagem de teste
     )
 }

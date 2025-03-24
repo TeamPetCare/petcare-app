@@ -1,14 +1,13 @@
 package com.example.petcare_app.ui.screens
 
-import android.service.notification.NotificationListenerService
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
@@ -27,11 +28,12 @@ import com.example.petcare_app.ui.components.notificationComponents.Notification
 @Preview
 @Composable
 private fun NotificationScreenPreview() {
-    NotificationScren()
+    val navController = rememberNavController()
+    NotificationScren(navController)
 }
 
 @Composable
-fun NotificationScren(){
+fun NotificationScren(navController: NavController){
 
     val notifications = listOf(
         NotificationItem("Agendamento Confirmado.", "Atendimento agendado para 23/05 às 17:57.", Color.White ,
@@ -47,19 +49,20 @@ fun NotificationScren(){
     Scaffold(
         topBar = {
             HeaderComposable(
-                userName = "Usuário",
-                profileImageUrl = "https://placekitten.com/200/200"
+                navController,
+                userName = "Usuário"
             )
         },
-        bottomBar = { GadjetBarComposable()}
+        bottomBar = { GadjetBarComposable(navController, criarAgendamento = {})}
     ) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
-                icon = ImageVector.vectorResource(R.drawable.ic_x),
-                iconWeight = 20f,
-                title = "Notificações"
-            ){
+                icon = Icons.Filled.Close,
+                title = "Notificações",
+                navController = navController,
+                actionIcon = { navController.popBackStack() }
+            ) {
                 LazyColumn {
                     items(notifications){ notification ->
                         NotificationCard(notification)

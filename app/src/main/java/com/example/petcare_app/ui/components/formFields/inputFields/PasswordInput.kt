@@ -31,7 +31,8 @@ fun PasswordInput(
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
     isError: Boolean,
-    confirmarSenha: Boolean
+    confirmarSenha: Boolean,
+    enabled: Boolean = true
 ) {
     val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$".toRegex()
     var isValid by remember { mutableStateOf(true) }
@@ -85,7 +86,8 @@ fun PasswordInput(
                         contentDescription = if (isPasswordVisible) "Ocultar Senha" else "Exibir Senha"
                     )
                 }
-            }
+            },
+            enabled = enabled
         )
 
         if (isError) {

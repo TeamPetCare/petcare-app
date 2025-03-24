@@ -24,7 +24,8 @@ fun EmailInput(
     placeholder: String,
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
-    isError: Boolean
+    isError: Boolean,
+    enabled: Boolean = true
 ) {
     val emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$".toRegex()
     var isValid by remember { mutableStateOf(true) }
@@ -62,7 +63,8 @@ fun EmailInput(
                 unfocusedIndicatorColor = customColorScheme.onSurface,
                 focusedIndicatorColor = customColorScheme.onSurface,
                 errorContainerColor = Color.Transparent,
-            )
+            ),
+            enabled = enabled
         )
 
         if (isError) {

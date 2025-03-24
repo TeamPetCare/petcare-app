@@ -25,7 +25,8 @@ fun CustomTextInput(
     isFormSubmitted: Boolean,
     isError: Boolean = false,
     msgErro: String = "",
-    isRequired: Boolean
+    isRequired: Boolean,
+    enabled: Boolean = true
 ) {
     var isValid by remember { mutableStateOf(true) }
     val labelText = if (isRequired) "$label*" else label
@@ -68,6 +69,7 @@ fun CustomTextInput(
                 focusedIndicatorColor = customColorScheme.onSurface,
                 errorContainerColor = Color.Transparent,
             ),
+            enabled = enabled
         )
 
         if (isError) {

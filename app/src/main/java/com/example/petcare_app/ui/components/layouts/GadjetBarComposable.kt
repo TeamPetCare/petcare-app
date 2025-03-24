@@ -2,6 +2,8 @@ package com.example.petcare_app.ui.components.layouts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,10 +13,14 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SettingsSuggest
+import androidx.compose.material.icons.filled.WatchLater
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.SettingsSuggest
+import androidx.compose.material.icons.outlined.WatchLater
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,13 +43,13 @@ fun GadjetBarComposable(
         containerColor = Color.White,
         contentColor = customColorScheme.primary,
         modifier = Modifier
-            .padding(bottom = 5.dp)
+            .padding(0.dp)
     ) {
         val items = listOf(
             "homeapp" to Pair(Icons.Outlined.Home, Icons.Filled.Home),
-            "schedules" to Pair(Icons.Outlined.Schedule, Icons.Filled.Schedule),
+            "schedules" to Pair(Icons.Outlined.WatchLater, Icons.Filled.WatchLater),
             "plans" to Pair(Icons.Outlined.CalendarMonth, Icons.Filled.CalendarMonth),
-            "settings" to Pair(Icons.Outlined.Settings, Icons.Filled.Settings),
+            "settings" to Pair(Icons.Outlined.SettingsSuggest, Icons.Filled.SettingsSuggest),
         )
         val currentRoute = navController.currentBackStackEntry?.destination?.route
 
@@ -58,6 +64,7 @@ fun GadjetBarComposable(
                         tint = customColorScheme.primary,
                         modifier = Modifier
                             .size(30.dp)
+                            .padding(0.dp)
                         )
                 },
                 selected = false,
@@ -81,7 +88,7 @@ fun GadjetBarComposable(
                             color = customColorScheme.primary,
                             shape = RoundedCornerShape(10.dp)
                         )
-                        .padding(8.dp)
+                        .padding(horizontal = 8.dp)
                 ) {
                     Icon(
                         Icons.Filled.Add,

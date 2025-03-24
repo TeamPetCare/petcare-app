@@ -61,7 +61,8 @@ fun MaskedInput(
     type: String,
     modifier: Modifier = Modifier,
     isFormSubmitted: Boolean,
-    isError: Boolean
+    isError: Boolean,
+    enabled: Boolean = true
 ) {
     var isValid by remember { mutableStateOf(true) }
 
@@ -120,7 +121,8 @@ fun MaskedInput(
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
-            )
+            ),
+            enabled = enabled
         )
 
         if (isError) {

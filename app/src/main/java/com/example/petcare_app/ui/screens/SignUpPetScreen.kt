@@ -111,7 +111,7 @@
                 isFormSubmitted = isFormSubmitted,
                 isError = nomePetErro,
                 msgErro = "*Insira o nome do pet",
-                isRequired = true
+                isRequired = true,
             )
 
             Spacer(modifier = Modifier.height(10.dp))
