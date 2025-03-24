@@ -28,21 +28,23 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
 import com.example.petcare_app.ui.components.buttons.BackButton
+import com.example.petcare_app.ui.theme.customColorScheme
+import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 
 
 @Preview
 @Composable
 private fun WhiteCanvasPrev() {
     val navController = rememberNavController()
-    WhiteCanvas(modifier = Modifier, icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture), 30f, "Editar Perfil", true, navController)}
+    WhiteCanvas(modifier = Modifier, icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture), "Editar Perfil", true, {}, navController)}
 
 @Composable
 fun WhiteCanvas(
     modifier: Modifier,
     icon: ImageVector,
-    iconWeight: Float,
     title: String? = null,
     visibleBackButton: Boolean = false,
+    actionIcon: () -> Unit = {},
     navController: NavController,
     content: @Composable () -> Unit = {},
 ){
@@ -50,7 +52,7 @@ fun WhiteCanvas(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .padding(16.dp),
+            .padding(top = 20.dp, end = 20.dp, start = 20.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Row(
@@ -62,8 +64,8 @@ fun WhiteCanvas(
                 contentDescription = "Ícone",
                 tint = Color(0, 84, 114),
                 modifier = Modifier
-                    .size(iconWeight.dp)
-                    .clickable { navController.popBackStack() }
+                    .size(28.dp)
+                    .clickable { actionIcon() }
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -71,8 +73,8 @@ fun WhiteCanvas(
             if (title != null) {
                 Text(
                     text = title,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = sentenceTitleTextStyle,
+                    color = customColorScheme.primary,
                     modifier = Modifier.weight(1f) // Mantém o título centralizado sem ser empurrado para fora
                 )
             }
