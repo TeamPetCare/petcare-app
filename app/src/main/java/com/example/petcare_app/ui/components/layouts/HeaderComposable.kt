@@ -32,7 +32,7 @@ fun HeaderComposable(navController: NavController, userName: String) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFF005472))
-            .padding(vertical = 10.dp, horizontal = 16.dp)
+            .padding(vertical = 11.dp, horizontal = 16.dp)
     ) {
 
         // Saudação com Foto e Notificação
@@ -47,7 +47,7 @@ fun HeaderComposable(navController: NavController, userName: String) {
                     painter = painterResource(id = R.drawable.ic_foto_mockado_perfil),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(45.dp)
 //                        .border(2.dp, Color.White, shape = CircleShape)
                         .padding(2.dp),
 //                    placeholder = painterResource(id = R.drawable.ic_no_profile_picture),
@@ -57,7 +57,7 @@ fun HeaderComposable(navController: NavController, userName: String) {
                 Text(
                     text = "Olá, $userName!",
                     fontFamily = montserratFontFamily,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )

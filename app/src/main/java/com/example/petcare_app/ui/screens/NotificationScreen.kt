@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -56,10 +58,10 @@ fun NotificationScren(navController: NavController){
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
-                icon = ImageVector.vectorResource(R.drawable.ic_x),
-                iconWeight = 20f,
+                icon = Icons.Filled.Close,
                 title = "Notificações",
-                navController = navController
+                navController = navController,
+                actionIcon = { navController.popBackStack() }
             ) {
                 LazyColumn {
                     items(notifications){ notification ->
