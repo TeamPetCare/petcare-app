@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.petcare_app.ui.components.layouts.StatusComposable
 import com.example.petcare_app.ui.theme.montserratFontFamily
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 
@@ -63,7 +64,7 @@ fun PlanCard(plan: PlanItem) {
                     Box(
                         modifier = Modifier.padding(top = 1.dp)
                     ) {
-                        PlanStatus(
+                        StatusComposable(
                             icon = icon,
                             status = plan.status,
                             fontColor = if (plan.status == "Ativo") Color(0xFF2EC114) else Color(0xFFC11414),

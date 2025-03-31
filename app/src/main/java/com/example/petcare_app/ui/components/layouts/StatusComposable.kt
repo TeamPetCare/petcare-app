@@ -1,4 +1,4 @@
-package com.example.petcare_app.ui.components.plansComponents
+package com.example.petcare_app.ui.components.layouts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
-fun PlanStatus(icon: ImageVector, status: String, fontColor: Color, backgroundColor: Color, textColor: Color) {
+fun StatusComposable(icon: ImageVector, status: String, fontColor: Color, backgroundColor: Color, textColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -66,7 +66,7 @@ fun PlanStatusPreview() {
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        PlanStatus(
+        StatusComposable(
             icon = Icons.Default.Check,
             status = "Ativo",
             fontColor = Color.Green,
@@ -74,7 +74,7 @@ fun PlanStatusPreview() {
             textColor = Color.White
         )
 
-        PlanStatus(
+        StatusComposable(
             icon = Icons.Default.Close,
             status = "Inativo",
             fontColor = Color.Red,
