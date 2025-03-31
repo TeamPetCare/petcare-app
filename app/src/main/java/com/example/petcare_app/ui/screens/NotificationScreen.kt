@@ -53,7 +53,7 @@ fun NotificationScren(navController: NavController){
                 userName = "Usuário"
             )
         },
-        bottomBar = { GadjetBarComposable(navController, criarAgendamento = {})}
+        bottomBar = { GadjetBarComposable(navController)}
     ) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(

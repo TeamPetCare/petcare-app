@@ -175,7 +175,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
             navController,
             userName = "Usuário"
         )
-    }, bottomBar = { GadjetBarComposable(navController, criarAgendamento = {}) }) { it ->
+    }, bottomBar = { GadjetBarComposable(navController) }) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
@@ -190,7 +190,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(start = 20.dp, bottom = 30.dp, top = 15.dp, end = 20.dp),
+                        .padding(bottom = 30.dp, top = 15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 

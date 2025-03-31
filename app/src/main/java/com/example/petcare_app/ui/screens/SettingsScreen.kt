@@ -28,10 +28,7 @@ fun SettingsScreen(navController: NavController) {
 
         // BottomBar
         GadjetBarComposable(
-            navController = navController,
-            criarAgendamento = {
-                println("Criar agendamento pelo SettingsScreen")
-            }
+            navController = navController
         )
     }
 }

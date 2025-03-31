@@ -37,7 +37,6 @@ import com.example.petcare_app.ui.theme.customColorScheme
 @Composable
 fun GadjetBarComposable(
     navController: NavController,
-    criarAgendamento: () -> Unit
 ) {
     NavigationBar (
         containerColor = Color.White,
@@ -100,9 +99,7 @@ fun GadjetBarComposable(
                 }
             },
             selected = false,
-            onClick = {
-                criarAgendamento()
-            }
+            onClick = { /* Criar agendamento */ }
         )
 
 
@@ -138,8 +135,6 @@ fun GadgetsPreview() {
     val navController = rememberNavController()
 
     GadjetBarComposable(
-        navController = navController,
-        criarAgendamento = {
-        println("Criar Agendamento!")
-    })
+        navController = navController
+    )
 }

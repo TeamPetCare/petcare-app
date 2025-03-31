@@ -49,10 +49,7 @@ fun PlansScreen(navController: NavController) {
 
         // Barra de navegação fixa na parte inferior
         GadjetBarComposable(
-            navController = navController,
-            criarAgendamento = {
-                println("Criar agendamento pelo PlansScreen")
-            }
+            navController = navController
         )
     }
 }
