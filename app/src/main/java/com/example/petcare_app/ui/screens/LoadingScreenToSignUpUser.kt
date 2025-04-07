@@ -18,8 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.petcare_app.R
 import androidx.navigation.NavController
+import com.example.petcare_app.R
 import kotlinx.coroutines.delay
 
 @Composable
