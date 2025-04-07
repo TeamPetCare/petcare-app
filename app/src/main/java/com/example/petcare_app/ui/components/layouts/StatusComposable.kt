@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,7 +33,7 @@ fun StatusComposable(icon: ImageVector, status: String, fontColor: Color, backgr
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .background(backgroundColor, shape = RoundedCornerShape(50))
-            .padding(horizontal = 4.dp, vertical = 1.dp)
+            .padding(horizontal = 8.dp, vertical = 2.dp)
     ) {
         Box(
             modifier = Modifier
@@ -47,21 +49,21 @@ fun StatusComposable(icon: ImageVector, status: String, fontColor: Color, backgr
             )
         }
 
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(horizontal = 1.dp))
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(horizontal = 2.dp))
 
         Text(
             text = status,
             color = textColor,
             fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 8.sp
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PlanStatusPreview() {
+fun StatusComposablePreview() {
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)

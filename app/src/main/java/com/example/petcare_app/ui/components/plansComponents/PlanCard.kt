@@ -26,7 +26,8 @@ fun PlanCard(plan: PlanItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .height(100.dp)
+            .fillMaxHeight()
+//            .height(100.dp)
             .padding(bottom = 8.dp),
         colors = CardDefaults.cardColors(containerColor = plan.backgroundColor),
         shape = RoundedCornerShape(8.dp)
@@ -43,11 +44,11 @@ fun PlanCard(plan: PlanItem) {
             ) {
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                    verticalArrangement = Arrangement.spacedBy(1.dp),
                 ) {
                     Text(
                         text = plan.namePets,
-                        fontSize = 10.sp,
+                        fontSize = 14.sp,
                         color = plan.fontColor,
                         fontFamily = montserratFontFamily
                     )
@@ -55,15 +56,13 @@ fun PlanCard(plan: PlanItem) {
                     Text(
                         text = plan.plan,
                         style = sentenceTitleTextStyle,
-                        fontSize = 18.sp,
+                        fontSize = 22.sp,
                         color = plan.fontColor
                     )
 
                     val icon = if (plan.status == "Ativo") Icons.Default.Check else Icons.Default.Close
+                    Spacer(modifier = Modifier.height(3.dp))
 
-                    Box(
-                        modifier = Modifier.padding(top = 1.dp)
-                    ) {
                         StatusComposable(
                             icon = icon,
                             status = plan.status,
@@ -71,7 +70,6 @@ fun PlanCard(plan: PlanItem) {
                             backgroundColor = if (plan.status == "Ativo") Color(0xFF2EC114) else Color(0xFFC11414),
                             textColor = Color.White
                         )
-                    }
                 }
             }
         }
@@ -85,7 +83,7 @@ fun PlanCardPreview() {
     val plans = listOf(
         PlanItem("Rex, Madonna", "Plano Mensal", "Ativo", Color(0,84,114),
             Color(255, 238, 200)),
-        PlanItem("Madonna", "Plano Quinzenal", "Inativo", Color(0,84,114),
+        PlanItem("Madonna", "Plano Quinzenal", "Inativo Mudado", Color(0,84,114),
             Color(240,240,240)),
     )
 
