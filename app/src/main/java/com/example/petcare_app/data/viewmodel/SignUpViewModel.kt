@@ -3,22 +3,54 @@ package com.example.petcare_app.data.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+data class User(
+    var nomeCompleto: String = "",
+    var cpf: String = "",
+    var email: String = "",
+    var celular: String = "",
+    var senha: String = "",
+    var confirmarSenha: String = "",
+    var cep: String = "",
+    var logradouro: String = "",
+    var bairro: String = "",
+    var numero: String = "",
+    var complemento: String = "",
+    var cidade: String = ""
+)
+
 class SignUpViewModel : ViewModel() {
-    private val _pets = MutableStateFlow<List<Pet>>(listOf(Pet()))
-    val pets = _pets.asStateFlow()
-    var user by mutableStateOf(User())
+    private val _pets = MutableStateFlow<List<Pet>>(emptyList())
+    val pets: StateFlow<List<Pet>> = _pets
+    private val _user = mutableStateOf(User())
+    val user: State<User> = _user
 
 
-    fun updatePet(index: Int, updatedPet: Pet) {
-        _pets.value = _pets.value.toMutableList().apply {
-            this[index] = updatedPet
-        }
+    fun updateUser(update: User.() -> User) {
+        _user.value = _user.value.update()
     }
 
+    fun initializeWithUser(user: User) {
+        _user.value = user
+    }
+
+    fun updatePet(index: Int, updatedPet: Pet) {
+        val petList = _pets.value.toMutableList() // Cria uma cópia mutável da lista atual
+
+        if (index >= 0 && index < petList.size) {
+            petList[index] = updatedPet // Atualiza o pet existente
+        } else {
+            petList.add(updatedPet) // Adiciona novo pet se o índice for inválido
+        }
+
+        _pets.value = petList // Atualiza o StateFlow com a nova lista
+    }
+
+
     fun addPet(pet: Pet) {
-        if (!_pets.value.contains(pet)) {
+        if (_pets.value.none { it.nome == pet.nome }) {
             _pets.value = _pets.value + pet
         }
     }
@@ -28,21 +60,6 @@ class SignUpViewModel : ViewModel() {
             removeAt(index)
         }
     }
-}
-
-class User {
-    var nomeCompleto by mutableStateOf("")
-    var cpf by mutableStateOf("")
-    var email by mutableStateOf("")
-    var celular by mutableStateOf("")
-    var senha by mutableStateOf("")
-    var confirmarSenha by mutableStateOf("")
-    var cep by mutableStateOf("")
-    var logradouro by mutableStateOf("")
-    var bairro by mutableStateOf("")
-    var numero by mutableStateOf("")
-    var complemento by mutableStateOf("")
-    var cidade by mutableStateOf("")
 }
 
 data class Pet(

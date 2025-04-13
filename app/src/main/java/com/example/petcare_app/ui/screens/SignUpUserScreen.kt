@@ -53,7 +53,7 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 
 @Composable
 fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
-    val user = remember { viewModel.user }
+    val user by viewModel.user
     var isFormSubmitted by remember { mutableStateOf(false) }
 
 //  Variáveis de erro
@@ -140,7 +140,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(18.dp))
         CustomTextInput(
             value = user.nomeCompleto,
-            onValueChange = { user.nomeCompleto = it },
+            onValueChange = { novoNome ->
+                viewModel.updateUser { copy(nomeCompleto = novoNome) }
+            },
             label = "Nome Completo",
             placeholder = "Digite seu nome completo",
             modifier = Modifier.fillMaxWidth(),
@@ -153,7 +155,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         MaskedInput(
             label = "CPF",
             value = user.cpf,
-            onValueChange = { user.cpf = it },
+            onValueChange = { cpf ->
+                viewModel.updateUser { copy(cpf = cpf) }
+            },
             placeholder = "___.___.___-__",
             type = "CPF",
             modifier = Modifier.fillMaxWidth(),
@@ -164,7 +168,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         EmailInput(
             label = "E-mail",
             value = user.email,
-            onValueChange = { user.email = it },
+            onValueChange = { email ->
+                viewModel.updateUser { copy(email = email) }
+            },
             placeholder = "exemplo@gmail.com",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -174,7 +180,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         MaskedInput(
             label = "Celular",
             value = user.celular,
-            onValueChange = { user.celular = it },
+            onValueChange = { celular ->
+                viewModel.updateUser { copy(celular = celular) }
+            },
             placeholder = "(__) _ ____-____",
             type = "Celular",
             modifier = Modifier.fillMaxWidth(),
@@ -185,7 +193,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         PasswordInput(
             label = "Senha",
             value = user.senha,
-            onValueChange = { user.senha = it },
+            onValueChange = { senha ->
+                viewModel.updateUser { copy(senha = senha) }
+            },
             placeholder = "Crie uma senha",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -196,7 +206,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         PasswordInput(
             label = "Confirme a senha",
             value = user.confirmarSenha,
-            onValueChange = { user.confirmarSenha = it },
+            onValueChange = { confirmarSenha ->
+                viewModel.updateUser { copy(confirmarSenha = confirmarSenha) }
+            },
             placeholder = "Repita a senha",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -216,15 +228,17 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         CepInput(
             label = "CEP",
             value = user.cep,
-            onValueChange = { user.cep = it },
+            onValueChange = { cep ->
+                viewModel.updateUser { copy(cep = cep) }
+            },
             placeholder = "Digite seu CEP",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
             isError = cepErro,
             onAddressRetrieved = { newLogradouro, newBairro, newCidade ->
-                user.logradouro = newLogradouro
-                user.bairro = newBairro
-                user.cidade = newCidade
+                viewModel.updateUser { copy(logradouro = newLogradouro) }
+                viewModel.updateUser { copy(bairro = newBairro) }
+                viewModel.updateUser { copy(cidade = newCidade) }
             },
             addressRetrieved = "${user.logradouro}"
         )
@@ -243,7 +257,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.bairro,
-            onValueChange = { user.bairro = it },
+            onValueChange = { bairro ->
+                viewModel.updateUser { copy(bairro = bairro) }
+            },
             label = "Bairro",
             placeholder = "Digite o nome do bairro",
             modifier = Modifier.fillMaxWidth(),
@@ -255,7 +271,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.numero,
-            onValueChange = { user.numero = it },
+            onValueChange = { numero ->
+                viewModel.updateUser { copy(numero = numero) }
+            },
             label = "Número",
             placeholder = "Digite o número do endereço",
             modifier = Modifier.fillMaxWidth(),
@@ -267,7 +285,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.complemento,
-            onValueChange = { user.complemento = it },
+            onValueChange = { complemento ->
+                viewModel.updateUser { copy(complemento = complemento) }
+            },
             label = "Complemento",
             placeholder = "Digite o complemento (Apartamento, bloco)",
             modifier = Modifier.fillMaxWidth(),
@@ -277,7 +297,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.cidade,
-            onValueChange = { user.cidade = it },
+            onValueChange = { cidade ->
+                viewModel.updateUser { copy(cidade = cidade) }
+            },
             label = "Cidade",
             placeholder = "Digite o nome da cidade",
             modifier = Modifier.fillMaxWidth(),

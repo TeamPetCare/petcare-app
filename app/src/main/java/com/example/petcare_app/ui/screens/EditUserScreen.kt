@@ -72,9 +72,9 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
     var editUserViewModel: EditUserViewModel = viewModel()
 
     // Inicializa o EditUserViewModel com os dados do User do SignUpViewModel
-    LaunchedEffect(signUpViewModel.user) {
+    LaunchedEffect(signUpViewModel.user.value) {
         if (editUserViewModel.editUser.nomeCompleto.isEmpty()) {
-            editUserViewModel.initializeWithUser(signUpViewModel.user)
+            editUserViewModel.initializeWithUser(signUpViewModel.user.value)
         }
     }
 
