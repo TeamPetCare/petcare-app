@@ -31,7 +31,6 @@ fun PlansScreen(navController: NavController) {
         PlanItem("Madonna", "Plano Quinzenal", "Inativo", Color(0,84,114),
             Color(240,240,240)),
     )
-
     Scaffold(
         topBar = {
             HeaderComposable(
