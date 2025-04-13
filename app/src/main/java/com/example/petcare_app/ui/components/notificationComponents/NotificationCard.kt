@@ -3,7 +3,9 @@
     import androidx.compose.foundation.layout.*
     import androidx.compose.foundation.lazy.LazyColumn
     import androidx.compose.foundation.lazy.items
+    import androidx.compose.foundation.rememberScrollState
     import androidx.compose.foundation.shape.RoundedCornerShape
+    import androidx.compose.foundation.verticalScroll
     import androidx.compose.material.icons.Icons
     import androidx.compose.material.icons.filled.Close
     import androidx.compose.material3.Card
@@ -49,7 +51,7 @@
         Card(
             modifier = Modifier
                 .fillMaxWidth() // Mantém o Card com largura total
-                .height(100.dp) // Define a altura fixa do Card
+//                .height(100.dp) // Define a altura fixa do Card
                 .padding(bottom = 8.dp), // Espaçamento inferior
             colors = CardDefaults.cardColors(containerColor = notification.backgroundColor),
             shape = RoundedCornerShape(8.dp)
@@ -78,15 +80,15 @@
                 Row(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .padding(end = 40.dp), // Deixa espaço para o botão de fechar
-                    verticalAlignment = Alignment.CenterVertically // Alinha o conteúdo verticalmente no centro
+                        .padding(end = 40.dp),
+                    verticalAlignment = Alignment.Top
                 ) {
                     // Ícone da notificação
                     Box(
                         modifier = Modifier
                             .padding(end = 10.dp, top = 10.dp)
-                            .fillMaxHeight(),
-                        contentAlignment = Alignment.TopEnd // Centraliza o ícone
+                            .size(40.dp),
+                        contentAlignment = Alignment.TopCenter
                     ) {
                         val (icon, iconDescription) = when (notification.iconType) {
                             "check" -> Pair(ic_check, "Ícone de sucesso")
@@ -106,12 +108,12 @@
 
                     // Texto da notificação
                     Column(
-                        modifier = Modifier.weight(1f) // Garante que a coluna ocupe o espaço restante
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = notification.title,
                             style = sentenceTitleTextStyle,
-                            fontSize = 18.sp,
+                            fontSize = 17.sp,
                             color = notification.fontColor
                         )
                         Spacer(modifier = Modifier.height(4.dp))
