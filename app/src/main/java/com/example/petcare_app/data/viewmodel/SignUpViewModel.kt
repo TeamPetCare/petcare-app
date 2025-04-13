@@ -37,15 +37,15 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun updatePet(index: Int, updatedPet: Pet) {
-        val petList = _pets.value.toMutableList() // Cria uma cópia mutável da lista atual
+        val petList = _pets.value.toMutableList()
 
         if (index >= 0 && index < petList.size) {
-            petList[index] = updatedPet // Atualiza o pet existente
+            petList[index] = updatedPet
         } else {
-            petList.add(updatedPet) // Adiciona novo pet se o índice for inválido
+            petList.add(updatedPet)
         }
 
-        _pets.value = petList // Atualiza o StateFlow com a nova lista
+        _pets.value = petList
     }
 
 
