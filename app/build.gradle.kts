@@ -47,6 +47,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("com.github.yalantis:ucrop:2.2.6")
+    implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation(libs.retrofit)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.gson)
