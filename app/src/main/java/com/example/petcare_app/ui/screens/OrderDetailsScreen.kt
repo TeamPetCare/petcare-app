@@ -16,7 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
+import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
+import com.example.petcare_app.ui.components.layouts.HeaderComposable
 
 enum class OrderStatus {
     CONCLUIDO,
@@ -37,32 +41,49 @@ data class OrderDetail(
     val services: Map<String, Double>
 )
 
+// Tela completa com Header, conteúdo central e GadjetBar
 @Composable
 fun OrderDetailsScreen(
+    navController: NavController,
     orderDetail: OrderDetail,
-    onBackClick: () -> Unit = {},
+    userName: String = "Julia",
     onDownloadReceipt: () -> Unit = {},
     onRateServiceClick: () -> Unit = {}
 ) {
-    // A tela contém apenas o conteúdo sem o header e footer
-    // que serão adicionados manualmente onde você usar este componente
-    OrderContent(
-        orderDetail = orderDetail,
-        onBackClick = onBackClick,
-        onRateServiceClick = onRateServiceClick,
-        onDownloadReceipt = onDownloadReceipt
-    )
+    Scaffold(
+        topBar = {
+            HeaderComposable(
+                navController = navController,
+                userName = userName
+            )
+        },
+        bottomBar = {
+            GadjetBarComposable(
+                navController = navController,
+            )
+        }
+    ) { paddingValues ->
+        // Conteúdo principal com o padding adequado
+        OrderContent(
+            orderDetail = orderDetail,
+            modifier = Modifier.padding(paddingValues),
+            onBackClick = { navController.popBackStack() },
+            onRateServiceClick = onRateServiceClick,
+            onDownloadReceipt = onDownloadReceipt
+        )
+    }
 }
 
 @Composable
 fun OrderContent(
     orderDetail: OrderDetail,
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onRateServiceClick: () -> Unit,
     onDownloadReceipt: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
@@ -330,15 +351,17 @@ fun SectionTitle(
     )
 }
 
-// Função de Preview limpa apenas para o conteúdo central
+// Função de Preview para ver a tela completa
 @Preview(showBackground = true)
 @Composable
 fun OrderDetailsScreenPreview() {
+    val navController = rememberNavController()
+
     val sampleOrder = OrderDetail(
         id = "001",
         date = "17 Jan 2025",
         timeRange = "10:00-11:00",
-        status = OrderStatus.AGENDADO,  // Status Agendado como na imagem
+        status = OrderStatus.AGENDADO,
         address = "Avenida Inocêncio Seráfico",
         petName = "Rex",
         paymentMethod = "Cartão de Crédito",
@@ -350,6 +373,8 @@ fun OrderDetailsScreenPreview() {
         )
     )
 
-    // Apenas o conteúdo central
-    OrderDetailsScreen(orderDetail = sampleOrder)
+    OrderDetailsScreen(
+        navController = navController,
+        orderDetail = sampleOrder
+    )
 }
