@@ -23,7 +23,7 @@ fun SettingsScreen(navController: NavController) {
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            Text("TELA AGENDAMENTOS")
+            Text("TELA Configurações")
         }
 
         // BottomBar

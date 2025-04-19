@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.ui.screens.HomeScreenApp
 import com.example.petcare_app.ui.theme.customColorScheme
+import com.example.petcare_app.ui.theme.customColorStatusAgendamentoScheme
 import com.example.petcare_app.ui.theme.innerInputTextStyle
 
 @Composable
@@ -25,9 +26,9 @@ fun FilterChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) customColorScheme.onSurface else Color.Transparent
-    val borderColor = if (isSelected) Color.Transparent else customColorScheme.onSurface
-    val textColor = if (isSelected) Color.White else customColorScheme.onSurface
+    val backgroundColor = if (isSelected) customColorStatusAgendamentoScheme.tertiary else Color.Transparent
+    val borderColor = if (isSelected) Color.Transparent else customColorStatusAgendamentoScheme.tertiary
+    val textColor = if (isSelected) Color.White else customColorStatusAgendamentoScheme.tertiary
 
     Box(
         modifier = Modifier

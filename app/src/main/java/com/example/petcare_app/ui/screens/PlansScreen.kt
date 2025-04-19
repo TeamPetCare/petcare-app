@@ -38,7 +38,7 @@ fun PlansScreen(navController: NavController) {
                 userName = "Usuário"
             )
         },
-        bottomBar = { GadjetBarComposable(navController, criarAgendamento = {}) }
+        bottomBar = { GadjetBarComposable(navController) }
     ) {
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
