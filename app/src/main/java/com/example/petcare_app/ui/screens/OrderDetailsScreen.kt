@@ -352,7 +352,7 @@ fun SectionTitle(
 }
 
 // Função de Preview para ver a tela completa
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun OrderDetailsScreenPreview() {
     val navController = rememberNavController()
