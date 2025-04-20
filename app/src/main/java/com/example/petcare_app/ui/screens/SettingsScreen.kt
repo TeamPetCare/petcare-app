@@ -23,15 +23,12 @@ fun SettingsScreen(navController: NavController) {
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            Text("TELA AGENDAMENTOS")
+            Text("TELA Configurações")
         }
 
         // BottomBar
         GadjetBarComposable(
-            navController = navController,
-            criarAgendamento = {
-                println("Criar agendamento pelo SettingsScreen")
-            }
+            navController = navController
         )
     }
 }

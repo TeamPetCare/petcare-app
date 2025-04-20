@@ -28,10 +28,8 @@ fun SchedulesScreen(navController: NavController) {
 
         // BottomBar
         GadjetBarComposable(
-            navController = navController,
-            criarAgendamento = {
-                println("Criar agendamento pelo SchedulesScreen")
-            }
+            navController = navController
+
         )
     }
 }

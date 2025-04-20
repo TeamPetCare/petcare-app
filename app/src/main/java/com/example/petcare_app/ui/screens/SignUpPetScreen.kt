@@ -60,7 +60,6 @@
     import com.example.petcare_app.ui.theme.customColorScheme
     import com.example.petcare_app.ui.theme.paragraphTextStyle
     import com.example.petcare_app.ui.theme.titleTextStyle
-
     @Composable
     fun petFormComponent(
         viewModel: SignUpViewModel,
@@ -303,12 +302,13 @@
         }
     }
 
+
     @Composable
     fun SignUpPetScreen(navController: NavController, viewModel: SignUpViewModel) {
         var isFormSubmitted by remember { mutableStateOf(false) }
         val pets by viewModel.pets.collectAsState()
         var isPetFormActive by remember { mutableStateOf(true) }
-        var currentPetIndex by remember { mutableStateOf(-1) }
+        var currentPetIndex by remember { mutableStateOf(pets.size) }
         var petState by remember { mutableStateOf(Pet()) }  // Estado do pet atual
 
         // Função para resetar o formulário
@@ -316,6 +316,7 @@
             petState = Pet()
             Log.d("PETS_DEBUG", "Lista de pets: ${pets.map { it.nome }}")
             viewModel.addPet(petState)
+            currentPetIndex = pets.size
 
         }
 
@@ -377,7 +378,7 @@
                 if (isPetFormActive) {
                     petFormComponent(
                         viewModel,
-                        index = pets.size - 1,
+                        index = currentPetIndex,
                         pet = petState,
                         isFormSubmitted = isFormSubmitted,
                         isPetFormActive = { isPetFormActive = it },

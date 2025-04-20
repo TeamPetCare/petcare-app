@@ -5,6 +5,7 @@ coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
+kotlinxCoroutinesCore = "1.10.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2024.04.01"
@@ -14,10 +15,12 @@ gson = "2.9.0"
 material3 = "1.0.0"
 lifecycleViewmodelAndroid = "2.8.7"
 coilCompose = "2.4.0"
+composeNavigation = "2.8.0"
+serialization = "1.6.3"
 
 [libraries]
-
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gson" }
 androidx-compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", name = "compose-google-fonts", version.ref = "compose-google-fonts" }
@@ -37,9 +40,11 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}

@@ -25,19 +25,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.theme.customColorScheme
 
 
 @Composable
 fun GadjetBarComposable(
     navController: NavController,
-    criarAgendamento: () -> Unit
 ) {
     NavigationBar (
         containerColor = Color.White,
@@ -51,7 +53,8 @@ fun GadjetBarComposable(
             "plans" to Pair(Icons.Outlined.CalendarMonth, Icons.Filled.CalendarMonth),
             "settings" to Pair(Icons.Outlined.SettingsSuggest, Icons.Filled.SettingsSuggest),
         )
-        val currentRoute = navController.currentBackStackEntry?.destination?.route
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
 
         items.take(2).forEach { (route, icons) ->
             val icon = if(currentRoute == route) icons.second else icons.first
@@ -69,12 +72,17 @@ fun GadjetBarComposable(
                 },
                 selected = false,
                 onClick = {
-                    navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+                    if (currentRoute != route) {
+                        navController.navigate(route) {
+                            popUpTo(Screen.HomeApp.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
+
             )
         }
 
@@ -100,9 +108,7 @@ fun GadjetBarComposable(
                 }
             },
             selected = false,
-            onClick = {
-                criarAgendamento()
-            }
+            onClick = { /* Criar agendamento */ }
         )
 
 
@@ -138,8 +144,6 @@ fun GadgetsPreview() {
     val navController = rememberNavController()
 
     GadjetBarComposable(
-        navController = navController,
-        criarAgendamento = {
-        println("Criar Agendamento!")
-    })
+        navController = navController
+    )
 }

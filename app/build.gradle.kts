@@ -41,11 +41,15 @@ android {
 
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
     implementation("androidx.compose.material:material-icons-core:1.5.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("com.github.yalantis:ucrop:2.2.6")
+    implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation(libs.retrofit)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.gson)
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.androidx.navigation.compose)
@@ -60,6 +64,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(libs.coil.compose)
     implementation(libs.androidx.espresso.core)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
