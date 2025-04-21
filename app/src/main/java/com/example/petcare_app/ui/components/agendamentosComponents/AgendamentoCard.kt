@@ -48,7 +48,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
             .fillMaxHeight()
 //            .height(100.dp)
             .padding(bottom = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else customColorScheme.onSurface),
+        colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else customColorScheme.onSurfaceVariant),
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(

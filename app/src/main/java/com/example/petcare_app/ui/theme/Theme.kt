@@ -49,6 +49,7 @@ val customColorScheme = lightColorScheme(
     primary = DarkBlue,
     surface = DarkGray,
     onSurface = LightGray,
+    onSurfaceVariant = LighterGray,
     secondary = Yellow,
     secondaryContainer = LightYellowDisabled,
     onSecondaryContainer = LightYellow,

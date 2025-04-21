@@ -60,7 +60,7 @@ fun DateInput(
         }
     }
 
-    Column(modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(bottom = 1.dp),
             text = labelText,
@@ -121,7 +121,8 @@ fun DateInput(
             text = msgErro,
             color = MaterialTheme.colorScheme.error,
             fontSize = 12.sp,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier
+                .padding(top = 4.dp)
         )
     }
 }

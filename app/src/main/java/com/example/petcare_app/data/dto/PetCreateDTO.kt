@@ -1,10 +1,8 @@
-package com.example.petcare_app.data.model
+package com.example.petcare_app.data.dto
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 
-data class Pet(
-    val id: Int = 0,
+data class PetCreateDTO(
     val name: String,
     val gender: String,
     val color: String,
@@ -12,8 +10,7 @@ data class Pet(
     val birthdate: String,
     val petObservations: String,
     val petImg: String? = null,
-    val deletedAt: LocalDateTime? = null,
-    val planId: Int?,
+    val planId: Int? = null,
     val specieId: Int,
     val raceId: Int,
     val sizeId: Int,

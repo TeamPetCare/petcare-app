@@ -1,6 +1,7 @@
     package com.example.petcare_app.ui.screens
     
     import android.util.Log
+    import android.widget.Toast
     import androidx.compose.foundation.background
     import androidx.compose.foundation.border
     import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@
     import androidx.compose.foundation.layout.padding
     import androidx.compose.foundation.layout.size
     import androidx.compose.foundation.layout.width
+    import androidx.compose.foundation.lazy.LazyColumn
     import androidx.compose.foundation.rememberScrollState
     import androidx.compose.foundation.shape.CircleShape
     import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,14 +31,17 @@
     import androidx.compose.material3.Icon
     import androidx.compose.material3.Text
     import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.LaunchedEffect
     import androidx.compose.runtime.collectAsState
     import androidx.compose.runtime.getValue
     import androidx.compose.runtime.mutableStateOf
     import androidx.compose.runtime.remember
+    import androidx.compose.runtime.rememberCoroutineScope
     import androidx.compose.runtime.setValue
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
     import androidx.compose.ui.graphics.Color
+    import androidx.compose.ui.platform.LocalContext
     import androidx.compose.ui.res.colorResource
     import androidx.compose.ui.text.font.FontWeight
     import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +50,9 @@
     import androidx.compose.ui.unit.sp
     import androidx.navigation.NavController
     import androidx.navigation.compose.rememberNavController
+    import com.example.petcare_app.data.model.Race
+    import com.example.petcare_app.data.model.Size
+    import com.example.petcare_app.data.model.Specie
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
     import com.example.petcare_app.navigation.Screen
@@ -54,12 +62,14 @@
     import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
     import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextLongInput
     import com.example.petcare_app.ui.components.formFields.inputFields.DateInput
+    import com.example.petcare_app.ui.components.formFields.inputFields.NumberInput
     import com.example.petcare_app.ui.components.signUpPetScreen.AddPet
-//    import com.example.petcare_app.ui.components.signUpPetScreen.AddPet
     import com.example.petcare_app.ui.theme.buttonTextStyle
     import com.example.petcare_app.ui.theme.customColorScheme
     import com.example.petcare_app.ui.theme.paragraphTextStyle
     import com.example.petcare_app.ui.theme.titleTextStyle
+    import kotlinx.coroutines.launch
+
     @Composable
     fun petFormComponent(
         viewModel: SignUpViewModel,
@@ -67,29 +77,33 @@
         pet: Pet,
         isFormSubmitted: Boolean,
         isPetFormActive: (Boolean) -> Unit,
-        navController: NavController
+        navController: NavController,
+        racas: List<Race>,
+        especies: List<Specie>,
+        tamanhos: List<Size>
     ) {
         var nomePetErro by remember { mutableStateOf(false) }
         var especiePetErro by remember { mutableStateOf(false) }
         var racaPetErro by remember { mutableStateOf(false) }
         var dtNascPetErro by remember { mutableStateOf(false) }
+        var pesoPetErro by remember { mutableStateOf(false) }
         var corPetErro by remember { mutableStateOf(false) }
         var portePetErro by remember { mutableStateOf(false) }
         var sexoPetErro by remember { mutableStateOf(false) }
 
         var petState by remember { mutableStateOf(pet) }
 
-
         fun validateForm(): Boolean {
             nomePetErro = petState.nome.length < 2
-            especiePetErro = petState.especie.isEmpty()
-            racaPetErro = petState.raca.isEmpty()
+            especiePetErro = petState.especie == null
+            racaPetErro = petState.raca == null
             dtNascPetErro = petState.dataNascimento.isEmpty()
+            pesoPetErro = petState.peso.isEmpty()
             corPetErro = petState.cor.length < 4
-            portePetErro = petState.porte.isEmpty()
+            portePetErro = petState.porte == null
             sexoPetErro = petState.sexo.isEmpty()
 
-            return !(nomePetErro || especiePetErro || racaPetErro || dtNascPetErro || corPetErro || portePetErro || sexoPetErro)
+            return !(nomePetErro || especiePetErro || racaPetErro || dtNascPetErro || pesoPetErro || corPetErro || portePetErro || sexoPetErro)
         }
 
         Column(
@@ -97,7 +111,6 @@
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             CustomTextInput(
                 value = petState.nome,
                 onValueChange = { novoNome ->
@@ -114,20 +127,41 @@
             )
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            DateInput(
+                value = petState.dataNascimento,
+                onValueChange = { novaDtNasc ->
+                    petState = petState.copy(dataNascimento = novaDtNasc)  // Atualiza o petState
+                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                },
+                label = "Data de Nascimento",
+                placeholder = "__ / __ / ____",
+                modifier = Modifier.fillMaxWidth(),
+                isFormSubmitted = isFormSubmitted,
+                isError = dtNascPetErro,
+                msgErro = "*Insira a data de nascimento corretamente",
+                isRequired = true
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     CustomDropdown(
-                        value = petState.especie,
+                        value = petState.especie?.let { specieId ->
+                            especies.find { it.id == specieId }?.name ?: ""
+                        } ?: "",
                         onValueChange = { novaEspecie ->
-                            petState = petState.copy(especie = novaEspecie)  // Atualiza o petState
+                            val especieSelecionada = especies.find { it.name == novaEspecie }
+                            petState = petState.copy(especie = especieSelecionada?.id) // Atualiza o petState
                             viewModel.updatePet(index, petState)  // Atualiza no ViewModel
                         },
                         label = "Espécie",
                         placeholder = "Selecione",
-                        options = listOf("Cachorro", "Gato", "Pássaro", "Outro"),
+                        options = especies.map {it.name},
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = especiePetErro,
@@ -136,18 +170,21 @@
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
-                    CustomTextInput(
-                        value = petState.raca,
+                    CustomDropdown(
+                        value = petState.raca?.let { racaId ->
+                            racas.find { it.id == racaId }?.raceType ?: ""
+                        } ?: "",
                         onValueChange = { novaRaca ->
-                            petState = petState.copy(raca = novaRaca)  // Atualiza o petState
+                            val racaSelecionada = racas.find { it.raceType == novaRaca }
+                            petState = petState.copy(raca = racaSelecionada?.id) // Atualiza o petState
                             viewModel.updatePet(index, petState)  // Atualiza no ViewModel
                         },
                         label = "Raça",
-                        placeholder = "Digite a raça do pet",
+                        placeholder = "Selecione",
+                        options = racas.map {it.raceType},
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = racaPetErro,
-                        msgErro = "*Selecione uma raça",
                         isRequired = true
                     )
                 }
@@ -159,18 +196,18 @@
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    DateInput(
-                        value = petState.dataNascimento,
-                        onValueChange = { novaDtNasc ->
-                            petState = petState.copy(dataNascimento = novaDtNasc)  // Atualiza o petState
+                    NumberInput(
+                        value = petState.peso,
+                        onValueChange = { novoPeso ->
+                            petState = petState.copy(peso = novoPeso)  // Atualiza o petState
                             viewModel.updatePet(index, petState)  // Atualiza no ViewModel
                         },
-                        label = "Data de Nascimento",
-                        placeholder = "__ / __ / ____",
+                        label = "Peso",
+                        placeholder = "Digite o peso estimado",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = dtNascPetErro,
-                        msgErro = "*Insira a data de nascimento corretamente",
+                        isError = pesoPetErro,
+                        msgErro = "*Insira o peso estimadodo pet",
                         isRequired = true
                     )
                 }
@@ -183,7 +220,7 @@
                             viewModel.updatePet(index, petState)  // Atualiza no ViewModel
                         },
                         label = "Cor",
-                        placeholder = "Digite a cor do pelo",
+                        placeholder = "Digite a cor da pelagem",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = corPetErro,
@@ -196,13 +233,16 @@
             Row {
                 Column(modifier = Modifier.weight(1f)) {
                     CustomRadioBox(
-                        selectedOption = petState.porte,
+                        selectedOption = petState.porte?.let { porteId ->
+                            tamanhos.find { it.id == porteId }?.sizeType ?: ""
+                        } ?: "",
                         onOptionSelected = { newPorte ->
-                            petState = petState.copy(porte = newPorte)  // Atualiza o petState
+                            val porteSelecionado = tamanhos.find { it.sizeType == newPorte }
+                            petState = petState.copy(porte = porteSelecionado?.id)  // Atualiza o petState
                             viewModel.updatePet(index, petState)
                         },
                         label = "Porte",
-                        options = listOf("Pequeno", "Médio", "Grande"),
+                        options = tamanhos.map { it.sizeType },
                         isFormSubmitted = isFormSubmitted,
                         isError = portePetErro,
                         isRequired = true
@@ -311,6 +351,25 @@
         var currentPetIndex by remember { mutableStateOf(pets.size) }
         var petState by remember { mutableStateOf(Pet()) }  // Estado do pet atual
 
+        val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+
+        LaunchedEffect(Unit) {
+            viewModel.getSpecies(
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+            )
+            viewModel.getRaces(
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+            )
+            viewModel.getSizes(
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+            )
+        }
+
+        val especies = viewModel.species.collectAsState().value
+        val racas = viewModel.races.collectAsState().value
+        val tamanhos = viewModel.sizes.collectAsState().value
+
         // Função para resetar o formulário
         val resetForm: () -> Unit = {
             petState = Pet()
@@ -324,15 +383,25 @@
         fun sendData() {
             pets.forEachIndexed { index, pet ->
                 Log.d("FORM_SIGNUP", "Dados do Pet $index: " +
-                        " Nome - ${pet.nome}" +
-                        " Espécie - ${pet.especie}" +
-                        " Raça - ${pet.raca}" +
-                        " Data de Nascimento - ${pet.dataNascimento}" +
-                        " Cor - ${pet.cor}" +
-                        " Porte - ${pet.porte}" +
-                        " Sexo - ${pet.sexo}" +
-                        " Observações - ${pet.observacoes}")
+                        " ${pet}")
             }
+
+            Toast.makeText(context, "ANTES Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+
+            coroutineScope.launch {
+                viewModel.signUpUser(
+                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI",
+                    onSuccess = {
+                        Toast.makeText(context, "DEPOIS Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.HomeApp.route)
+
+                    },
+                    onError = { mensagemErro ->
+                        Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+
         }
 
             Column(
@@ -382,14 +451,19 @@
                         pet = petState,
                         isFormSubmitted = isFormSubmitted,
                         isPetFormActive = { isPetFormActive = it },
-                        navController = navController
+                        navController = navController,
+                        racas = racas,
+                        especies = especies,
+                        tamanhos = tamanhos
                     )
                 } else {
                     AddPet (
                         navController = navController,
                         pets = pets,
+                        racas = racas,
                         isPetFormActive = { isPetFormActive = it },
                         resetForm = resetForm,
+                        sendData = { sendData() }
                     )
                 }
             }

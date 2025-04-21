@@ -132,6 +132,7 @@ fun CustomDropdown(
                     .padding(top = 4.dp),
                 text = when (label) {
                     "Espécie" -> "*Selecione uma espécie."
+                    "Raça" -> "*Selecione uma raça"
                     else -> ""
                 },
                 style = errorTextStyle
