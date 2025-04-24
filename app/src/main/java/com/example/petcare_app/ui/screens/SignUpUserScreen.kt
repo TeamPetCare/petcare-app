@@ -49,6 +49,7 @@ import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import com.example.petcare_app.ui.theme.titleTextStyle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 //@Composable
@@ -60,6 +61,7 @@ import kotlinx.coroutines.launch
 fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
     val user by viewModel.user
     var isFormSubmitted by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
 //  Variáveis de erro
     var nomeErro by remember { mutableStateOf(false) }
@@ -303,7 +305,10 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Button(
             onClick = {
                 if (validateForm()) {
-                    navController.navigate(Screen.SignUpPet.route)
+                    coroutineScope.launch {
+                        delay(150)
+                        navController.navigate(Screen.SignUpPet.route)
+                    }
                 } else isFormSubmitted = true
             },
             colors = buttonColors(

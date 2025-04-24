@@ -139,7 +139,7 @@
                 modifier = Modifier.fillMaxWidth(),
                 isFormSubmitted = isFormSubmitted,
                 isError = dtNascPetErro,
-                msgErro = "*Insira a data de nascimento corretamente",
+                msgErro = "*Data inválida ou anterior à data atual.",
                 isRequired = true
             )
 
