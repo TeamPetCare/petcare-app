@@ -28,6 +28,9 @@ import java.time.format.DateTimeFormatter
 
 
 class SignUpViewModel : ViewModel() {
+    var isLoading by mutableStateOf(false)
+        private set
+
     private val _pets = MutableStateFlow<List<Pet>>(emptyList())
     val pets: StateFlow<List<Pet>> = _pets
     private val _species = MutableStateFlow<List<Specie>>(emptyList())
@@ -40,7 +43,7 @@ class SignUpViewModel : ViewModel() {
     private val _user = mutableStateOf(User())
     val user: State<User> = _user
 
-    fun signUpUser(
+    fun signUpUserAndPet(
         token: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
@@ -48,6 +51,7 @@ class SignUpViewModel : ViewModel() {
         val userApi = RetrofitInstance.retrofit.create(UserService::class.java)
 
         viewModelScope.launch {
+            isLoading = true
             try {
                 val userData = _user.value
                 val dto = UserCreateDTO(
@@ -78,11 +82,55 @@ class SignUpViewModel : ViewModel() {
                         onSuccess()
                     }
                 } else {
-                    onError("Erro ao criar usuário: ${response.code()}")
+                    onError("Erro ao criar usuário e pet: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Erro: ${e.message}")
             }
+            isLoading = false
+        }
+    }
+
+    fun signUpUser(
+        token: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val userApi = RetrofitInstance.retrofit.create(UserService::class.java)
+
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val userData = _user.value
+                val dto = UserCreateDTO(
+                    name = userData.nomeCompleto,
+                    email = userData.email,
+                    password = userData.senha,
+                    cellphone = userData.celular,
+                    role = "ROLE_CUSTOMER",
+                    street = userData.logradouro,
+                    number = userData.numero.toIntOrNull() ?: 0,
+                    complement = userData.complemento,
+                    cep = userData.cep,
+                    district = userData.bairro,
+                    city = userData.cidade,
+                    cpfClient = userData.cpf,
+                    petIds = null
+                )
+
+                Log.d("FORM_SIGNUP - VIEW MODEL", "Dados: " +
+                        " ${dto}")
+
+                val userResponse = userApi.createUser(token, dto)
+                if (userResponse.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Erro ao criar usuário: ${userResponse.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Erro: ${e.message}")
+            }
+            isLoading = false
         }
     }
 
@@ -90,15 +138,12 @@ class SignUpViewModel : ViewModel() {
         _user.value = _user.value.update()
     }
 
-    fun initializeWithUser(user: User) {
-        _user.value = user
-    }
-
     // Informações Pets
     fun getSpecies(token: String) {
         val speciesApi = RetrofitInstance.retrofit.create(SpecieService::class.java)
 
         viewModelScope.launch {
+            isLoading = true
             try {
                 val speciesResponse = speciesApi.getSpecies(token)
                 if (speciesResponse.isSuccessful) {
@@ -111,6 +156,8 @@ class SignUpViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Erro: ${e.message}")
             }
+            isLoading = false
+
         }
     }
 
@@ -118,6 +165,7 @@ class SignUpViewModel : ViewModel() {
         val racesApi = RetrofitInstance.retrofit.create(RaceService::class.java)
 
         viewModelScope.launch {
+            isLoading = true
             try {
                 val racesResponse = racesApi.getRaces("$token")
                 if (racesResponse.isSuccessful) {
@@ -130,6 +178,8 @@ class SignUpViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Erro: ${e.message}")
             }
+            isLoading = false
+
         }
     }
 
@@ -137,6 +187,7 @@ class SignUpViewModel : ViewModel() {
         val sizesApi = RetrofitInstance.retrofit.create(SizeService::class.java)
 
         viewModelScope.launch {
+            isLoading = true
             try {
                 val sizesResponse = sizesApi.getSizes("$token")
                 if (sizesResponse.isSuccessful) {
@@ -147,6 +198,7 @@ class SignUpViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Erro: ${e.message}")
             }
+            isLoading = false
         }
     }
 

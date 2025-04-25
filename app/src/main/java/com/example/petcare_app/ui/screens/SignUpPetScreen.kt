@@ -63,6 +63,7 @@
     import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextLongInput
     import com.example.petcare_app.ui.components.formFields.inputFields.DateInput
     import com.example.petcare_app.ui.components.formFields.inputFields.NumberInput
+    import com.example.petcare_app.ui.components.layouts.LoadingBar
     import com.example.petcare_app.ui.components.signUpPetScreen.AddPet
     import com.example.petcare_app.ui.theme.buttonTextStyle
     import com.example.petcare_app.ui.theme.customColorScheme
@@ -78,6 +79,7 @@
         isFormSubmitted: Boolean,
         isPetFormActive: (Boolean) -> Unit,
         navController: NavController,
+        sendData: () -> Unit,
         racas: List<Race>,
         especies: List<Specie>,
         tamanhos: List<Size>
@@ -106,237 +108,244 @@
             return !(nomePetErro || especiePetErro || racaPetErro || dtNascPetErro || pesoPetErro || corPetErro || portePetErro || sexoPetErro)
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CustomTextInput(
-                value = petState.nome,
-                onValueChange = { novoNome ->
-                    petState = petState.copy(nome = novoNome)
-                    viewModel.updatePet(index, petState)
-                },
-                label = "Nome",
-                placeholder = "Digite o nome do pet",
-                modifier = Modifier.fillMaxWidth(),
-                isFormSubmitted = isFormSubmitted,
-                isError = nomePetErro,
-                msgErro = "*Insira o nome do pet",
-                isRequired = true,
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            DateInput(
-                value = petState.dataNascimento,
-                onValueChange = { novaDtNasc ->
-                    petState = petState.copy(dataNascimento = novaDtNasc)  // Atualiza o petState
-                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
-                },
-                label = "Data de Nascimento",
-                placeholder = "__ / __ / ____",
-                modifier = Modifier.fillMaxWidth(),
-                isFormSubmitted = isFormSubmitted,
-                isError = dtNascPetErro,
-                msgErro = "*Data inválida ou anterior à data atual.",
-                isRequired = true
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    CustomDropdown(
-                        value = petState.especie?.let { specieId ->
-                            especies.find { it.id == specieId }?.name ?: ""
-                        } ?: "",
-                        onValueChange = { novaEspecie ->
-                            val especieSelecionada = especies.find { it.name == novaEspecie }
-                            petState = petState.copy(especie = especieSelecionada?.id) // Atualiza o petState
-                            viewModel.updatePet(index, petState)  // Atualiza no ViewModel
-                        },
-                        label = "Espécie",
-                        placeholder = "Selecione",
-                        options = especies.map {it.name},
-                        modifier = Modifier.fillMaxWidth(),
-                        isFormSubmitted = isFormSubmitted,
-                        isError = especiePetErro,
-                        isRequired = true
-                    )
-                }
-
-                Column(modifier = Modifier.weight(1f)) {
-                    CustomDropdown(
-                        value = petState.raca?.let { racaId ->
-                            racas.find { it.id == racaId }?.raceType ?: ""
-                        } ?: "",
-                        onValueChange = { novaRaca ->
-                            val racaSelecionada = racas.find { it.raceType == novaRaca }
-                            petState = petState.copy(raca = racaSelecionada?.id) // Atualiza o petState
-                            viewModel.updatePet(index, petState)  // Atualiza no ViewModel
-                        },
-                        label = "Raça",
-                        placeholder = "Selecione",
-                        options = racas.map {it.raceType},
-                        modifier = Modifier.fillMaxWidth(),
-                        isFormSubmitted = isFormSubmitted,
-                        isError = racaPetErro,
-                        isRequired = true
-                    )
-                }
+        when {
+            viewModel.isLoading -> {
+                LoadingBar()
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    NumberInput(
-                        value = petState.peso,
-                        onValueChange = { novoPeso ->
-                            petState = petState.copy(peso = novoPeso)  // Atualiza o petState
-                            viewModel.updatePet(index, petState)  // Atualiza no ViewModel
-                        },
-                        label = "Peso",
-                        placeholder = "Digite o peso estimado",
-                        modifier = Modifier.fillMaxWidth(),
-                        isFormSubmitted = isFormSubmitted,
-                        isError = pesoPetErro,
-                        msgErro = "*Insira o peso estimadodo pet",
-                        isRequired = true
-                    )
-                }
-
-                Column(modifier = Modifier.weight(1f)) {
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     CustomTextInput(
-                        value = petState.cor,
-                        onValueChange = { novaCor ->
-                            petState = petState.copy(cor = novaCor)  // Atualiza o petState
-                            viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                        value = petState.nome,
+                        onValueChange = { novoNome ->
+                            petState = petState.copy(nome = novoNome)
+                            viewModel.updatePet(index, petState)
                         },
-                        label = "Cor",
-                        placeholder = "Digite a cor da pelagem",
+                        label = "Nome",
+                        placeholder = "Digite o nome do pet",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = corPetErro,
-                        msgErro = "*Insira a cor da pelagem do pet",
-                        isRequired = true
+                        isError = nomePetErro,
+                        msgErro = "*Insira o nome do pet",
+                        isRequired = true,
                     )
-                }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row {
-                Column(modifier = Modifier.weight(1f)) {
-                    CustomRadioBox(
-                        selectedOption = petState.porte?.let { porteId ->
-                            tamanhos.find { it.id == porteId }?.sizeType ?: ""
-                        } ?: "",
-                        onOptionSelected = { newPorte ->
-                            val porteSelecionado = tamanhos.find { it.sizeType == newPorte }
-                            petState = petState.copy(porte = porteSelecionado?.id)  // Atualiza o petState
-                            viewModel.updatePet(index, petState)
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    DateInput(
+                        value = petState.dataNascimento,
+                        onValueChange = { novaDtNasc ->
+                            petState = petState.copy(dataNascimento = novaDtNasc)  // Atualiza o petState
+                            viewModel.updatePet(index, petState)  // Atualiza no ViewModel
                         },
-                        label = "Porte",
-                        options = tamanhos.map { it.sizeType },
+                        label = "Data de Nascimento",
+                        placeholder = "__ / __ / ____",
+                        modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
-                        isError = portePetErro,
+                        isError = dtNascPetErro,
+                        msgErro = "*Data inválida ou anterior à data atual.",
                         isRequired = true
                     )
-                }
 
-                Column(modifier = Modifier.weight(1f)) {
-                    CustomRadioBox(
-                        selectedOption = petState.sexo,
-                        onOptionSelected = { newSexo ->
-                            petState = petState.copy(sexo = newSexo)  // Atualiza o petState
-                            viewModel.updatePet(index, petState)
-                        },
-                        label = "Sexo",
-                        options = listOf("Masculino", "Feminino"),
-                        isFormSubmitted = isFormSubmitted,
-                        isError = sexoPetErro,
-                        isRequired = true
-                    )
-                }
-            }
+                    Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomTextLongInput(
-                value = petState.observacoes,
-                onValueChange = { novaObs ->
-                    petState = petState.copy(observacoes = novaObs)  // Atualiza o petState
-                    viewModel.updatePet(index, petState)
-                },
-                label = "Observações",
-                placeholder = "Digite outras informações sobre o pet (alergias, condições de saúde...)",
-                modifier = Modifier.fillMaxWidth(),
-                isFormSubmitted = isFormSubmitted,
-                isRequired = false
-            )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            CustomDropdown(
+                                value = petState.especie?.let { specieId ->
+                                    especies.find { it.id == specieId }?.name ?: ""
+                                } ?: "",
+                                onValueChange = { novaEspecie ->
+                                    val especieSelecionada = especies.find { it.name == novaEspecie }
+                                    petState = petState.copy(especie = especieSelecionada?.id) // Atualiza o petState
+                                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                                },
+                                label = "Espécie",
+                                placeholder = "Selecione",
+                                options = especies.map {it.name},
+                                modifier = Modifier.fillMaxWidth(),
+                                isFormSubmitted = isFormSubmitted,
+                                isError = especiePetErro,
+                                isRequired = true
+                            )
+                        }
 
-            Spacer(modifier = Modifier.height(15.dp))
-            //      Botão de envio
-            Button(
-                onClick = {
-                    if (validateForm()) {
-                        viewModel.addPet(petState)
-                        petState = Pet()
-                        isPetFormActive(false)
+                        Column(modifier = Modifier.weight(1f)) {
+                            CustomDropdown(
+                                value = petState.raca?.let { racaId ->
+                                    racas.find { it.id == racaId }?.raceType ?: ""
+                                } ?: "",
+                                onValueChange = { novaRaca ->
+                                    val racaSelecionada = racas.find { it.raceType == novaRaca }
+                                    petState = petState.copy(raca = racaSelecionada?.id) // Atualiza o petState
+                                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                                },
+                                label = "Raça",
+                                placeholder = "Selecione",
+                                options = racas.map {it.raceType},
+                                modifier = Modifier.fillMaxWidth(),
+                                isFormSubmitted = isFormSubmitted,
+                                isError = racaPetErro,
+                                isRequired = true
+                            )
+                        }
                     }
-                },
-                colors = buttonColors(
-                    containerColor = if (isFormSubmitted) customColorScheme.error else customColorScheme.secondary,
-                    contentColor = if (isFormSubmitted) Color.White else customColorScheme.primary,
-                )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Próximo",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        style = buttonTextStyle
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            NumberInput(
+                                value = petState.peso,
+                                onValueChange = { novoPeso ->
+                                    petState = petState.copy(peso = novoPeso)  // Atualiza o petState
+                                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                                },
+                                label = "Peso",
+                                placeholder = "Digite o peso estimado",
+                                modifier = Modifier.fillMaxWidth(),
+                                isFormSubmitted = isFormSubmitted,
+                                isError = pesoPetErro,
+                                msgErro = "*Insira o peso estimadodo pet",
+                                isRequired = true
+                            )
+                        }
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            CustomTextInput(
+                                value = petState.cor,
+                                onValueChange = { novaCor ->
+                                    petState = petState.copy(cor = novaCor)  // Atualiza o petState
+                                    viewModel.updatePet(index, petState)  // Atualiza no ViewModel
+                                },
+                                label = "Cor",
+                                placeholder = "Digite a cor da pelagem",
+                                modifier = Modifier.fillMaxWidth(),
+                                isFormSubmitted = isFormSubmitted,
+                                isError = corPetErro,
+                                msgErro = "*Insira a cor da pelagem do pet",
+                                isRequired = true
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row {
+                        Column(modifier = Modifier.weight(1f)) {
+                            CustomRadioBox(
+                                selectedOption = petState.porte?.let { porteId ->
+                                    tamanhos.find { it.id == porteId }?.sizeType ?: ""
+                                } ?: "",
+                                onOptionSelected = { newPorte ->
+                                    val porteSelecionado = tamanhos.find { it.sizeType == newPorte }
+                                    petState = petState.copy(porte = porteSelecionado?.id)  // Atualiza o petState
+                                    viewModel.updatePet(index, petState)
+                                },
+                                label = "Porte",
+                                options = tamanhos.map { it.sizeType },
+                                isFormSubmitted = isFormSubmitted,
+                                isError = portePetErro,
+                                isRequired = true
+                            )
+                        }
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            CustomRadioBox(
+                                selectedOption = petState.sexo,
+                                onOptionSelected = { newSexo ->
+                                    petState = petState.copy(sexo = newSexo)  // Atualiza o petState
+                                    viewModel.updatePet(index, petState)
+                                },
+                                label = "Sexo",
+                                options = listOf("Masculino", "Feminino"),
+                                isFormSubmitted = isFormSubmitted,
+                                isError = sexoPetErro,
+                                isRequired = true
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    CustomTextLongInput(
+                        value = petState.observacoes,
+                        onValueChange = { novaObs ->
+                            petState = petState.copy(observacoes = novaObs)  // Atualiza o petState
+                            viewModel.updatePet(index, petState)
+                        },
+                        label = "Observações",
+                        placeholder = "Digite outras informações sobre o pet (alergias, condições de saúde...)",
+                        modifier = Modifier.fillMaxWidth(),
+                        isFormSubmitted = isFormSubmitted,
+                        isRequired = false
                     )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Seta para a direita"
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            //      Botão de pular cadastro
-            Button(
-                onClick = {
-                    navController.navigate("loadingtoapphome")
-                },
-                colors = buttonColors(
-                    containerColor = customColorScheme.primary,
-                    contentColor = Color.White
-                )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Gostaria de cadastrar depois",
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        style = buttonTextStyle
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Seta para a direita"
-                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                    //      Botão de envio
+                    Button(
+                        onClick = {
+                            if (validateForm()) {
+                                viewModel.addPet(petState)
+                                petState = Pet()
+                                isPetFormActive(false)
+                            }
+                        },
+                        colors = buttonColors(
+                            containerColor = if (isFormSubmitted) customColorScheme.error else customColorScheme.secondary,
+                            contentColor = if (isFormSubmitted) Color.White else customColorScheme.primary,
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Próximo",
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center,
+                                style = buttonTextStyle
+                            )
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Seta para a direita"
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    //      Botão de pular cadastro
+                    Button(
+                        onClick = {
+                            sendData()
+                        },
+                        colors = buttonColors(
+                            containerColor = customColorScheme.primary,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Gostaria de cadastrar depois",
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center,
+                                style = buttonTextStyle
+                            )
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Seta para a direita"
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -356,13 +365,13 @@
 
         LaunchedEffect(Unit) {
             viewModel.getSpecies(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
             )
             viewModel.getRaces(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
             )
             viewModel.getSizes(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI"
+                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
             )
         }
 
@@ -379,22 +388,36 @@
 
         }
 
-        // Função para enviar dados
-        fun sendData() {
+        // Função para cadastrar Usuário e Pet
+        fun signUpUserandPet() {
             pets.forEachIndexed { index, pet ->
                 Log.d("FORM_SIGNUP", "Dados do Pet $index: " +
                         " ${pet}")
             }
 
-            Toast.makeText(context, "ANTES Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+            coroutineScope.launch {
+                viewModel.signUpUserAndPet(
+                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI",
+                    onSuccess = {
+                        Toast.makeText(context, "Cadastros realizados com sucesso!", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.HomeApp.route)
+                    },
+                    onError = { mensagemErro ->
+                        Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
 
+        }
+
+        // Função para cadastrar Usuário
+        fun signUpUser() {
             coroutineScope.launch {
                 viewModel.signUpUser(
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUzMDc5MTZ9.NWi6WBSSCU63ImOyHM-aI2dSxKHW80CHyUIr2jRrEnI",
+                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI",
                     onSuccess = {
-                        Toast.makeText(context, "DEPOIS Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screen.HomeApp.route)
-
+                        Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.LoadingToAppHome.route)
                     },
                     onError = { mensagemErro ->
                         Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
@@ -452,6 +475,7 @@
                         isFormSubmitted = isFormSubmitted,
                         isPetFormActive = { isPetFormActive = it },
                         navController = navController,
+                        sendData = { signUpUser() },
                         racas = racas,
                         especies = especies,
                         tamanhos = tamanhos
@@ -463,9 +487,10 @@
                         racas = racas,
                         isPetFormActive = { isPetFormActive = it },
                         resetForm = resetForm,
-                        sendData = { sendData() }
+                        sendData = { signUpUserandPet() }
                     )
                 }
+
             }
     }
 
