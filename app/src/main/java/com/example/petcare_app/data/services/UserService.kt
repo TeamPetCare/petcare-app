@@ -21,7 +21,6 @@ interface UserService {
 
     @POST("users")
     suspend fun createUser(
-        @Header("Authorization") token: String,
         @Body user: UserCreateDTO
     ): Response<User>
 }

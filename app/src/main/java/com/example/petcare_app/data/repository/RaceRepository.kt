@@ -6,7 +6,7 @@ import retrofit2.Response
 
 interface RaceRepository {
     val api : RaceService
-    suspend fun getRaces(token: String) : Response<List<Race>> {
-        return api.getRaces(token)
+    suspend fun getRaces() : Response<List<Race>> {
+        return api.getRaces()
     }
 }

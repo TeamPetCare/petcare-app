@@ -4,6 +4,7 @@
     import android.widget.Toast
     import androidx.compose.foundation.background
     import androidx.compose.foundation.border
+    import androidx.compose.foundation.clickable
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.*
     import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@
     import androidx.compose.foundation.shape.RoundedCornerShape
     import androidx.compose.foundation.verticalScroll
     import androidx.compose.material.icons.Icons
+    import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
     import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
     import androidx.compose.material.icons.filled.Add
     import androidx.compose.material.icons.filled.Delete
@@ -55,6 +57,7 @@
     import com.example.petcare_app.data.model.Specie
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
+    import com.example.petcare_app.datastore.TokenDataStore
     import com.example.petcare_app.navigation.Screen
     import com.example.petcare_app.ui.components.buttons.BackButton
     import com.example.petcare_app.ui.components.formFields.CustomDropdown
@@ -67,6 +70,7 @@
     import com.example.petcare_app.ui.components.signUpPetScreen.AddPet
     import com.example.petcare_app.ui.theme.buttonTextStyle
     import com.example.petcare_app.ui.theme.customColorScheme
+    import com.example.petcare_app.ui.theme.montserratFontFamily
     import com.example.petcare_app.ui.theme.paragraphTextStyle
     import com.example.petcare_app.ui.theme.titleTextStyle
     import kotlinx.coroutines.launch
@@ -363,17 +367,11 @@
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
 
-        LaunchedEffect(Unit) {
-            viewModel.getSpecies(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
-            )
-            viewModel.getRaces(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
-            )
-            viewModel.getSizes(
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI"
-            )
-        }
+      LaunchedEffect(Unit) {
+          viewModel.getSpecies()
+          viewModel.getRaces()
+          viewModel.getSizes()
+      }
 
         val especies = viewModel.species.collectAsState().value
         val racas = viewModel.races.collectAsState().value
@@ -397,10 +395,12 @@
 
             coroutineScope.launch {
                 viewModel.signUpUserAndPet(
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI",
                     onSuccess = {
                         Toast.makeText(context, "Cadastros realizados com sucesso!", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screen.HomeApp.route)
+                        navController.navigate(Screen.HomeApp.route) {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     },
                     onError = { mensagemErro ->
                         Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
@@ -414,7 +414,6 @@
         fun signUpUser() {
             coroutineScope.launch {
                 viewModel.signUpUser(
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDU1ODc5MTJ9.vuCYz6ahYVj7Vde70WaR7TUE5IgbboTCiU5QNXYCoOI",
                     onSuccess = {
                         Toast.makeText(context, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
                         navController.navigate(Screen.LoadingToAppHome.route)

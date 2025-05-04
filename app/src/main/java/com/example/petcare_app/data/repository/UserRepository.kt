@@ -13,7 +13,7 @@ interface UserRepository {
     suspend fun getUserById(token: String, id: Int) : Response<User>{
         return api.getUserById(token, id)
     }
-    suspend fun createUser(token: String, user: UserCreateDTO): Response<User> {
-        return api.createUser(token, user)
+    suspend fun createUser(user: UserCreateDTO): Response<User> {
+        return api.createUser(user)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.petcare_app.ui.components.formFields
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,13 +24,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.errorTextStyle
 import com.example.petcare_app.ui.theme.innerInputTextStyle
 import com.example.petcare_app.ui.theme.montserratFontFamily
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,15 +64,16 @@ fun CustomDropdown(
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier
-                .padding(bottom = 1.dp),
-            text = labelText,
-            fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            color = customColorScheme.surface
-        )
+        if (label.isNotEmpty()) {
+            Text(
+                modifier = Modifier.padding(bottom = 1.dp),
+                text = labelText,
+                fontFamily = montserratFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp,
+                color = customColorScheme.surface
+            )
+        }
 
         ExposedDropdownMenuBox(
             expanded = expanded,

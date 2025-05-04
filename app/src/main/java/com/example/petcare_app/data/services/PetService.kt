@@ -10,7 +10,6 @@ import retrofit2.http.POST
 interface PetService {
     @POST("pets")
     suspend fun createPet(
-        @Header("Authorization") token: String,
         @Body pet: PetCreateDTO
     ): Response<Pet>
 }

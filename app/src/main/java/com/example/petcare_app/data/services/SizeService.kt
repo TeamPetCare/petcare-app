@@ -7,5 +7,5 @@ import retrofit2.http.Header
 
 interface SizeService {
     @GET("sizes")
-    suspend fun getSizes(@Header("Authorization") token: String): Response<List<Size>>
+    suspend fun getSizes(): Response<List<Size>>
 }

@@ -44,7 +44,6 @@ class SignUpViewModel : ViewModel() {
     val user: State<User> = _user
 
     fun signUpUserAndPet(
-        token: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
@@ -73,12 +72,12 @@ class SignUpViewModel : ViewModel() {
                 Log.d("FORM_SIGNUP - VIEW MODEL", "Dados: " +
                         " ${dto}")
 
-                val response = userApi.createUser(token, dto)
+                val response = userApi.createUser(dto)
                 if (response.isSuccessful) {
                     val userId = response.body()?.id
                     if (userId != null) {
                         _pets.value = _pets.value.map { it.copy(idUser = userId) }
-                        signUpPet(token)
+                        signUpPet()
                         onSuccess()
                     }
                 } else {
@@ -92,7 +91,6 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun signUpUser(
-        token: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
@@ -121,7 +119,7 @@ class SignUpViewModel : ViewModel() {
                 Log.d("FORM_SIGNUP - VIEW MODEL", "Dados: " +
                         " ${dto}")
 
-                val userResponse = userApi.createUser(token, dto)
+                val userResponse = userApi.createUser(dto)
                 if (userResponse.isSuccessful) {
                     onSuccess()
                 } else {
@@ -139,13 +137,13 @@ class SignUpViewModel : ViewModel() {
     }
 
     // Informações Pets
-    fun getSpecies(token: String) {
+    fun getSpecies() {
         val speciesApi = RetrofitInstance.retrofit.create(SpecieService::class.java)
 
         viewModelScope.launch {
             isLoading = true
             try {
-                val speciesResponse = speciesApi.getSpecies(token)
+                val speciesResponse = speciesApi.getSpecies()
                 if (speciesResponse.isSuccessful) {
                     _species.value = speciesResponse.body() ?: emptyList()
 //                    Log.d("FORM_SIGNUP", "ESPECIES: " +
@@ -161,13 +159,13 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun getRaces(token: String) {
+    fun getRaces() {
         val racesApi = RetrofitInstance.retrofit.create(RaceService::class.java)
 
         viewModelScope.launch {
             isLoading = true
             try {
-                val racesResponse = racesApi.getRaces("$token")
+                val racesResponse = racesApi.getRaces()
                 if (racesResponse.isSuccessful) {
                     _races.value = racesResponse.body() ?: emptyList()
 //                    Log.d("FORM_SIGNUP", "RAÇAS: " +
@@ -183,13 +181,13 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun getSizes(token: String) {
+    fun getSizes() {
         val sizesApi = RetrofitInstance.retrofit.create(SizeService::class.java)
 
         viewModelScope.launch {
             isLoading = true
             try {
-                val sizesResponse = sizesApi.getSizes("$token")
+                val sizesResponse = sizesApi.getSizes()
                 if (sizesResponse.isSuccessful) {
                     _sizes.value = sizesResponse.body() ?: emptyList()
                 } else {
@@ -228,7 +226,6 @@ class SignUpViewModel : ViewModel() {
 
     @SuppressLint("NewApi")
     fun signUpPet(
-        token: String
     ) {
         val petApi = RetrofitInstance.retrofit.create(PetService::class.java)
 
@@ -257,7 +254,7 @@ class SignUpViewModel : ViewModel() {
                         userId = pet.idUser ?: 0
                     )
 
-                    val response = petApi.createPet(token, petDto)
+                    val response = petApi.createPet(petDto)
                     if (!response.isSuccessful) {
                         Log.e("SIGNUP_PET", "Erro ao cadastrar pet ${pet.nome}: ${response.errorBody()?.string()}")
                     }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.petcare_app.ui.theme.customColorScheme
 
 @Composable
 fun LoadingBar(
@@ -24,9 +25,9 @@ fun LoadingBar(
         modifier = modifier.fillMaxSize()
     ) {
         CircularProgressIndicator(
-            color = Color.Black,
+            color = customColorScheme.primary,
             modifier = Modifier
-                .size(80.dp)
+                .size(70.dp)
         )
     }
 }

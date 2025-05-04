@@ -6,7 +6,7 @@ import retrofit2.Response
 
 interface SizeRepository {
     val api : SizeService
-    suspend fun getSizes(token: String) : Response<List<Size>> {
-        return api.getSizes(token)
+    suspend fun getSizes() : Response<List<Size>> {
+        return api.getSizes()
     }
 }

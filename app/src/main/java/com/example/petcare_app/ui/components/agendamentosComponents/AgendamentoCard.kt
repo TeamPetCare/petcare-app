@@ -89,7 +89,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
 
                     Row {
                         Text(
-                            text = servicosFormatados,
+                            text = "Tosa e Banho",
                             style = sentenceTitleTextStyle,
                             fontSize = 22.sp,
                             color = customColorScheme.primary

@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.buttons.BackButton
+import com.example.petcare_app.ui.components.buttons.BackButtonToWelcome
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -101,7 +102,7 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
             .padding(start = 20.dp, bottom = 30.dp, top = 15.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BackButton(navController = navController)
+        BackButtonToWelcome(navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(

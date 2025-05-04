@@ -6,7 +6,7 @@ import retrofit2.Response
 
 interface SpecieRepository {
     val api : SpecieService
-    suspend fun getSpecies(token: String) : Response<List<Specie>> {
-        return api.getSpecies(token)
+    suspend fun getSpecies() : Response<List<Specie>> {
+        return api.getSpecies()
     }
 }

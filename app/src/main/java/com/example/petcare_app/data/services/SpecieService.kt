@@ -8,5 +8,5 @@ import retrofit2.http.Header
 
 interface SpecieService {
     @GET("species")
-    suspend fun getSpecies(@Header("Authorization") token: String): Response<List<Specie>>
+    suspend fun getSpecies(): Response<List<Specie>>
 }

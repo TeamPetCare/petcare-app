@@ -8,5 +8,5 @@ import retrofit2.http.Header
 
 interface RaceService {
     @GET("races")
-    suspend fun getRaces(@Header("Authorization") token: String): Response<List<Race>>
+    suspend fun getRaces(): Response<List<Race>>
 }

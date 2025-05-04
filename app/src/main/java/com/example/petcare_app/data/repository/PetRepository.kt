@@ -7,7 +7,7 @@ import retrofit2.Response
 
 interface PetRepository {
     val api : PetService
-    suspend fun createPet(token: String, pet: PetCreateDTO): Response<Pet> {
-        return api.createPet(token, pet)
+    suspend fun createPet(pet: PetCreateDTO): Response<Pet> {
+        return api.createPet(pet)
     }
 }
