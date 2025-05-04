@@ -25,7 +25,7 @@ import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 fun PlanCard(plan: PlanItem) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(0.95f)
+            .fillMaxWidth()
             .fillMaxHeight()
 //            .height(100.dp)
             .padding(bottom = 8.dp),

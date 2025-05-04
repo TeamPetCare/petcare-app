@@ -16,7 +16,7 @@ fun SchedulesScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        HeaderComposable(navController, userName = "Usuário")
+        HeaderComposable(navController)
 
         Box(
             modifier = Modifier

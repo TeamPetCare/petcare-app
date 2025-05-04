@@ -48,10 +48,7 @@ fun NotificationScren(navController: NavController){
 
     Scaffold(
         topBar = {
-            HeaderComposable(
-                navController,
-                userName = "Usuário"
-            )
+            HeaderComposable(navController)
         },
         bottomBar = { GadjetBarComposable(navController)}
     ) { it ->

@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.petcare_app.R
 import com.example.petcare_app.navigation.Screen
-import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -49,7 +48,7 @@ fun HomeScreen(navController: NavController) {
             ) {
                 // PetCare logo
                 Image(
-                    painter = painterResource(id = R.drawable.logo_petcare),
+                    painter = painterResource(id = R.drawable.logo_petcare_svg),
                     contentDescription = "PetCare Logo",
                     modifier = Modifier.size(140.dp, 60.dp)
                 )
