@@ -10,9 +10,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,12 +25,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 //import coil.compose.AsyncImage
 import com.example.petcare_app.R
+import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
 @Composable
 //fun HeaderComposable(userName: String, profileImageUrl: String) {
-fun HeaderComposable(navController: NavController, userName: String) {
+fun HeaderComposable(navController: NavController) {
+    val context = LocalContext.current
+    val dataStore = TokenDataStore.getInstance(context)
+
+    val userName by dataStore.getName.collectAsState(initial = "")
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +93,6 @@ fun HeaderPreview() {
     val navController = rememberNavController()
 
     HeaderComposable(
-        userName = "Usuário",
         navController = navController
 //        profileImageUrl = "https://placekitten.com/200/200" // Imagem de teste
     )

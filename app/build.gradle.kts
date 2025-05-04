@@ -41,7 +41,10 @@ android {
 
 
 dependencies {
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation(libs.kotlinx.coroutines.core)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
     implementation("androidx.compose.material:material-icons-core:1.5.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
@@ -66,6 +69,7 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
