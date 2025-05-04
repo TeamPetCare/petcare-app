@@ -48,11 +48,22 @@ private val LightColorScheme = lightColorScheme(
 val customColorScheme = lightColorScheme(
     primary = DarkBlue,
     surface = DarkGray,
-    onSurface = LightGrey,
-    secondary = LightYellow,
+    onSurface = LightGray,
+    onSurfaceVariant = LighterGray,
+    secondary = Yellow,
     secondaryContainer = LightYellowDisabled,
+    onSecondaryContainer = LightYellow,
     error = errorMessage,
+)
 
+val customColorStatusAgendamentoScheme = lightColorScheme(
+    primary = DarkBlueStatusSchedule,
+    secondary = DarkGreenStatusSchedule,
+    tertiary = LightGrayStatusSchedule,
+
+    onPrimary = LightBlueStatusSchedule,
+    onSecondary = LightGreenStatusSchedule,
+    onTertiary = LightGray
 )
 
 val montserratFontFamily = FontFamily(

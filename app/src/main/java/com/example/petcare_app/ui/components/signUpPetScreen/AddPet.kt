@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.petcare_app.data.model.Race
 import com.example.petcare_app.data.viewmodel.Pet
 import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -42,8 +43,10 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 fun AddPet(
     navController: NavController,
     pets: List<Pet>,
+    racas: List<Race>,
     isPetFormActive: (Boolean) -> Unit,
-    resetForm: () -> Unit
+    resetForm: () -> Unit,
+    sendData: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -65,6 +68,7 @@ fun AddPet(
         Spacer(modifier = Modifier.height(5.dp))
 
         pets.forEachIndexed { index, pet ->
+            val nomeRaca = racas.find { it.id == pet.raca }?.raceType ?: "Raça não encontrada"
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,7 +89,7 @@ fun AddPet(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         color = customColorScheme.primary,
-                        text = "${pet.raca}"
+                        text = nomeRaca
                     )
                 }
 
@@ -156,8 +160,7 @@ fun AddPet(
         // Botão "Finalizar cadastro"
         Button(
             onClick = {
-                // Enviar dados para o banco
-                navController.navigate("loadingtoapphome")
+                sendData()
             },
             colors = buttonColors(
                 containerColor = customColorScheme.secondary,

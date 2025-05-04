@@ -31,15 +31,13 @@ fun PlansScreen(navController: NavController) {
         PlanItem("Madonna", "Plano Quinzenal", "Inativo", Color(0,84,114),
             Color(240,240,240)),
     )
-
     Scaffold(
         topBar = {
             HeaderComposable(
-                navController,
-                userName = "Usuário"
+                navController
             )
         },
-        bottomBar = { GadjetBarComposable(navController, criarAgendamento = {}) }
+        bottomBar = { GadjetBarComposable(navController) }
     ) {
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(

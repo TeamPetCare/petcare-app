@@ -2,6 +2,7 @@ package com.example.petcare_app.ui.screens
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,13 +20,16 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +39,7 @@ import androidx.navigation.NavController
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.buttons.BackButton
+import com.example.petcare_app.ui.components.buttons.BackButtonToWelcome
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -45,6 +50,8 @@ import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import com.example.petcare_app.ui.theme.titleTextStyle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 //@Composable
 //fun SignupScreenPreview() {
@@ -53,8 +60,9 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 
 @Composable
 fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
-    val user = remember { viewModel.user }
+    val user by viewModel.user
     var isFormSubmitted by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
 //  Variáveis de erro
     var nomeErro by remember { mutableStateOf(false) }
@@ -86,22 +94,6 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || numeroErro || cidadeErro)
     }
 
-//  Função para enviar os dados para o banco
-    fun sendData() {
-        Log.d("FORM_SIGNUP", "Dados: " +
-                " Nome - ${user.nomeCompleto}" +
-                " CPF - ${user.cpf}" +
-                " E-mail - ${user.email}" +
-                " Celular - ${user.celular}" +
-                " Senha - ${user.senha}" +
-                " Confirmar Senha - ${user.confirmarSenha}" +
-                " CEP - ${user.cep}" +
-                " Logradouro - ${user.logradouro}" +
-                " Bairro - ${user.bairro}" +
-                " Complemento - ${user.complemento}" +
-                " Cidade - ${user.cidade}")
-    }
-
 //  Tela de Inscrição - Sobre o Usuário
     Column (
         modifier = Modifier
@@ -110,7 +102,7 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
             .padding(start = 20.dp, bottom = 30.dp, top = 15.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BackButton(navController = navController)
+        BackButtonToWelcome(navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -140,7 +132,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(18.dp))
         CustomTextInput(
             value = user.nomeCompleto,
-            onValueChange = { user.nomeCompleto = it },
+            onValueChange = { novoNome ->
+                viewModel.updateUser { copy(nomeCompleto = novoNome) }
+            },
             label = "Nome Completo",
             placeholder = "Digite seu nome completo",
             modifier = Modifier.fillMaxWidth(),
@@ -153,7 +147,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         MaskedInput(
             label = "CPF",
             value = user.cpf,
-            onValueChange = { user.cpf = it },
+            onValueChange = { cpf ->
+                viewModel.updateUser { copy(cpf = cpf) }
+            },
             placeholder = "___.___.___-__",
             type = "CPF",
             modifier = Modifier.fillMaxWidth(),
@@ -164,7 +160,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         EmailInput(
             label = "E-mail",
             value = user.email,
-            onValueChange = { user.email = it },
+            onValueChange = { email ->
+                viewModel.updateUser { copy(email = email) }
+            },
             placeholder = "exemplo@gmail.com",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -174,7 +172,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         MaskedInput(
             label = "Celular",
             value = user.celular,
-            onValueChange = { user.celular = it },
+            onValueChange = { celular ->
+                viewModel.updateUser { copy(celular = celular) }
+            },
             placeholder = "(__) _ ____-____",
             type = "Celular",
             modifier = Modifier.fillMaxWidth(),
@@ -185,7 +185,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         PasswordInput(
             label = "Senha",
             value = user.senha,
-            onValueChange = { user.senha = it },
+            onValueChange = { senha ->
+                viewModel.updateUser { copy(senha = senha) }
+            },
             placeholder = "Crie uma senha",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -196,7 +198,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         PasswordInput(
             label = "Confirme a senha",
             value = user.confirmarSenha,
-            onValueChange = { user.confirmarSenha = it },
+            onValueChange = { confirmarSenha ->
+                viewModel.updateUser { copy(confirmarSenha = confirmarSenha) }
+            },
             placeholder = "Repita a senha",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
@@ -216,15 +220,17 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         CepInput(
             label = "CEP",
             value = user.cep,
-            onValueChange = { user.cep = it },
+            onValueChange = { cep ->
+                viewModel.updateUser { copy(cep = cep) }
+            },
             placeholder = "Digite seu CEP",
             modifier = Modifier.fillMaxWidth(),
             isFormSubmitted = isFormSubmitted,
             isError = cepErro,
             onAddressRetrieved = { newLogradouro, newBairro, newCidade ->
-                user.logradouro = newLogradouro
-                user.bairro = newBairro
-                user.cidade = newCidade
+                viewModel.updateUser { copy(logradouro = newLogradouro) }
+                viewModel.updateUser { copy(bairro = newBairro) }
+                viewModel.updateUser { copy(cidade = newCidade) }
             },
             addressRetrieved = "${user.logradouro}"
         )
@@ -243,7 +249,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.bairro,
-            onValueChange = { user.bairro = it },
+            onValueChange = { bairro ->
+                viewModel.updateUser { copy(bairro = bairro) }
+            },
             label = "Bairro",
             placeholder = "Digite o nome do bairro",
             modifier = Modifier.fillMaxWidth(),
@@ -255,7 +263,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.numero,
-            onValueChange = { user.numero = it },
+            onValueChange = { numero ->
+                viewModel.updateUser { copy(numero = numero) }
+            },
             label = "Número",
             placeholder = "Digite o número do endereço",
             modifier = Modifier.fillMaxWidth(),
@@ -267,7 +277,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.complemento,
-            onValueChange = { user.complemento = it },
+            onValueChange = { complemento ->
+                viewModel.updateUser { copy(complemento = complemento) }
+            },
             label = "Complemento",
             placeholder = "Digite o complemento (Apartamento, bloco)",
             modifier = Modifier.fillMaxWidth(),
@@ -277,7 +289,9 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Spacer(modifier = Modifier.height(12.dp))
         CustomTextInput(
             value = user.cidade,
-            onValueChange = { user.cidade = it },
+            onValueChange = { cidade ->
+                viewModel.updateUser { copy(cidade = cidade) }
+            },
             label = "Cidade",
             placeholder = "Digite o nome da cidade",
             modifier = Modifier.fillMaxWidth(),
@@ -292,8 +306,10 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Button(
             onClick = {
                 if (validateForm()) {
-                    sendData()
-                    navController.navigate(Screen.SignUpPet.route)
+                    coroutineScope.launch {
+                        delay(150)
+                        navController.navigate(Screen.SignUpPet.route)
+                    }
                 } else isFormSubmitted = true
             },
             colors = buttonColors(

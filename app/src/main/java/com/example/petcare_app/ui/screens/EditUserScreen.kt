@@ -25,14 +25,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
+import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -58,6 +62,7 @@ import com.example.petcare_app.ui.components.layouts.ImageEditorComposable
 import com.example.petcare_app.ui.components.layouts.WhiteCanvas
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
@@ -69,16 +74,24 @@ private fun EditUserScreenPreview() {
 
 @Composable
 fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
+    val context = LocalContext.current
+    val dataStore = TokenDataStore.getInstance(context)
+
+    val token by dataStore.getToken.collectAsState(initial = null)
+    val id by dataStore.getId.collectAsState(initial = null)
     var editUserViewModel: EditUserViewModel = viewModel()
 
-    // Inicializa o EditUserViewModel com os dados do User do SignUpViewModel
-    LaunchedEffect(signUpViewModel.user) {
-        if (editUserViewModel.editUser.nomeCompleto.isEmpty()) {
-            editUserViewModel.initializeWithUser(signUpViewModel.user)
-        }
-    }
-
     val user = editUserViewModel.editUser
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+          editUserViewModel.getUserById(
+              token!!, id!!
+         )
+        }
+
+
     var isFormSubmitted by remember { mutableStateOf(false) }
 
 //  Variáveis de erro
@@ -138,21 +151,24 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
 
     //função para resetar campos ao clicar no botão cancelar
     fun clearForm() {
-        editUserViewModel.editUser = editUserViewModel.editUser.copy(
-            nomeCompleto = "",
-            cpf = "",
-            email = "",
-            celular = "",
-            senha = "",
-            confirmarSenha = "",
-            novaSenha = "",
-            cep = "",
-            logradouro = "",
-            bairro = "",
-            numero = "",
-            complemento = "",
-            cidade = ""
-        )
+
+        editUserViewModel.editUser = user;
+
+//        editUserViewModel.editUser = editUserViewModel.editUser.copy(
+//            nomeCompleto = "",
+//            cpf = "",
+//            email = "",
+//            celular = "",
+//            senha = "",
+//            confirmarSenha = "",
+//            novaSenha = "",
+//            cep = "",
+//            logradouro = "",
+//            bairro = "",
+//            numero = "",
+//            complemento = "",
+//            cidade = ""
+//        )
 
         isFormSubmitted = false
         nomeErro = false
@@ -172,10 +188,9 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
 
     Scaffold(topBar = {
         HeaderComposable(
-            navController,
-            userName = "Usuário"
+            navController
         )
-    }, bottomBar = { GadjetBarComposable(navController, criarAgendamento = {}) }) { it ->
+    }, bottomBar = { GadjetBarComposable(navController) }) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
             WhiteCanvas(
                 modifier = Modifier.fillMaxHeight(),
@@ -190,7 +205,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(start = 20.dp, bottom = 30.dp, top = 15.dp, end = 20.dp),
+                        .padding(bottom = 30.dp, top = 15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -201,7 +216,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.nomeCompleto,
                         onValueChange = { novoNome ->
-                            editUserViewModel.updateUser { copy(nomeCompleto = novoNome) }
+                            editUserViewModel.updateEditUser { copy(nomeCompleto = novoNome) }
                         },
                         label = "Nome Completo",
                         placeholder = "Digite seu nome completo",
@@ -216,7 +231,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         label = "CPF",
                         value = user.cpf,
                         onValueChange = { novoCpf ->
-                            editUserViewModel.updateUser { copy(cpf = novoCpf) }
+                            editUserViewModel.updateEditUser { copy(cpf = novoCpf) }
                         },
                         placeholder = "___.___.___-__",
                         type = "CPF",
@@ -230,7 +245,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         label = "E-mail",
                         value = user.email,
                         onValueChange = { novoEmail ->
-                            editUserViewModel.updateUser { copy(email = novoEmail) }
+                            editUserViewModel.updateEditUser { copy(email = novoEmail) }
                         },
                         placeholder = "exemplo@gmail.com",
                         modifier = Modifier.fillMaxWidth(),
@@ -243,7 +258,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         label = "Celular",
                         value = user.celular,
                         onValueChange = { novoCelular ->
-                            editUserViewModel.updateUser { copy(celular = novoCelular) }
+                            editUserViewModel.updateEditUser { copy(celular = novoCelular) }
                         },
                         placeholder = "(__) ____-____",
                         type = "Celular",
@@ -257,7 +272,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         label = "Senha Atual",
                         value = user.senha,
                         onValueChange = { senhaAtual ->
-                            editUserViewModel.updateUser { copy(senha = senhaAtual) }
+                            editUserViewModel.updateEditUser { copy(senha = senhaAtual) }
                         },
                         placeholder = "Senha atual",
                         modifier = Modifier.fillMaxWidth(),
@@ -284,7 +299,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                             label = "Nova senha",
                             value = user.novaSenha,
                             onValueChange = { novaSenha ->
-                                editUserViewModel.updateUser { copy(novaSenha = novaSenha) }
+                                editUserViewModel.updateEditUser { copy(novaSenha = novaSenha) }
                             },
                             placeholder = "Digite a senha",
                             modifier = Modifier.fillMaxWidth(),
@@ -298,7 +313,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                             label = "Confirme a senha",
                             value = user.confirmarSenha,
                             onValueChange = { confirmarSenha ->
-                                editUserViewModel.updateUser { copy(confirmarSenha = confirmarSenha) }
+                                editUserViewModel.updateEditUser { copy(confirmarSenha = confirmarSenha) }
                             },
                             placeholder = "Repita a senha",
                             modifier = Modifier.fillMaxWidth(),
@@ -323,16 +338,16 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         label = "CEP",
                         value = user.cep,
                         onValueChange = { novoCep ->
-                            editUserViewModel.updateUser { copy(cep = novoCep) }
+                            editUserViewModel.updateEditUser { copy(cep = novoCep) }
                         },
                         placeholder = "Digite seu CEP",
                         modifier = Modifier.fillMaxWidth(),
                         isFormSubmitted = isFormSubmitted,
                         isError = cepErro,
                         onAddressRetrieved = { newLogradouro, newBairro, newCidade ->
-                            editUserViewModel.updateUser { copy(logradouro = newLogradouro) }
-                            editUserViewModel.updateUser { copy(bairro = newBairro) }
-                            editUserViewModel.updateUser { copy(cidade = newCidade) }
+                            editUserViewModel.updateEditUser { copy(logradouro = newLogradouro) }
+                            editUserViewModel.updateEditUser { copy(bairro = newBairro) }
+                            editUserViewModel.updateEditUser { copy(cidade = newCidade) }
                         },
                         addressRetrieved = "${user.logradouro}",
                         enabled = editarInfos
@@ -341,7 +356,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.logradouro,
                         onValueChange = { novoLogradouro ->
-                            editUserViewModel.updateUser { copy(logradouro = novoLogradouro) }
+                            editUserViewModel.updateEditUser { copy(logradouro = novoLogradouro) }
                         },
                         label = "Logradouro",
                         placeholder = "Digite o logradouro (rua, avenida, número, etc.)",
@@ -355,7 +370,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.bairro,
                         onValueChange = { novoBairro ->
-                            editUserViewModel.updateUser { copy(bairro = novoBairro) }
+                            editUserViewModel.updateEditUser { copy(bairro = novoBairro) }
                         },
                         label = "Bairro",
                         placeholder = "Digite o nome do bairro",
@@ -369,7 +384,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.numero,
                         onValueChange = { novoNumero ->
-                            editUserViewModel.updateUser { copy(numero = novoNumero) }
+                            editUserViewModel.updateEditUser { copy(numero = novoNumero) }
                         },
                         label = "Número",
                         placeholder = "Digite o número do endereço",
@@ -384,7 +399,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.complemento,
                         onValueChange = { novoComplemento ->
-                            editUserViewModel.updateUser { copy(complemento = novoComplemento) }
+                            editUserViewModel.updateEditUser { copy(complemento = novoComplemento) }
                         },
                         label = "Complemento",
                         placeholder = "Digite o complemento (Apartamento, bloco)",
@@ -397,7 +412,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     CustomTextInput(
                         value = user.cidade,
                         onValueChange = { novaCidade ->
-                            editUserViewModel.updateUser { copy(cidade = novaCidade) }
+                            editUserViewModel.updateEditUser { copy(cidade = novaCidade) }
                         },
                         label = "Cidade",
                         placeholder = "Digite o nome da cidade",
@@ -422,7 +437,11 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                                     isFormSubmitted = false
 
                                     clearForm()
-                                    // Quando tiver conexão com o banco, pegar dados novamente
+                                        coroutineScope.launch {
+                                             editUserViewModel.getUserById(
+                                                 token!!, id!!
+                                             )
+                                        }
                                 },
                                 colors = buttonColors(
                                     containerColor = Color(109, 124, 132),

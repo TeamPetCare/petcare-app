@@ -16,7 +16,7 @@ fun SchedulesScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        HeaderComposable(navController, userName = "Usuário")
+        HeaderComposable(navController)
 
         Box(
             modifier = Modifier
@@ -28,10 +28,8 @@ fun SchedulesScreen(navController: NavController) {
 
         // BottomBar
         GadjetBarComposable(
-            navController = navController,
-            criarAgendamento = {
-                println("Criar agendamento pelo SchedulesScreen")
-            }
+            navController = navController
+
         )
     }
 }

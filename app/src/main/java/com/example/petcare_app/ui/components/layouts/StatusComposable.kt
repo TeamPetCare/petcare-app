@@ -27,8 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.petcare_app.ui.theme.montserratFontFamily
 
+// Usado no status do pagamento do agendamento e no status de um plano
 @Composable
-fun StatusComposable(icon: ImageVector, status: String, fontColor: Color, backgroundColor: Color, textColor: Color) {
+fun StatusComposable(
+    icon: ImageVector,
+    status: String,
+    fontColor: Color,
+    backgroundColor: Color,
+    textColor: Color
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -56,7 +63,7 @@ fun StatusComposable(icon: ImageVector, status: String, fontColor: Color, backgr
             color = textColor,
             fontFamily = montserratFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
+            fontSize = 13.sp
         )
     }
 }
