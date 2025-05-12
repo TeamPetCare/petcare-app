@@ -71,7 +71,7 @@ private const val BASE_URL = "http://192.168.0.100:8080/" // ajuste conforme nec
 
 <h3>2. Localize o APK:</h3>
 <p>Após a build, uma notificação aparecerá com a opção <strong>locate</strong> para abrir a pasta onde o APK está salvo.</p>
-
+  
 <h3>3. Instale no celular:</h3>
 <p>Transfira o APK para seu dispositivo Android e abra-o para instalar. Certifique-se de que a opção "Permitir instalação de fontes desconhecidas" esteja ativada no seu celular.</p>
 
