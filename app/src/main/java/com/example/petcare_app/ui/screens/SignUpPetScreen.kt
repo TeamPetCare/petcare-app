@@ -55,6 +55,10 @@
     import com.example.petcare_app.data.model.Race
     import com.example.petcare_app.data.model.Size
     import com.example.petcare_app.data.model.Specie
+    import com.example.petcare_app.data.network.RetrofitInstance.retrofit
+    import com.example.petcare_app.data.repository.LoginRepository
+    import com.example.petcare_app.data.services.LoginService
+    import com.example.petcare_app.data.viewmodel.LoginViewModel
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
     import com.example.petcare_app.data.viewmodel.UiEvent
@@ -359,24 +363,54 @@
 
     @Composable
     fun SignUpPetScreen(navController: NavController, viewModel: SignUpViewModel) {
-        var isFormSubmitted by remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
+
+        // Estados
         val pets by viewModel.pets.collectAsState()
+        var petState by remember { mutableStateOf(Pet()) }
         var isPetFormActive by remember { mutableStateOf(true) }
         var currentPetIndex by remember { mutableStateOf(pets.size) }
-        var petState by remember { mutableStateOf(Pet()) }  // Estado do pet atual
+        var isFormSubmitted by remember { mutableStateOf(false) }
 
-        val coroutineScope = rememberCoroutineScope()
-        val context = LocalContext.current
+        // Dropdown data
+        val especies by viewModel.species.collectAsState()
+        val racas by viewModel.races.collectAsState()
+        val tamanhos by viewModel.sizes.collectAsState()
 
-      LaunchedEffect(Unit) {
-          viewModel.getSpecies()
-          viewModel.getRaces()
-          viewModel.getSizes()
-      }
+        // Login
+        val loginService: LoginService by lazy {
+            retrofit.create(LoginService::class.java)
+        }
+        val loginViewModel = remember {
+            LoginViewModel(
+                loginRepository = LoginRepository(loginService),
+                dataStore = TokenDataStore.getInstance(context)
+            )
+        }
+        val loginState by loginViewModel.loginState.collectAsState()
 
-        val especies = viewModel.species.collectAsState().value
-        val racas = viewModel.races.collectAsState().value
-        val tamanhos = viewModel.sizes.collectAsState().value
+        // --- EFEITOS ---
+        // Coleta dados iniciais
+        LaunchedEffect(Unit) {
+            viewModel.getSpecies()
+            viewModel.getRaces()
+            viewModel.getSizes()
+        }
+
+        // Login bem-sucedido
+        LaunchedEffect(loginState) {
+            loginState?.let { result ->
+                if (result.isSuccess) {
+                    navController.navigate(Screen.HomeApp.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                } else if (result.isFailure) {
+                    Toast.makeText(context, "Falha ao fazer login", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         // Função para resetar o formulário
         val resetForm: () -> Unit = {
@@ -398,10 +432,7 @@
                 viewModel.signUpUserAndPet(
                     onSuccess = {
                         Toast.makeText(context, "Cadastros realizados com sucesso!", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screen.HomeApp.route) {
-                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                            launchSingleTop = true
-                        }
+                        loginViewModel.login(viewModel.user.value.email, viewModel.user.value.senha)
                     },
                     onError = { mensagemErro ->
                         Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
