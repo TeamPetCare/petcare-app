@@ -57,6 +57,7 @@
     import com.example.petcare_app.data.model.Specie
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
+    import com.example.petcare_app.data.viewmodel.UiEvent
     import com.example.petcare_app.datastore.TokenDataStore
     import com.example.petcare_app.navigation.Screen
     import com.example.petcare_app.ui.components.buttons.BackButton
@@ -426,7 +427,25 @@
 
         }
 
-            Column(
+        // Função de callback para editar um pet específico da lista no componente AddPet
+        val editPet: (Int) -> Unit = { index ->
+            petState = pets[index]
+            currentPetIndex = index
+            isPetFormActive = true
+        }
+
+        // Função para escutar os eventos de toast ao deletar pet da lista
+        LaunchedEffect(Unit) {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is UiEvent.ShowToast -> {
+                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .fillMaxHeight()
@@ -482,11 +501,14 @@
                 } else {
                     AddPet (
                         navController = navController,
+                        viewModel = viewModel,
                         pets = pets,
                         racas = racas,
                         isPetFormActive = { isPetFormActive = it },
                         resetForm = resetForm,
-                        sendData = { signUpUserandPet() }
+                        sendData = { signUpUserandPet() },
+                        onEditPet = editPet,
+                        onRemovePet = { index -> viewModel.removePet(index) }
                     )
                 }
 
