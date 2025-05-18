@@ -2,6 +2,7 @@ package com.example.petcare_app.ui.screens
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,13 +20,16 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +39,7 @@ import androidx.navigation.NavController
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.buttons.BackButton
+import com.example.petcare_app.ui.components.buttons.BackButtonToWelcome
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -45,6 +50,8 @@ import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import com.example.petcare_app.ui.theme.titleTextStyle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 //@Composable
 //fun SignupScreenPreview() {
@@ -55,6 +62,7 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
     val user by viewModel.user
     var isFormSubmitted by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
 //  Variáveis de erro
     var nomeErro by remember { mutableStateOf(false) }
@@ -86,22 +94,6 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         return !(nomeErro || cpfErro || emailErro || celularErro || senhaErro || confirmarSenhaErro || cepErro || logradouroErro || bairroErro || numeroErro || cidadeErro)
     }
 
-//  Função para enviar os dados para o banco
-    fun sendData() {
-        Log.d("FORM_SIGNUP", "Dados: " +
-                " Nome - ${user.nomeCompleto}" +
-                " CPF - ${user.cpf}" +
-                " E-mail - ${user.email}" +
-                " Celular - ${user.celular}" +
-                " Senha - ${user.senha}" +
-                " Confirmar Senha - ${user.confirmarSenha}" +
-                " CEP - ${user.cep}" +
-                " Logradouro - ${user.logradouro}" +
-                " Bairro - ${user.bairro}" +
-                " Complemento - ${user.complemento}" +
-                " Cidade - ${user.cidade}")
-    }
-
 //  Tela de Inscrição - Sobre o Usuário
     Column (
         modifier = Modifier
@@ -110,7 +102,7 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
             .padding(start = 20.dp, bottom = 30.dp, top = 15.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BackButton(navController = navController)
+        BackButtonToWelcome(navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -314,8 +306,10 @@ fun SignUpUserScreen(navController: NavController, viewModel: SignUpViewModel) {
         Button(
             onClick = {
                 if (validateForm()) {
-                    sendData()
-                    navController.navigate(Screen.SignUpPet.route)
+                    coroutineScope.launch {
+                        delay(150)
+                        navController.navigate(Screen.SignUpPet.route)
+                    }
                 } else isFormSubmitted = true
             },
             colors = buttonColors(

@@ -34,8 +34,7 @@ fun PlansScreen(navController: NavController) {
     Scaffold(
         topBar = {
             HeaderComposable(
-                navController,
-                userName = "Usuário"
+                navController
             )
         },
         bottomBar = { GadjetBarComposable(navController) }
