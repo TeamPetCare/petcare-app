@@ -19,7 +19,7 @@ interface UserService {
         @Path("id") id: Int
     ): Response<User>
 
-    @POST("users")
+    @POST("auth/register")
     suspend fun createUser(
         @Body user: UserCreateDTO
     ): Response<User>
