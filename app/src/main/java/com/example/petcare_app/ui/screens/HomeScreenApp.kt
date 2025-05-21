@@ -52,6 +52,7 @@ import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoCard
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoItem
+import com.example.petcare_app.ui.components.agendamentosComponents.NenhumAgendamentoCard
 import com.example.petcare_app.ui.components.buttons.FilterChip
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
@@ -77,32 +78,20 @@ fun HomeScreenApp(navController: NavController) {
 
     val viewModel: SchedulesHomeAppViewModel = viewModel()
 
-    val agendamentos by viewModel.allSchedulesMonth.collectAsState()
-
     LaunchedEffect(token, id) {
         if (token != null && id != null) {
             viewModel.getAllSchedulesMonthByUser(token!!, id!!, dateNow)
+            viewModel.getAllPetsByUserId(token!!, id!!)
         }
     }
 
-    val nomesDosPets = listOf("Luna", "Thor", "Madonna")
-    val filtros = listOf("Todos os pets") + nomesDosPets
-
-    // No ViewModel
-    // val pets = mutableStateListOf<Pet>()
-    //
-    // val filtros: List<String>
-    //    get() = listOf("Todos os pets") + pets.map { it.nome }
-    // No composable
-    // val filtros = vm.filtros
-
+    val nomesDosPets by viewModel.allPetsUser.collectAsState()
+    val filtros = listOf("Todos os pets") + nomesDosPets.map { it.name }
     var filtroSelecionado by remember { mutableStateOf("Todos os pets") }
 
-//    val listaFiltrada = when (filtroSelecionado) {
-//        "Thor" -> pets.filter { it.nome == "Thor" }
-//        "Madonna" -> pets.filter { it.nome == "Madonna" }
-//        else -> pets
-//    }
+    val agendamentos by viewModel.allSchedulesMonth.collectAsState()
+    val agendamentosFiltrados = if (filtroSelecionado == "Todos os pets") agendamentos
+                                else agendamentos.filter { it.pet.name == filtroSelecionado }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -139,38 +128,44 @@ fun HomeScreenApp(navController: NavController) {
                         Spacer(modifier = Modifier.height(20.dp))
 
                         LazyColumn () {
-                            items(agendamentos) { schedule ->
-                                AgendamentoCard(
-                                    AgendamentoItem(
-                                        dataHoraAgendamento = LocalDateTime.parse(schedule.scheduleDate), // ou schedule.scheduleDate.atTime(schedule.scheduleTime)
-                                        servicos = schedule.services.map { it.name },
-                                        statusPagamento = schedule.payment?.paymentStatus == "PAGO", // adaptar conforme seu PaymentModel
-                                        statusAgendamento = schedule.scheduleStatus,
+                            if (agendamentosFiltrados.size > 0) {
+                                items(agendamentosFiltrados) { schedule ->
+                                    AgendamentoCard(
+                                        AgendamentoItem(
+                                            dataHoraAgendamento = LocalDateTime.parse(schedule.scheduleDate),
+                                            servicos = schedule.services.map { it.name },
+                                            statusPagamento = schedule.payment?.paymentStatus == "PAGO",
+                                            statusAgendamento = schedule.scheduleStatus,
+                                            nomePet = schedule.pet.name
+                                        )
                                     )
-                                )
-                            }
-
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Text(
-                                        text = "Visualizar todos os agendamentos >",
+                                }
+                                item {
+                                    Row(
                                         modifier = Modifier
-                                            .clickable {
-                                                navController.navigate(Screen.Schedules.route) {
-                                                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
-                                            },
-                                        color = customColorScheme.primary,
-                                        style = sentenceTitleTextStyle,
-                                        fontSize = 15.sp
-                                    )
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Text(
+                                            text = "Visualizar todos os agendamentos >",
+                                            modifier = Modifier
+                                                .clickable {
+                                                    navController.navigate(Screen.Schedules.route) {
+                                                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                                        launchSingleTop = true
+                                                        restoreState = true
+                                                    }
+                                                },
+                                            color = customColorScheme.primary,
+                                            style = sentenceTitleTextStyle,
+                                            fontSize = 15.sp
+                                        )
+                                    }
+                                }
+                            } else {
+                                item {
+                                    NenhumAgendamentoCard()
                                 }
                             }
                         }
