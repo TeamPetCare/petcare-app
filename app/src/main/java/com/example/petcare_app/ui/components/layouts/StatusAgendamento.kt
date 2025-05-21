@@ -34,16 +34,12 @@ fun StatusAgendamento(
     val backgroundColor =
         if (status == "AGENDADO") customColorStatusAgendamentoScheme.onPrimary
         else if (status == "CONCLUIDO") customColorStatusAgendamentoScheme.onSecondary
-        else customColorStatusAgendamentoScheme.onTertiary
-
-    val borderColor =
-        if (status == "CANCELADO") customColorStatusAgendamentoScheme.tertiary
-        else Color.Transparent
+        else Color(0xFFE0E0E0)
 
     val circleColor =
         if (status == "AGENDADO") customColorStatusAgendamentoScheme.primary
         else if (status == "CONCLUIDO") customColorStatusAgendamentoScheme.secondary
-        else customColorStatusAgendamentoScheme.tertiary
+        else Color(0xFF6D7C84)
 
     val statusName =
         if (status == "AGENDADO") "Agendado"
@@ -53,7 +49,7 @@ fun StatusAgendamento(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .border(0.5.dp, borderColor, shape = RoundedCornerShape(50))
+            .border(0.5.dp, Color.Transparent, shape = RoundedCornerShape(50))
             .background(backgroundColor, shape = RoundedCornerShape(50))
             .padding(horizontal = 8.dp, vertical = 2.dp)
     ) {

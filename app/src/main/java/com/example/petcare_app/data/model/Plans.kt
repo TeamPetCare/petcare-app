@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class Plans(
     val id: Int = 0,
-    val subscriptionDate: LocalDateTime,
+    val subscriptionDate: String,
     val name: String,
     val price: Double,
     val active: Boolean,

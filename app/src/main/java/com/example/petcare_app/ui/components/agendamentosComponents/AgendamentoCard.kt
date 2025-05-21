@@ -48,7 +48,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
             .fillMaxHeight()
 //            .height(100.dp)
             .padding(bottom = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else customColorScheme.onSurfaceVariant),
+        colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else Color(0xFFF0F0F0)),
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -72,7 +72,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = formatarDataHora(agendamento.dataHoraAgendamento),
+                            text = "${formatarDataHora(agendamento.dataHoraAgendamento)} | ${agendamento.nomePet}",
                             fontSize = 14.sp,
                             color = customColorScheme.primary,
                             fontFamily = montserratFontFamily
@@ -89,7 +89,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
 
                     Row {
                         Text(
-                            text = "Tosa e Banho",
+                            text = servicosFormatados,
                             style = sentenceTitleTextStyle,
                             fontSize = 22.sp,
                             color = customColorScheme.primary
@@ -134,7 +134,8 @@ data class AgendamentoItem (
     val servicos: List<String>,
     val statusPagamento: Boolean,
     val statusAgendamento: String,
-    val avaliacao: Int? = null
+    val avaliacao: Int? = null,
+    val nomePet: String
 )
 
 @SuppressLint("NewApi")
@@ -146,34 +147,9 @@ fun AgendamentoCardPreview() {
             dataHoraAgendamento = LocalDateTime.of(2025, 4, 20, 14, 0),
             servicos = listOf("Banho", "Tosa", "Consulta"),
             statusPagamento = true,
-            statusAgendamento = "AGENDADO"
-        ),
-        AgendamentoItem(
-            dataHoraAgendamento = LocalDateTime.of(2025, 4, 18, 9, 30),
-            servicos = listOf("Vacinação"),
-            statusPagamento = true,
-            statusAgendamento = "CONCLUIDO"
-        ),
-        AgendamentoItem(
-            dataHoraAgendamento = LocalDateTime.of(2025, 4, 20, 9, 30),
-            servicos = listOf("Banho", "Tosa"),
-            statusPagamento = true,
-            statusAgendamento = "CONCLUIDO",
-            avaliacao = 4
-        ),
-        AgendamentoItem(
-            dataHoraAgendamento = LocalDateTime.of(2025, 4, 17, 11, 0),
-            servicos = listOf("Consulta de rotina"),
-            statusPagamento = false,
-            statusAgendamento = "CANCELADO"
-        ),
-        AgendamentoItem(
-            dataHoraAgendamento = LocalDateTime.of(2025, 5, 25, 13, 0),
-            servicos = listOf("Banho"),
-            statusPagamento = false,
-            statusAgendamento = "CANCELADO"
+            statusAgendamento = "AGENDADO",
+            nomePet = "Toto"
         )
-
     )
 
     LazyColumn {
