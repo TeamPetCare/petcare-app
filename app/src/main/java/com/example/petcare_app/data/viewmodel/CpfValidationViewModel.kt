@@ -1,14 +1,10 @@
 package com.example.petcare_app.data.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petcare_app.data.network.RetrofitInstance
-import com.example.petcare_app.data.repository.CpfValidationRepository
 import com.example.petcare_app.data.services.CpfValidationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
