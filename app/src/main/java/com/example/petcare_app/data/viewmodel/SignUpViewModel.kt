@@ -19,8 +19,10 @@ import com.example.petcare_app.data.services.RaceService
 import com.example.petcare_app.data.services.SizeService
 import com.example.petcare_app.data.services.SpecieService
 import com.example.petcare_app.data.services.UserService
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -42,6 +44,9 @@ class SignUpViewModel : ViewModel() {
 
     private val _user = mutableStateOf(User())
     val user: State<User> = _user
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     fun signUpUserAndPet(
         onSuccess: () -> Unit,
@@ -81,7 +86,13 @@ class SignUpViewModel : ViewModel() {
                         onSuccess()
                     }
                 } else {
-                    onError("Erro ao criar usuário e pet: ${response.errorBody()?.string()}")
+                    val errorBody = response.errorBody()?.string()
+                    if (errorBody?.contains("Customer is not allowed") == true) {
+                        Log.e("Signup", "Usuário criado, mas houve erro: $errorBody")
+                        onError("Usuário criado, mas houve um problema ao finalizar o cadastro.")
+                    } else {
+                        onError("Erro ao criar usuário e pet: $errorBody")
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Erro: ${e.message}")
@@ -219,8 +230,18 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun removePet(index: Int) {
-        _pets.value = _pets.value.toMutableList().apply {
-            removeAt(index)
+        val currentList = _pets.value.toMutableList()
+
+        if (index in currentList.indices) {
+            currentList.removeAt(index)
+            _pets.value = currentList
+            viewModelScope.launch {
+                _uiEvent.emit(UiEvent.ShowToast("Pet removido com sucesso."))
+            }
+        } else {
+            viewModelScope.launch {
+                _uiEvent.emit(UiEvent.ShowToast("Erro ao remover pet. Tente ovamente."))
+            }
         }
     }
 
@@ -293,3 +314,7 @@ data class Pet(
     var observacoes: String = "",
     var idUser: Int? = null
 )
+
+sealed class UiEvent {
+    data class ShowToast(val message: String) : UiEvent()
+}

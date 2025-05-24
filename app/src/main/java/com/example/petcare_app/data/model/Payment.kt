@@ -10,5 +10,5 @@ data class Payment(
     val paymentMethod: String? = null,
     val paymentStatus: Boolean? = null,
     val deletedAt: String? = null,
-    val userId: Int
+    val userId: Int?
 )

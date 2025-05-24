@@ -2,6 +2,7 @@ package com.example.petcare_app.ui.components.signUpPetScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.petcare_app.data.model.Race
 import com.example.petcare_app.data.viewmodel.Pet
+import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
@@ -42,11 +44,14 @@ import com.example.petcare_app.ui.theme.titleTextStyle
 @Composable
 fun AddPet(
     navController: NavController,
+    viewModel: SignUpViewModel,
     pets: List<Pet>,
     racas: List<Race>,
     isPetFormActive: (Boolean) -> Unit,
     resetForm: () -> Unit,
-    sendData: () -> Unit
+    sendData: () -> Unit,
+    onEditPet: (Int) -> Unit,
+    onRemovePet: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -94,14 +99,22 @@ fun AddPet(
                 }
 
                 Icon(
-                    modifier = Modifier.size(25.dp),
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clickable {
+                            onRemovePet(index)
+                        },
                     imageVector = Icons.Filled.Delete,
                     tint = customColorScheme.error,
                     contentDescription = "Ícone de Lixeira"
                 )
 
                 Icon(
-                    modifier = Modifier.size(25.dp),
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clickable {
+                            onEditPet(index)
+                        },
                     imageVector = Icons.Filled.Edit,
                     tint = customColorScheme.surface,
                     contentDescription = "Ícone de Lápis"

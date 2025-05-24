@@ -55,8 +55,13 @@
     import com.example.petcare_app.data.model.Race
     import com.example.petcare_app.data.model.Size
     import com.example.petcare_app.data.model.Specie
+    import com.example.petcare_app.data.network.RetrofitInstance.retrofit
+    import com.example.petcare_app.data.repository.LoginRepository
+    import com.example.petcare_app.data.services.LoginService
+    import com.example.petcare_app.data.viewmodel.LoginViewModel
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
+    import com.example.petcare_app.data.viewmodel.UiEvent
     import com.example.petcare_app.datastore.TokenDataStore
     import com.example.petcare_app.navigation.Screen
     import com.example.petcare_app.ui.components.buttons.BackButton
@@ -358,24 +363,54 @@
 
     @Composable
     fun SignUpPetScreen(navController: NavController, viewModel: SignUpViewModel) {
-        var isFormSubmitted by remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
+
+        // Estados
         val pets by viewModel.pets.collectAsState()
+        var petState by remember { mutableStateOf(Pet()) }
         var isPetFormActive by remember { mutableStateOf(true) }
         var currentPetIndex by remember { mutableStateOf(pets.size) }
-        var petState by remember { mutableStateOf(Pet()) }  // Estado do pet atual
+        var isFormSubmitted by remember { mutableStateOf(false) }
 
-        val coroutineScope = rememberCoroutineScope()
-        val context = LocalContext.current
+        // Dropdown data
+        val especies by viewModel.species.collectAsState()
+        val racas by viewModel.races.collectAsState()
+        val tamanhos by viewModel.sizes.collectAsState()
 
-      LaunchedEffect(Unit) {
-          viewModel.getSpecies()
-          viewModel.getRaces()
-          viewModel.getSizes()
-      }
+        // Login
+        val loginService: LoginService by lazy {
+            retrofit.create(LoginService::class.java)
+        }
+        val loginViewModel = remember {
+            LoginViewModel(
+                loginRepository = LoginRepository(loginService),
+                dataStore = TokenDataStore.getInstance(context)
+            )
+        }
+        val loginState by loginViewModel.loginState.collectAsState()
 
-        val especies = viewModel.species.collectAsState().value
-        val racas = viewModel.races.collectAsState().value
-        val tamanhos = viewModel.sizes.collectAsState().value
+        // --- EFEITOS ---
+        // Coleta dados iniciais
+        LaunchedEffect(Unit) {
+            viewModel.getSpecies()
+            viewModel.getRaces()
+            viewModel.getSizes()
+        }
+
+        // Login bem-sucedido
+        LaunchedEffect(loginState) {
+            loginState?.let { result ->
+                if (result.isSuccess) {
+                    navController.navigate(Screen.HomeApp.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                } else if (result.isFailure) {
+                    Toast.makeText(context, "Falha ao fazer login", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         // Função para resetar o formulário
         val resetForm: () -> Unit = {
@@ -397,10 +432,7 @@
                 viewModel.signUpUserAndPet(
                     onSuccess = {
                         Toast.makeText(context, "Cadastros realizados com sucesso!", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screen.HomeApp.route) {
-                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                            launchSingleTop = true
-                        }
+                        loginViewModel.login(viewModel.user.value.email, viewModel.user.value.senha)
                     },
                     onError = { mensagemErro ->
                         Toast.makeText(context, "Erro: $mensagemErro", Toast.LENGTH_SHORT).show()
@@ -426,7 +458,25 @@
 
         }
 
-            Column(
+        // Função de callback para editar um pet específico da lista no componente AddPet
+        val editPet: (Int) -> Unit = { index ->
+            petState = pets[index]
+            currentPetIndex = index
+            isPetFormActive = true
+        }
+
+        // Função para escutar os eventos de toast ao deletar pet da lista
+        LaunchedEffect(Unit) {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is UiEvent.ShowToast -> {
+                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .fillMaxHeight()
@@ -482,11 +532,14 @@
                 } else {
                     AddPet (
                         navController = navController,
+                        viewModel = viewModel,
                         pets = pets,
                         racas = racas,
                         isPetFormActive = { isPetFormActive = it },
                         resetForm = resetForm,
-                        sendData = { signUpUserandPet() }
+                        sendData = { signUpUserandPet() },
+                        onEditPet = editPet,
+                        onRemovePet = { index -> viewModel.removePet(index) }
                     )
                 }
 
