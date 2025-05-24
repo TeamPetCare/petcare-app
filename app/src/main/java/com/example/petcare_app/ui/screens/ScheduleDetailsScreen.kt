@@ -134,7 +134,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     Text(
                         text = "Endereço",
                         fontSize = 14.sp,
-                        color = customColorScheme.primary,
+                        color = Color(0xFF707070),
                         fontFamily = montserratFontFamily,
                         fontWeight = FontWeight.Bold
                     )
@@ -156,14 +156,14 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             Text(
                                 text = "Pet",
                                 fontSize = 14.sp,
-                                color = customColorScheme.primary,
+                                color = Color(0xFF707070),
                                 fontFamily = montserratFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 text = mockScheduleData.petName,
                                 fontSize = 14.sp,
-                                color = customColorScheme.primary,
+                                color = Color(0xFF707070),
                                 fontFamily = montserratFontFamily
                             )
                         }
@@ -206,7 +206,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     Text(
                         text = "Descrição",
                         fontSize = 14.sp,
-                        color = customColorScheme.primary,
+                        color = Color(0xFF707070),
                         fontFamily = montserratFontFamily,
                         fontWeight = FontWeight.Bold
                     )
@@ -223,7 +223,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     Text(
                         text = "Serviços",
                         fontSize = 14.sp,
-                        color = customColorScheme.primary,
+                        color = Color(0xFF707070),
                         fontFamily = montserratFontFamily,
                         fontWeight = FontWeight.Bold
                     )
@@ -265,7 +265,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         Text(
                             text = "Total",
                             fontSize = 16.sp,
-                            color = customColorScheme.primary,
+                            color = Color(0xFF707070),
                             fontFamily = montserratFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -319,7 +319,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     Text(
                         text = "Fotos",
                         fontSize = 14.sp,
-                        color = customColorScheme.primary,
+                        color = Color(0xFF707070),
                         fontFamily = montserratFontFamily,
                         fontWeight = FontWeight.Bold
                     )
