@@ -174,7 +174,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             Text(
                                 text = "Pagamento",
                                 fontSize = 14.sp,
-                                color = customColorScheme.primary,
+                                color = Color(0xFF707070),
                                 fontFamily = montserratFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
