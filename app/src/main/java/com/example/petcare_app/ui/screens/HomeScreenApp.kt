@@ -132,12 +132,14 @@ fun HomeScreenApp(navController: NavController) {
                                 items(agendamentosFiltrados) { schedule ->
                                     AgendamentoCard(
                                         AgendamentoItem(
+                                            id = schedule.id ?: 0,
                                             dataHoraAgendamento = LocalDateTime.parse(schedule.scheduleDate),
                                             servicos = schedule.services.map { it.name },
                                             statusPagamento = schedule.payment?.paymentStatus == "PAGO",
                                             statusAgendamento = schedule.scheduleStatus,
                                             nomePet = schedule.pet.name
-                                        )
+                                        ),
+                                        navController = navController
                                     )
                                 }
                                 item {

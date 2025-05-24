@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.layouts.StatusAgendamento
 import com.example.petcare_app.ui.components.layouts.StatusComposable
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -31,7 +33,10 @@ import com.example.petcare_app.utils.DataUtils.formatarDataHora
 import java.time.LocalDateTime
 
 @Composable
-fun AgendamentoCard(agendamento: AgendamentoItem) {
+fun AgendamentoCard(
+    agendamento: AgendamentoItem,
+    navController: NavController? = null
+) {
     val servicosFormatados = when (agendamento.servicos.size) {
         0 -> ""
         1 -> agendamento.servicos[0]
@@ -46,8 +51,10 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-//            .height(100.dp)
-            .padding(bottom = 8.dp),
+            .padding(bottom = 8.dp)
+            .clickable {
+                navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id))
+            },
         colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else Color(0xFFF0F0F0)),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -83,7 +90,9 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
                             contentDescription = "Seta para Direita",
                             tint = customColorScheme.primary,
                             modifier = Modifier
-                                .clickable {  }
+                                .clickable {
+                                    navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id))
+                                }
                         )
                     }
 
@@ -130,6 +139,7 @@ fun AgendamentoCard(agendamento: AgendamentoItem) {
 }
 
 data class AgendamentoItem (
+    val id: Int,
     val dataHoraAgendamento: LocalDateTime,
     val servicos: List<String>,
     val statusPagamento: Boolean,
@@ -144,6 +154,7 @@ data class AgendamentoItem (
 fun AgendamentoCardPreview() {
     val agendamentos = listOf(
         AgendamentoItem(
+            id = 1,
             dataHoraAgendamento = LocalDateTime.of(2025, 4, 20, 14, 0),
             servicos = listOf("Banho", "Tosa", "Consulta"),
             statusPagamento = true,
