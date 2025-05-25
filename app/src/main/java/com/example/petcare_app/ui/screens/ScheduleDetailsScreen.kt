@@ -1,4 +1,3 @@
-
 package com.example.petcare_app.ui.screens
 
 import androidx.compose.foundation.Image
@@ -150,9 +149,11 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     // Pet e Pagamento
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
                             Text(
                                 text = "Pet",
                                 fontSize = 14.sp,
@@ -163,7 +164,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             Text(
                                 text = mockScheduleData.petName,
                                 fontSize = 14.sp,
-                                color = Color(0xFF707070),
+                                color = customColorScheme.primary,
                                 fontFamily = montserratFontFamily
                             )
                         }
@@ -187,9 +188,9 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         }
 
                         Column(
+                            modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.End
                         ) {
-                            Spacer(modifier = Modifier.height(18.dp)) // Alinha com o texto do pagamento
                             StatusComposable(
                                 icon = Icons.Default.Check,
                                 status = "Pago",
