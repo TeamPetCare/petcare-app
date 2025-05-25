@@ -239,7 +239,8 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         ) {
                             Text(
                                 text = service.name,
-                                fontSize = 16.sp,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
                                 color = customColorScheme.primary,
                                 fontFamily = montserratFontFamily
                             )
