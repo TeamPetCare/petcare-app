@@ -53,8 +53,7 @@ fun OrderDetailsScreen(
     Scaffold(
         topBar = {
             HeaderComposable(
-                navController = navController,
-                userName = userName
+                navController = navController
             )
         },
         bottomBar = {

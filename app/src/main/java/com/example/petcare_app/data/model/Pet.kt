@@ -9,7 +9,7 @@ data class Pet(
     val gender: String,
     val color: String,
     val estimatedWeight: Double,
-    val birthdate: LocalDate? = null,
+    val birthdate: String,
     val petObservations: String,
     val petImg: String? = null,
     val deletedAt: LocalDateTime? = null,

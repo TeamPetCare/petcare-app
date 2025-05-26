@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
+import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -71,6 +74,11 @@ private fun EditUserScreenPreview() {
 
 @Composable
 fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
+    val context = LocalContext.current
+    val dataStore = TokenDataStore.getInstance(context)
+
+    val token by dataStore.getToken.collectAsState(initial = null)
+    val id by dataStore.getId.collectAsState(initial = null)
     var editUserViewModel: EditUserViewModel = viewModel()
 
     val user = editUserViewModel.editUser
@@ -79,8 +87,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
 
     LaunchedEffect(Unit) {
           editUserViewModel.getUserById(
-               "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUwNjU5MjR9.--eifXHRt31iH7GEWhkG0a2rAw74qN_74GPbBmBDhjw",
-               1
+              token!!, id!!
          )
         }
 
@@ -181,8 +188,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
 
     Scaffold(topBar = {
         HeaderComposable(
-            navController,
-            userName = "Usuário"
+            navController
         )
     }, bottomBar = { GadjetBarComposable(navController) }) { it ->
         Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
@@ -433,8 +439,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                                     clearForm()
                                         coroutineScope.launch {
                                              editUserViewModel.getUserById(
-                                                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDUwNjU5MjR9.--eifXHRt31iH7GEWhkG0a2rAw74qN_74GPbBmBDhjw",
-                                                 1
+                                                 token!!, id!!
                                              )
                                         }
                                 },

@@ -54,7 +54,7 @@ fun calculateDigit(digits: List<Int>, multiplier: Int): Int {
 
 @Composable
 fun MaskedInput(
-    label: String,
+    label: String = "",
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,

@@ -1,32 +1,70 @@
 package com.example.petcare_app.ui.components.formFields.inputFields
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.petcare_app.ui.theme.customColorScheme
-import com.example.petcare_app.ui.theme.errorTextStyle
-import com.example.petcare_app.ui.theme.innerInputTextStyle
-import com.example.petcare_app.ui.theme.montserratFontFamily
+import com.example.petcare_app.ui.theme.*
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
+
+class DateVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val trimmed = text.text.take(8).filter { it.isDigit() }
+        val formatted = buildString {
+            for (i in trimmed.indices) {
+                append(trimmed[i])
+                if (i == 1 || i == 3) append("/")
+            }
+        }
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return when {
+                    offset <= 1 -> offset
+                    offset <= 3 -> offset + 1
+                    offset <= 8 -> offset + 2
+                    else -> formatted.length
+                }
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                return when {
+                    offset <= 2 -> offset
+                    offset <= 5 -> offset - 1
+                    offset <= 10 -> offset - 2
+                    else -> text.text.length
+                }
+            }
+        }
+
+        return TransformedText(AnnotatedString(formatted), offsetMapping)
+    }
+}
+
+fun isValidDateNotPast(date: String): Boolean {
+    return try {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.isLenient = false
+        val parsedDate = sdf.parse(date)
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        parsedDate != null && !parsedDate.after(today.time)
+    } catch (e: Exception) {
+        false
+    }
+}
 
 @Composable
 fun DateInput(
@@ -43,24 +81,23 @@ fun DateInput(
     var isValid by remember { mutableStateOf(true) }
     val labelText = if (isRequired) "$label*" else label
 
+    val digitsOnly = value.filter { it.isDigit() }.take(8)
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = digitsOnly,
+                selection = TextRange(digitsOnly.length)
+            )
+        )
+    }
+
     LaunchedEffect(isFormSubmitted) {
         if (isFormSubmitted && isRequired) {
-            isValid = value.isNotEmpty()
+            isValid = value.isNotEmpty() && isValidDateNotPast(value)
         }
     }
 
-    fun isValidDate(date: String): Boolean {
-        return try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            sdf.isLenient = false
-            sdf.parse(date)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    Column(modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(bottom = 1.dp),
             text = labelText,
@@ -70,41 +107,34 @@ fun DateInput(
             color = customColorScheme.surface
         )
 
-        var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
-
         OutlinedTextField(
-            textStyle = innerInputTextStyle,
             value = textFieldValue,
             onValueChange = { newValue ->
-                val unformattedText = newValue.text.filter { it.isDigit() }.take(8)
+                val digits = newValue.text.filter { it.isDigit() }.take(8)
+                val updatedTextFieldValue = TextFieldValue(
+                    text = digits,
+                    selection = TextRange(digits.length)
+                )
+                textFieldValue = updatedTextFieldValue
 
-                val formattedText = buildString {
-                    for (i in unformattedText.indices) {
-                        append(unformattedText[i])
+                val formattedDate = buildString {
+                    for (i in digits.indices) {
+                        append(digits[i])
                         if (i == 1 || i == 3) append("/")
                     }
                 }
 
-                val newCursorPosition = when {
-                    newValue.selection.start <= 2 -> newValue.selection.start
-                    newValue.selection.start <= 5 -> newValue.selection.start + 1
-                    else -> newValue.selection.start + 2
-                }.coerceAtMost(formattedText.length)
-
-                textFieldValue = TextFieldValue(
-                    text = formattedText,
-                    selection = TextRange(newCursorPosition)
-                )
-
-                onValueChange(formattedText)
-                isValid = formattedText.length < 10 || isValidDate(formattedText)
+                onValueChange(formattedDate)
+                isValid = formattedDate.length < 10 || isValidDateNotPast(formattedDate)
             },
             placeholder = { Text(placeholder) },
             modifier = modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            isError = isError,
+            isError = isError || !isValid,
             singleLine = true,
             shape = MaterialTheme.shapes.small,
+            visualTransformation = DateVisualTransformation(),
+            textStyle = innerInputTextStyle,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -114,14 +144,13 @@ fun DateInput(
                 errorContainerColor = Color.Transparent,
             ),
         )
-    }
 
-    if (isError) {
-        Text(
-            text = msgErro,
-            color = MaterialTheme.colorScheme.error,
-            fontSize = 12.sp,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        if (isError || !isValid) {
+            Text(
+                text = msgErro.ifEmpty { "Data inválida ou anterior à data atual" },
+                style = errorTextStyle,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }

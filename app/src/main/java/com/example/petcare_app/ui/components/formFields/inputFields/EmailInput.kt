@@ -32,7 +32,7 @@ fun EmailInput(
 
     LaunchedEffect(isFormSubmitted) {
         if (isFormSubmitted) {
-            isValid = value.matches(emailPattern)
+            isValid = value.trim().matches(emailPattern)
         }
     }
 
@@ -50,7 +50,7 @@ fun EmailInput(
         OutlinedTextField(
             textStyle = innerInputTextStyle,
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { onValueChange(it.trim()) },
             placeholder = { Text("$placeholder", style = innerInputTextStyle) },
             modifier = modifier,
             singleLine = true,

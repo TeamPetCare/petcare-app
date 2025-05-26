@@ -10,7 +10,10 @@
     import androidx.navigation.NavHostController
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
+    import com.example.petcare_app.data.network.RetrofitInstance
+    import com.example.petcare_app.data.repository.LoginRepository
     import com.example.petcare_app.data.viewmodel.EditUserViewModel
+    import com.example.petcare_app.data.viewmodel.LoginViewModel
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
     import com.example.petcare_app.ui.screens.EditUserScreen
     import com.example.petcare_app.ui.screens.HomeScreen
@@ -20,13 +23,16 @@
     import com.example.petcare_app.ui.screens.LoginScreen
     import com.example.petcare_app.ui.screens.NotificationScren
     import com.example.petcare_app.ui.screens.PlansScreen
+    import com.example.petcare_app.ui.screens.ScheduleDetailsScreen
     import com.example.petcare_app.ui.screens.SchedulesScreen
     import com.example.petcare_app.ui.screens.SettingsScreen
     import com.example.petcare_app.ui.screens.SignUpPetScreen
     import com.example.petcare_app.ui.screens.SignUpUserScreen
+    import com.example.petcare_app.ui.screens.SplashScreen
     import com.example.petcare_app.ui.screens.WelcomeScreen
 
     sealed class Screen(val route: String) {
+        object Splash : Screen("splash")
         object Home : Screen("home")
         object HomeApp : Screen("homeapp")
         object SignUpUser : Screen("signupuser")
@@ -40,13 +46,17 @@
         object Settings : Screen("settings") // Tela de Configurações
         object Notifications : Screen("notifications")
         object EditUser : Screen("editUser")
+        object ScheduleDetails : Screen("schedule_details/{scheduleId}") {
+            fun createRoute(scheduleId: Int) = "schedule_details/$scheduleId"
+        }
     }
 
     @Composable
     fun NavGraph(navController: NavHostController) {
         val signUpViewModel: SignUpViewModel = viewModel()
 
-        NavHost(navController = navController, startDestination = Screen.HomeApp.route) {
+        NavHost(navController = navController, startDestination = Screen.Splash.route) {
+            composable(Screen.Splash.route) { SplashScreen(navController) }
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.HomeApp.route) { HomeScreenApp(navController) }
             composable(Screen.SignUpUser.route) { SignUpUserScreen(navController, signUpViewModel) }
@@ -60,5 +70,9 @@
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
+            composable("schedule_details/{scheduleId}") { backStackEntry ->
+                val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
+                ScheduleDetailsScreen(navController, scheduleId)
+            }
         }
     }

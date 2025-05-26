@@ -6,5 +6,5 @@ data class Race(
     val id: Int? = null,
     val raceType: String,
     val price: Double,
-    val deletedAt: LocalDateTime? = null
+    val deletedAt: String? = null
 )
