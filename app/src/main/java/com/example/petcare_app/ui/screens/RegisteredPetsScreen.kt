@@ -111,14 +111,15 @@ fun RegisteredPetsScreen(navController: NavController) {
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Voltar",
                                     tint = customColorScheme.primary,
-                                    modifier = Modifier.size(14.dp)
+                                    modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Voltar",
                                     color = customColorScheme.primary,
                                     fontFamily = montserratFontFamily,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
                         }
@@ -164,10 +165,9 @@ fun RegisteredPetsScreen(navController: NavController) {
                             customColorScheme.primary
                         )
                     ) {
-                        Row(
+                        Box(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Adicionar Pet",
@@ -186,6 +186,7 @@ fun RegisteredPetsScreen(navController: NavController) {
                                         shape = CircleShape
                                     )
                                     .padding(4.dp)
+                                    .align(Alignment.CenterEnd)
                             )
                         }
                     }
@@ -242,30 +243,16 @@ fun PetListItem(
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
+            Image(
+                painter = painterResource(id = R.drawable.lixo),
                 contentDescription = "Deletar",
-                tint = Color(0xFFFF4444),
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(
-                        color = Color(0xFFFF4444),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(2.dp)
+                modifier = Modifier.size(20.dp)
             )
 
-            Icon(
-                imageVector = Icons.Default.Edit,
+            Image(
+                painter = painterResource(id = R.drawable.lapis),
                 contentDescription = "Editar",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(
-                        color = Color(0xFF707070),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(2.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
     }
