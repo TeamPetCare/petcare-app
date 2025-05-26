@@ -118,8 +118,8 @@ fun RegisteredPetsScreen(navController: NavController) {
                                     text = "Voltar",
                                     color = customColorScheme.primary,
                                     fontFamily = montserratFontFamily,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                         }
