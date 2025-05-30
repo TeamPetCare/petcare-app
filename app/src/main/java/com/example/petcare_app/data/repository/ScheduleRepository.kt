@@ -1,17 +1,18 @@
 package com.example.petcare_app.data.repository
 
 import com.example.petcare_app.data.model.Schedule
+import com.example.petcare_app.data.services.ScheduleService
 import retrofit2.Response
 import java.time.LocalDateTime
 
-interface ScheduleRepository {
-    val api : ScheduleRepository
-
+class ScheduleRepository(
+    private val api: ScheduleService
+) {
     suspend fun getAllSchedulesMonthByUser(
         token: String,
         id: Int,
         dateTime: LocalDateTime
-    ) : Response<List<Schedule>> {
+    ): Response<List<Schedule>> {
         return api.getAllSchedulesMonthByUser(token, id, dateTime)
     }
 
@@ -19,7 +20,7 @@ interface ScheduleRepository {
         token: String,
         id: Int,
         dateTime: LocalDateTime
-    ) : Response<List<Schedule>> {
+    ): Response<List<Schedule>> {
         return api.getAllSchedulesMonthByPet(token, id, dateTime)
     }
 }

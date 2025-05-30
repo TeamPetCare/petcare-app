@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,17 +23,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.petcare_app.R
 import com.example.petcare_app.data.viewmodel.VerifyTokenViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.theme.customColorScheme
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun SplashScreen(navHostController: NavHostController) {
     val context = LocalContext.current
-    val viewModel: VerifyTokenViewModel = viewModel()
+    val viewModel: VerifyTokenViewModel = koinViewModel()
 
-    val tokenFlow = remember { TokenDataStore.getInstance(context).getToken }
+    val dataStore: TokenDataStore = koinInject()
+
+    val tokenFlow = remember { dataStore.getToken }
     val token by tokenFlow.collectAsState(initial = null)
 
     var isLoading by remember { mutableStateOf(true) }

@@ -38,6 +38,7 @@ import com.example.petcare_app.ui.components.layouts.LoadingBar
 import com.example.petcare_app.ui.theme.customColorScheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("CoroutineCreationDuringComposition", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -48,7 +49,7 @@ fun WelcomeScreen(navController: NavController) {
 
     // Estado do CPF
     var cpf by remember { mutableStateOf("") }
-    val viewModel: CpfValidationViewModel = viewModel()
+    val viewModel: CpfValidationViewModel = koinViewModel()
     val cpfResult by viewModel.cpfValidate.collectAsState()
     var cpfErro by remember { mutableStateOf(false) }
 

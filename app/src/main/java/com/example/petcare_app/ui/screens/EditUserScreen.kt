@@ -1,5 +1,7 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,9 +49,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
+import com.example.petcare_app.data.services.UserService
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -63,33 +65,42 @@ import com.example.petcare_app.ui.components.layouts.WhiteCanvas
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
-@Preview(showBackground = true)
-@Composable
-private fun EditUserScreenPreview() {
-    val navControllerMock = rememberNavController()
-    val editUserViewModelMock = SignUpViewModel()
-    EditUserScreen(navControllerMock, editUserViewModelMock)
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun EditUserScreenPreview() {
+//    val navControllerMock = rememberNavController()
+//    val editUserViewModelMock = EditUserViewModel()
+//    EditUserScreen(navControllerMock, editUserViewModelMock)
+//}
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
+fun EditUserScreen(navController: NavController, editUserViewModel: EditUserViewModel) {
     val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
 
     val token by dataStore.getToken.collectAsState(initial = null)
     val id by dataStore.getId.collectAsState(initial = null)
-    var editUserViewModel: EditUserViewModel = viewModel()
+
+    Text("Token: ${token ?: "null"}")
+    Text("ID: ${id ?: "null"}")
 
     val user = editUserViewModel.editUser
 
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-          editUserViewModel.getUserById(
-              token!!, id!!
-         )
+    LaunchedEffect(token, id) {
+        if (!token.isNullOrBlank() && id != null) {
+            Log.d("EditUserScreen", "Token: $token | ID: $id")
+            editUserViewModel.getUserById(token!!, id!!)
+        } else {
+            Log.w("EditUserScreen", "Token ou ID nulo: token=$token, id=$id")
         }
+    }
+
+
 
 
     var isFormSubmitted by remember { mutableStateOf(false) }
@@ -116,9 +127,11 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
             user.email.isEmpty() || !user.email.matches("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$".toRegex())
         celularErro =
             user.celular.isEmpty() || !user.celular.matches("^\\(?\\d{2}\\)?\\s?9\\d{4}-?\\d{4}\$".toRegex())
-        senhaErro =
-            user.senha.isEmpty() || !user.senha.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$".toRegex())
-        confirmarSenhaErro = user.novaSenha.isNotEmpty() && (user.confirmarSenha.isEmpty() || user.confirmarSenha != user.novaSenha)
+        confirmarSenhaErro = when {
+            user.novaSenha.isEmpty() && user.confirmarSenha.isEmpty() -> false
+            user.novaSenha.isNotEmpty() && user.confirmarSenha.isNotEmpty() -> user.novaSenha != user.confirmarSenha
+            else -> true
+        }
         cepErro = user.cep.length < 8
         logradouroErro = user.logradouro.length < 5
         bairroErro = user.bairro.length < 5
@@ -209,7 +222,7 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    ImageEditorComposable()
+                    ImageEditorComposable(editUserViewModel, user.userImg)
 
 //      Campos do formulário
                     Spacer(modifier = Modifier.height(18.dp))
@@ -268,31 +281,31 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                         enabled = editarInfos
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    PasswordInput(
-                        label = "Senha Atual",
-                        value = user.senha,
-                        onValueChange = { senhaAtual ->
-                            editUserViewModel.updateEditUser { copy(senha = senhaAtual) }
-                        },
-                        placeholder = "Senha atual",
-                        modifier = Modifier.fillMaxWidth(),
-                        isFormSubmitted = isFormSubmitted,
-                        isError = senhaErro,
-                        confirmarSenha = false,
-                        enabled = editarInfos
-                    )
+//                    PasswordInput(
+//                        label = "Senha Atual",
+//                        value = user.senha,
+//                        onValueChange = { senhaAtual ->
+//                            editUserViewModel.updateEditUser { copy(senha = senhaAtual) }
+//                        },
+//                        placeholder = "Senha atual",
+//                        modifier = Modifier.fillMaxWidth(),
+//                        isFormSubmitted = isFormSubmitted,
+//                        isError = senhaErro,
+//                        confirmarSenha = false,
+//                        enabled = editarInfos
+//                    )
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = "Esqueci minha senha",
-                        fontWeight = FontWeight.Normal,
-                        color = customColorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .clickable {
-                                // função futura
-                            }
-                    )
+//                    Text(
+//                        text = "Esqueci minha senha",
+//                        fontWeight = FontWeight.Normal,
+//                        color = customColorScheme.primary,
+//                        textDecoration = TextDecoration.Underline,
+//                        modifier = Modifier
+//                            .align(Alignment.End)
+//                            .clickable {
+//                                // função futura
+//                            }
+//                    )
                     if (editarInfos) {
                         Spacer(modifier = Modifier.height(12.dp))
                         PasswordInput(
@@ -467,7 +480,10 @@ fun EditUserScreen(navController: NavController, signUpViewModel: SignUpViewMode
                             Button(
                                 onClick = {
                                     if (validateForm()) {
-                                        sendData()
+                                        if(token != null && id != null){
+                                            editUserViewModel.updateUser(token!!, id!!)
+                                        }
+
                                         editarInfos = false
                                     } else isFormSubmitted = true
                                 },

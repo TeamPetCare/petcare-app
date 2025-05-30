@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,7 +49,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.data.viewmodel.SchedulesHomeAppViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoCard
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoItem
@@ -62,6 +62,8 @@ import com.example.petcare_app.ui.components.plansComponents.PlanCard
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -70,13 +72,13 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun HomeScreenApp(navController: NavController) {
     val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
 
     val token by dataStore.getToken.collectAsState(initial = null)
     val id by dataStore.getId.collectAsState(initial = null)
     val dateNow = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
-    val viewModel: SchedulesHomeAppViewModel = viewModel()
+    val viewModel: SchedulesHomeAppViewModel = koinViewModel()
 
     LaunchedEffect(token, id) {
         if (token != null && id != null) {

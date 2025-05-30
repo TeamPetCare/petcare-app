@@ -30,6 +30,7 @@
     import com.example.petcare_app.ui.screens.SignUpUserScreen
     import com.example.petcare_app.ui.screens.SplashScreen
     import com.example.petcare_app.ui.screens.WelcomeScreen
+    import org.koin.androidx.compose.koinViewModel
 
     sealed class Screen(val route: String) {
         object Splash : Screen("splash")
@@ -53,7 +54,7 @@
 
     @Composable
     fun NavGraph(navController: NavHostController) {
-        val signUpViewModel: SignUpViewModel = viewModel()
+        val signUpViewModel: SignUpViewModel = koinViewModel()
 
         NavHost(navController = navController, startDestination = Screen.Splash.route) {
             composable(Screen.Splash.route) { SplashScreen(navController) }
@@ -69,7 +70,7 @@
             composable(Screen.Schedules.route) { SchedulesScreen(navController) }
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
-            composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
+            composable(Screen.EditUser.route) { EditUserScreen(navController, koinViewModel<EditUserViewModel>()) }
             composable("schedule_details/{scheduleId}") { backStackEntry ->
                 val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
                 ScheduleDetailsScreen(navController, scheduleId)

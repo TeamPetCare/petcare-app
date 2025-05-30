@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +37,6 @@ import androidx.navigation.NavController
 import com.example.petcare_app.R
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.buttons.LogoutButton
 import com.example.petcare_app.ui.components.layouts.LoadingBar
@@ -44,11 +44,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.compose.koinInject
 
 @Composable
 fun SettingsScreen(navController: NavController) {
     val context = LocalContext.current
-    val tokenDataStore = TokenDataStore.getInstance(context)
+    val tokenDataStore: TokenDataStore = koinInject()
+
 
     Column(
         modifier = Modifier.fillMaxSize()

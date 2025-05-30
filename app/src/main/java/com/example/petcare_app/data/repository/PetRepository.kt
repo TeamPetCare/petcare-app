@@ -6,8 +6,9 @@ import com.example.petcare_app.data.model.Pet
 import com.example.petcare_app.data.services.PetService
 import retrofit2.Response
 
-interface PetRepository {
-    val api : PetService
+class PetRepository(
+    private val api : PetService
+) {
     suspend fun createPet(pet: PetCreateDTO): Response<Pet> {
         return api.createPet(pet)
     }

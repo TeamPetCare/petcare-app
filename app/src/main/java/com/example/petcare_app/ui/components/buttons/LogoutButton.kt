@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.components.buttons
 
+import TokenDataStore
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.petcare_app.R
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.dialogs.ConfirmationDialog
 import com.example.petcare_app.ui.components.layouts.LoadingBar
