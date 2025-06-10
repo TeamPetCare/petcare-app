@@ -31,4 +31,8 @@ object RetrofitInstance {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
+    // Instância da API de pagamentos
+    val paymentApi: PaymentApiService by lazy {
+        retrofit.create(PaymentApiService::class.java)
+    }
 }

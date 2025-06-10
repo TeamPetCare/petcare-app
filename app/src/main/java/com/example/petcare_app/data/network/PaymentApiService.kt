@@ -6,6 +6,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface PaymentApiService {
-    @POST("api/payments/pix/{userId}")
+    @POST("payments/pix/{userId}")
     suspend fun createPixPayment(@Path("userId") userId: Int): Response<PaymentResponse>
 }
