@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,11 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.petcare_app.data.viewmodel.CreateScheduleViewModel
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.dialogs.createSchedule.CreateScheduleDialog
+import com.example.petcare_app.ui.components.dialogs.createSchedule.CreateScheduleFlowDialog
 import com.example.petcare_app.ui.theme.customColorScheme
 
 
@@ -39,12 +43,12 @@ fun GadjetBarComposable(
     navController: NavController,
 ) {
     val openCreateScheduleDialog = remember { mutableStateOf(false) }
+    val createScheduleViewModel: CreateScheduleViewModel = viewModel() // ← NOVO
 
     NavigationBar (
         containerColor = Color.White,
         contentColor = customColorScheme.primary,
-        modifier = Modifier
-            .padding(0.dp)
+        modifier = Modifier.padding(0.dp)
     ) {
         val items = listOf(
             "homeapp" to Pair(Icons.Outlined.Home, Icons.Filled.Home),
@@ -67,7 +71,7 @@ fun GadjetBarComposable(
                         modifier = Modifier
                             .size(30.dp)
                             .padding(0.dp)
-                        )
+                    )
                 },
                 selected = false,
                 onClick = {
@@ -81,10 +85,8 @@ fun GadjetBarComposable(
                         }
                     }
                 }
-
             )
         }
-
 
         NavigationBarItem(
             icon = {
@@ -101,15 +103,16 @@ fun GadjetBarComposable(
                         Icons.Filled.Add,
                         contentDescription = "Criar Agendamento",
                         tint = Color.White,
-                        modifier = Modifier
-                            .size(43.dp)
+                        modifier = Modifier.size(43.dp)
                     )
                 }
             },
             selected = false,
-            onClick = { openCreateScheduleDialog.value = true }
+            onClick = {
+                openCreateScheduleDialog.value = true
+                createScheduleViewModel.hideScheduleFlow() // Reset do fluxo
+            }
         )
-
 
         items.drop(2).forEach { (route, icons) ->
             val icon = if(currentRoute == route) icons.second else icons.first
@@ -120,8 +123,7 @@ fun GadjetBarComposable(
                         icon,
                         contentDescription = route,
                         tint = customColorScheme.primary,
-                        modifier = Modifier
-                            .size(30.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 },
                 selected = false,
@@ -136,19 +138,32 @@ fun GadjetBarComposable(
         }
     }
 
+    // ← LÓGICA ATUALIZADA DOS DIALOGS
+    // Fechar o dialog original quando o fluxo começar
+    LaunchedEffect(createScheduleViewModel.shouldCloseOriginalDialog) {
+        if (createScheduleViewModel.shouldCloseOriginalDialog) {
+            openCreateScheduleDialog.value = false
+        }
+    }
+
+    // Dialog original (formulário)
     if (openCreateScheduleDialog.value) {
         CreateScheduleDialog(
-            setOpenCreateScheduleDialog = { openCreateScheduleDialog.value = false }
+            onConfirm = { formData ->
+                android.util.Log.d("GadjetBarComposable", "📨 onConfirm recebido! Iniciando fluxo...")
+                createScheduleViewModel.startScheduleFlow(formData) // ← CONECTA COM O VIEWMODEL
+            },
+            setOpenCreateScheduleDialog = {
+                openCreateScheduleDialog.value = it
+            }
         )
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GadgetsPreview() {
-    val navController = rememberNavController()
-
-    GadjetBarComposable(
-        navController = navController
-    )
+    // Novo fluxo (pagamento → confirmação → sucesso)
+    if (createScheduleViewModel.showScheduleFlow) {
+        CreateScheduleFlowDialog(
+            viewModel = createScheduleViewModel,
+            onDismiss = { createScheduleViewModel.hideScheduleFlow() }
+        )
+    }
 }
