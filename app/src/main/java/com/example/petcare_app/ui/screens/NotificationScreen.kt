@@ -118,7 +118,7 @@ fun NotificationScren(navController: NavController, notificationViewModel: Notif
                                     notificationViewModel.getAllUserNotificationsById(token!!, id!!)
                                 },
                                 colors = buttonColors(
-                                    containerColor = if (notificationViewModel.page.value > 0) Color(109, 124, 132) else customColorScheme.error,
+                                    containerColor = if (notificationViewModel.page.value > 0) customColorScheme.primary else Color(109, 124, 132),
                                     contentColor = Color.White,
                                 )
                             ) {
