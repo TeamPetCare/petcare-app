@@ -5,6 +5,7 @@ import com.example.petcare_app.data.network.RetrofitInstance
 import com.example.petcare_app.data.repository.CpfValidationRepository
 import com.example.petcare_app.data.repository.ImageRepository
 import com.example.petcare_app.data.repository.LoginRepository
+import com.example.petcare_app.data.repository.NotificationRepository
 import com.example.petcare_app.data.repository.PetRepository
 import com.example.petcare_app.data.repository.PlanRepository
 import com.example.petcare_app.data.repository.RaceRepository
@@ -15,6 +16,7 @@ import com.example.petcare_app.data.repository.UserRepository
 import com.example.petcare_app.data.services.CpfValidationService
 import com.example.petcare_app.data.services.ImageService
 import com.example.petcare_app.data.services.LoginService
+import com.example.petcare_app.data.services.NotificationService
 import com.example.petcare_app.data.services.PetService
 import com.example.petcare_app.data.services.PlanService
 import com.example.petcare_app.data.services.RaceService
@@ -25,6 +27,7 @@ import com.example.petcare_app.data.services.UserService
 import com.example.petcare_app.data.viewmodel.CpfValidationViewModel
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.LoginViewModel
+import com.example.petcare_app.data.viewmodel.NotificationViewModel
 import com.example.petcare_app.data.viewmodel.SchedulesDetailsViewModel
 import com.example.petcare_app.data.viewmodel.SchedulesHomeAppViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
@@ -62,6 +65,14 @@ val appModule = module{
 
     single <LoginRepository> {
         LoginRepository(get())
+    }
+
+    single <NotificationService> {
+        RetrofitInstance.retrofit.create(NotificationService::class.java)
+    }
+
+    single <NotificationRepository> {
+        NotificationRepository(get())
     }
 
     single <PetService> {
@@ -130,6 +141,10 @@ val appModule = module{
 
     viewModel<LoginViewModel> {
         LoginViewModel(get(), get())
+    }
+
+    viewModel <NotificationViewModel> {
+        NotificationViewModel(get())
     }
 
     viewModel<SchedulesHomeAppViewModel> {

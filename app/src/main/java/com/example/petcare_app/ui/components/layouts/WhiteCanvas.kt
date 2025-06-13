@@ -32,11 +32,11 @@ import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 
 
-@Preview
-@Composable
-private fun WhiteCanvasPrev() {
-    val navController = rememberNavController()
-    WhiteCanvas(modifier = Modifier, icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture), "Editar Perfil", true, {}, navController)}
+//@Preview
+//@Composable
+//private fun WhiteCanvasPrev() {
+//    val navController = rememberNavController()
+//    WhiteCanvas(modifier = Modifier, icon = ImageVector.vectorResource(R.drawable.ic_no_profile_picture), "Editar Perfil", true, {}, navController)}
 
 @Composable
 fun WhiteCanvas(

@@ -85,7 +85,7 @@ fun ScheduleDetailsScreen(
     val token by dataStore.getToken.collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
-    schedulesDetailsViewModel.getScheduleDetails("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDk5NTc2NzV9.ODRBMDhxOW0LAF7LsAvEm4gaTmsAwOXqQdYMOjxkhp8", scheduleId)
+    schedulesDetailsViewModel.getScheduleDetails(token!!, scheduleId)
     }
 
     val schedule = schedulesDetailsViewModel.scheduleDetailsResponseDTO.value
