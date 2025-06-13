@@ -27,6 +27,10 @@
     import com.example.petcare_app.ui.screens.ScheduleDetailData
     import com.example.petcare_app.ui.screens.ScheduleDetailsScreen
     import com.example.petcare_app.ui.screens.SchedulesScreen
+//    import com.example.petcare_app.ui.screens.CreateScheduleScreen
+//    import com.example.petcare_app.ui.screens.SchedulePaymentScreen
+//    import com.example.petcare_app.ui.screens.PaymentConfirmationScreen
+//    import com.example.petcare_app.ui.screens.ScheduleSuccessScreen
     import com.example.petcare_app.ui.screens.SettingsScreen
     import com.example.petcare_app.ui.screens.SignUpPetScreen
     import com.example.petcare_app.ui.screens.SignUpUserScreen
@@ -46,6 +50,10 @@
         object LoadingToAppHome : Screen("loadingtoapphome")
         object Plans : Screen("plans")
         object Schedules : Screen("schedules") // Tela de Agendamentos
+        object CreateSchedule : Screen("create_schedule")
+        object SchedulePayment : Screen("schedule_payment")
+        object PaymentConfirmation : Screen("payment_confirmation")
+        object ScheduleSuccess : Screen("schedule_success")
         object Settings : Screen("settings") // Tela de Configurações
         object Notifications : Screen("notifications")
         object EditUser : Screen("editUser")
@@ -71,6 +79,10 @@
             composable(Screen.LoadingToAppHome.route) { LoadingScreenToAppHome(navController, Screen.HomeApp.route) }
             composable(Screen.Plans.route) { PlansScreen(navController) }
             composable(Screen.Schedules.route) { SchedulesScreen(navController) }
+//            composable(Screen.CreateSchedule.route) { CreateScheduleScreen(navController) }
+//            composable(Screen.SchedulePayment.route) { SchedulePaymentScreen(navController) }
+//            composable(Screen.PaymentConfirmation.route) { PaymentConfirmationScreen(navController) }
+//            composable(Screen.ScheduleSuccess.route) { ScheduleSuccessScreen(navController) }
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }

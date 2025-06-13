@@ -156,7 +156,7 @@ fun AgendamentoCard(
 data class AgendamentoItem (
     val id: Int,
     val scheduleDate: LocalDateTime,
-    val servicos: List<String>,
+    val servicos: List<String?>?,
     val statusPagamento: Boolean,
     val statusAgendamento: String,
     val nomePet: String,
