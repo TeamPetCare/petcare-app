@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,30 +36,25 @@ import com.example.petcare_app.ui.theme.montserratFontFamily
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import androidx.compose.material.icons.filled.Check
+import com.example.petcare_app.data.dto.ScheduleDTO
+import com.example.petcare_app.data.model.Schedule
+import com.example.petcare_app.utils.DataUtils.calcularHorarioFinal
+import com.example.petcare_app.utils.DataUtils.formatarDataHora
+import java.time.LocalDateTime
 
+@SuppressLint("NewApi")
 @Composable
-fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null) {
-    // Dados mockados para demonstração - depois serão substituídos pelos dados reais do BD
-    val mockScheduleData = ScheduleDetailData(
-        id = "001",
-        title = "Banho e Tosa",
-        status = "AGENDADO",
-        date = "17 Jan 2025",
-        timeRange = "10:00-11:00",
-        address = "Avenida Inocêncio Seráfico",
-        petName = "Rex",
-        paymentMethod = "Pix",
-        isPaid = true,
-        description = "Ainda não há detalhes sobre este atendimento.",
-        services = listOf(
-            ServiceItem("Banho", 20.00),
-            ServiceItem("Tosa", 40.00)
-        ),
-        photos = listOf(
-            R.drawable.pets_welcome, // Usando imagens do projeto
-            R.drawable.pet_hand_high_five
-        )
-    )
+fun ScheduleDetailsScreen(navController: NavController, schedule: Schedule) {
+    val servicosFormatados = when (schedule.services.size) {
+        0 -> ""
+        1 -> schedule.services[0].name
+        2 -> "${schedule.services[0].name} e ${schedule.services[1].name}"
+        else -> {
+            val inicio = schedule.services.dropLast(1).map { it.name }.joinToString(", ")
+            val ultimo = schedule.services.last().name
+            "$inicio e $ultimo"
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -107,20 +103,20 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = "${mockScheduleData.title} #${mockScheduleData.id}",
+                            text = "${servicosFormatados} #${schedule.id}",
                             style = sentenceTitleTextStyle,
                             color = customColorScheme.primary,
                             modifier = Modifier.weight(1f)
                         )
 
-                        StatusAgendamento(status = mockScheduleData.status)
+                        StatusAgendamento(status = schedule.scheduleStatus)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Data e hora
                     Text(
-                        text = "${mockScheduleData.date} | ${mockScheduleData.timeRange}",
+                        text = "${formatarDataHora(LocalDateTime.parse(schedule.scheduleDate))} - ${calcularHorarioFinal(schedule.scheduleDate, schedule.scheduleTime)}",
                         fontSize = 16.sp,
                         color = customColorScheme.primary,
                         fontFamily = montserratFontFamily,
@@ -128,23 +124,6 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    // Endereço
-                    Text(
-                        text = "Endereço",
-                        fontSize = 14.sp,
-                        color = Color(0xFF707070),
-                        fontFamily = montserratFontFamily,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = mockScheduleData.address,
-                        fontSize = 14.sp,
-                        color = customColorScheme.primary,
-                        fontFamily = montserratFontFamily
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     // Pet e Pagamento
                     Row(
@@ -162,7 +141,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = mockScheduleData.petName,
+                                text = schedule.pet.name,
                                 fontSize = 14.sp,
                                 color = customColorScheme.primary,
                                 fontFamily = montserratFontFamily
@@ -179,12 +158,14 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                                 fontFamily = montserratFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
-                            Text(
-                                text = mockScheduleData.paymentMethod,
-                                fontSize = 14.sp,
-                                color = customColorScheme.primary,
-                                fontFamily = montserratFontFamily
-                            )
+                            schedule.payment?.paymentMethod?.let {
+                                Text(
+                                    text = it,
+                                    fontSize = 14.sp,
+                                    color = customColorScheme.primary,
+                                    fontFamily = montserratFontFamily
+                                )
+                            }
                         }
 
                         Column(
@@ -192,10 +173,10 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             horizontalAlignment = Alignment.End
                         ) {
                             StatusComposable(
-                                icon = Icons.Default.Check,
-                                status = "Pago",
-                                fontColor = Color.White,
-                                backgroundColor = Color(0xFF2EC114),
+                                icon = if (schedule.payment?.paymentStatus == "APPROVED") Icons.Default.Check else Icons.Default.Close,
+                                status = if (schedule.payment?.paymentStatus == "APPROVED") "Pago" else "Não Pago",
+                                fontColor = if (schedule.payment?.paymentStatus == "APPROVED") Color(0xFF2EC114) else Color(0xFFC11414),
+                                backgroundColor = if (schedule.payment?.paymentStatus == "APPROVED") Color(0xFF2EC114) else Color(0xFFC11414),
                                 textColor = Color.White
                             )
                         }
@@ -212,7 +193,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = mockScheduleData.description,
+                        text = schedule.scheduleNote,
                         fontSize = 14.sp,
                         color = customColorScheme.primary,
                         fontFamily = montserratFontFamily
@@ -231,7 +212,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    mockScheduleData.services.forEach { service ->
+                    schedule.services.forEach { service ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -272,7 +253,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "R$${String.format("%.2f", mockScheduleData.services.sumOf { it.price })}",
+                            text = "R$${String.format("%.2f", schedule.services.sumOf { it.price })}",
                             fontSize = 16.sp,
                             color = customColorScheme.primary,
                             fontFamily = montserratFontFamily,
@@ -283,67 +264,66 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Botão Baixar Comprovante
-                    Button(
-                        onClick = {
-                            // Ação para baixar comprovante
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(38.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = customColorScheme.primary,
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(18.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Baixar comprovante",
-                                fontSize = 16.sp,
-                                fontFamily = montserratFontFamily,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowRight,
-                                contentDescription = "Baixar",
-                                tint = Color.White
-                            )
-                        }
-                    }
+//                    Button(
+//                        onClick = {
+//                            // Ação para baixar comprovante
+//                        },
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(38.dp),
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = customColorScheme.primary,
+//                            contentColor = Color.White
+//                        ),
+//                        shape = RoundedCornerShape(18.dp)
+//                    ) {
+//                        Row(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            verticalAlignment = Alignment.CenterVertically
+//                        ) {
+//                            Text(
+//                                text = "Baixar comprovante",
+//                                fontSize = 16.sp,
+//                                fontFamily = montserratFontFamily,
+//                                fontWeight = FontWeight.SemiBold
+//                            )
+//                            Icon(
+//                                imageVector = Icons.Default.KeyboardArrowRight,
+//                                contentDescription = "Baixar",
+//                                tint = Color.White
+//                            )
+//                        }
+//                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Fotos
-                    Text(
-                        text = "Fotos",
-                        fontSize = 14.sp,
-                        color = Color(0xFF707070),
-                        fontFamily = montserratFontFamily,
-                        fontWeight = FontWeight.Bold
-                    )
+//                    // Fotos
+//                    Text(
+//                        text = "Fotos",
+//                        fontSize = 14.sp,
+//                        color = Color(0xFF707070),
+//                        fontFamily = montserratFontFamily,
+//                        fontWeight = FontWeight.Bold
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    LazyRow(
+//                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                    ) {
+//                        items(mockScheduleData.photos) { photo ->
+//                            Image(
+//                                painter = painterResource(id = photo),
+//                                contentDescription = "Foto do atendimento",
+//                                modifier = Modifier
+//                                    .size(120.dp)
+//                                    .clip(RoundedCornerShape(8.dp)),
+//                                contentScale = ContentScale.Crop
+//                            )
+//                        }
+//                    }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(mockScheduleData.photos) { photo ->
-                            Image(
-                                painter = painterResource(id = photo),
-                                contentDescription = "Foto do atendimento",
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
@@ -375,5 +355,5 @@ data class ServiceItem(
 @Composable
 fun ScheduleDetailsScreenPreview() {
     val navController = rememberNavController()
-    ScheduleDetailsScreen(navController, 1)
+//    ScheduleDetailsScreen(navController, 1)
 }
