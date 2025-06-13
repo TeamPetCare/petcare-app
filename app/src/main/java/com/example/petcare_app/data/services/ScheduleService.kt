@@ -1,5 +1,6 @@
 package com.example.petcare_app.data.services
 
+import com.example.petcare_app.data.dto.ScheduleDetailsResponseDTO
 import com.example.petcare_app.data.dto.UserCreateDTO
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.User
@@ -26,5 +27,11 @@ interface ScheduleService {
         @Path("id") id: Int,
         @Body date: LocalDateTime
     ): Response<List<Schedule>>
+
+    @GET("schedules/details/{id}")
+    suspend fun getScheduleDetailById(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ) : Response<ScheduleDetailsResponseDTO>
 
 }

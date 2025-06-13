@@ -25,6 +25,7 @@ import com.example.petcare_app.data.services.UserService
 import com.example.petcare_app.data.viewmodel.CpfValidationViewModel
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.LoginViewModel
+import com.example.petcare_app.data.viewmodel.SchedulesDetailsViewModel
 import com.example.petcare_app.data.viewmodel.SchedulesHomeAppViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.data.viewmodel.VerifyTokenViewModel
@@ -133,6 +134,10 @@ val appModule = module{
 
     viewModel<SchedulesHomeAppViewModel> {
         SchedulesHomeAppViewModel(get(), get())
+    }
+
+    viewModel<SchedulesDetailsViewModel> {
+        SchedulesDetailsViewModel(get())
     }
 
     viewModel<SignUpViewModel> {

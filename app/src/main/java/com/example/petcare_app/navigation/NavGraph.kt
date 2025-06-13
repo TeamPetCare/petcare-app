@@ -14,6 +14,7 @@
     import com.example.petcare_app.data.repository.LoginRepository
     import com.example.petcare_app.data.viewmodel.EditUserViewModel
     import com.example.petcare_app.data.viewmodel.LoginViewModel
+    import com.example.petcare_app.data.viewmodel.SchedulesDetailsViewModel
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
     import com.example.petcare_app.ui.screens.EditUserScreen
     import com.example.petcare_app.ui.screens.HomeScreen
@@ -56,7 +57,8 @@
     fun NavGraph(navController: NavHostController) {
         val signUpViewModel: SignUpViewModel = koinViewModel()
 
-        NavHost(navController = navController, startDestination = Screen.Splash.route) {
+//        NavHost(navController = navController, startDestination = Screen.Splash.route) {
+        NavHost(navController = navController, Screen.ScheduleDetails.createRoute(scheduleId = 89)) {
             composable(Screen.Splash.route) { SplashScreen(navController) }
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.HomeApp.route) { HomeScreenApp(navController) }
@@ -71,9 +73,9 @@
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, koinViewModel<EditUserViewModel>()) }
-            composable("schedule_details/{scheduleId}") { backStackEntry ->
+            composable(Screen.ScheduleDetails.route) { backStackEntry ->
                 val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
-                ScheduleDetailsScreen(navController, scheduleId)
+                ScheduleDetailsScreen(navController, scheduleId!!, koinViewModel<SchedulesDetailsViewModel>())
             }
         }
     }

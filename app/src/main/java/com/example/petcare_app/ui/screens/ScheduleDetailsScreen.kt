@@ -1,5 +1,8 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,25 +38,82 @@ import com.example.petcare_app.ui.theme.montserratFontFamily
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.petcare_app.data.dto.ScheduleDetailsResponseDTO
+import com.example.petcare_app.data.viewmodel.SchedulesDetailsViewModel
+import kotlinx.coroutines.CoroutineScope
+import org.koin.compose.koinInject
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.coroutines.coroutineContext
 
+@SuppressLint("NewApi")
 @Composable
-fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null) {
+fun ScheduleDetailsScreen(
+    navController: NavController,
+    scheduleId: Int,
+    schedulesDetailsViewModel: SchedulesDetailsViewModel) {
     // Dados mockados para demonstração - depois serão substituídos pelos dados reais do BD
-    val mockScheduleData = ScheduleDetailData(
-        id = "001",
+//    val scheduleData = ScheduleDetailData(
+//        id = "1",
+//        title = "Banho e Tosa",
+//        status = "AGENDADO",
+//        date = "17 Jan 2025",
+//        timeRange = "10:00-11:00",
+//        address = "Avenida Inocêncio Seráfico",
+//        petName = "Rex",
+//        paymentMethod = "Pix",
+//        isPaid = true,
+//        description = "Ainda não há detalhes sobre este atendimento.",
+//        services = listOf(
+//            ServiceItem("Banho", 20.00),
+//            ServiceItem("Tosa", 40.00)
+//        ),
+//        photos = listOf(
+//            R.drawable.pets_welcome, // Usando imagens do projeto
+//            R.drawable.pet_hand_high_five
+//        )
+//    )
+
+
+    val dataStore: TokenDataStore = koinInject()
+
+    val token by dataStore.getToken.collectAsState(initial = null)
+
+    LaunchedEffect(Unit) {
+    schedulesDetailsViewModel.getScheduleDetails("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NDk5NTc2NzV9.ODRBMDhxOW0LAF7LsAvEm4gaTmsAwOXqQdYMOjxkhp8", scheduleId)
+    }
+
+    val schedule = schedulesDetailsViewModel.scheduleDetailsResponseDTO.value
+
+
+
+
+    val listaServices = mutableListOf<ServiceItem>()
+    schedule?.services?.forEach {
+        listaServices.add(ServiceItem(it.name, it.price))
+    }
+
+    Log.d("Schedule_log", "Dado: ${schedule?.services}")
+
+
+
+    val scheduleData = ScheduleDetailData(
+        id = schedule?.id.toString(),
         title = "Banho e Tosa",
-        status = "AGENDADO",
-        date = "17 Jan 2025",
-        timeRange = "10:00-11:00",
+        status = schedule?.scheduleStatus.toString(),
+        date = schedule?.scheduleDate.toString(),
+        timeRange = schedule?.scheduleTime.toString(),
         address = "Avenida Inocêncio Seráfico",
-        petName = "Rex",
-        paymentMethod = "Pix",
-        isPaid = true,
-        description = "Ainda não há detalhes sobre este atendimento.",
-        services = listOf(
-            ServiceItem("Banho", 20.00),
-            ServiceItem("Tosa", 40.00)
-        ),
+        petName = schedule?.petName.toString(),
+        paymentMethod = schedule?.paymentMethod.toString(),
+        isPaid = schedule?.paymentStatus.toString(),
+        description = schedule?.scheduleNote.toString(),
+        services = listaServices,
         photos = listOf(
             R.drawable.pets_welcome, // Usando imagens do projeto
             R.drawable.pet_hand_high_five
@@ -107,20 +167,20 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = "${mockScheduleData.title} #${mockScheduleData.id}",
+                            text = "${scheduleData.title} #${scheduleData.id}",
                             style = sentenceTitleTextStyle,
                             color = customColorScheme.primary,
                             modifier = Modifier.weight(1f)
                         )
 
-                        StatusAgendamento(status = mockScheduleData.status)
+                        StatusAgendamento(status = scheduleData.status)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Data e hora
                     Text(
-                        text = "${mockScheduleData.date} | ${mockScheduleData.timeRange}",
+                        text = "${scheduleData.date} | ${scheduleData.timeRange}",
                         fontSize = 16.sp,
                         color = customColorScheme.primary,
                         fontFamily = montserratFontFamily,
@@ -138,7 +198,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = mockScheduleData.address,
+                        text = scheduleData.address,
                         fontSize = 14.sp,
                         color = customColorScheme.primary,
                         fontFamily = montserratFontFamily
@@ -162,7 +222,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = mockScheduleData.petName,
+                                text = scheduleData.petName,
                                 fontSize = 14.sp,
                                 color = customColorScheme.primary,
                                 fontFamily = montserratFontFamily
@@ -180,7 +240,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = mockScheduleData.paymentMethod,
+                                text = scheduleData.paymentMethod,
                                 fontSize = 14.sp,
                                 color = customColorScheme.primary,
                                 fontFamily = montserratFontFamily
@@ -212,7 +272,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = mockScheduleData.description,
+                        text = scheduleData.description,
                         fontSize = 14.sp,
                         color = customColorScheme.primary,
                         fontFamily = montserratFontFamily
@@ -231,7 +291,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    mockScheduleData.services.forEach { service ->
+                    scheduleData.services.forEach { service ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -272,7 +332,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "R$${String.format("%.2f", mockScheduleData.services.sumOf { it.price })}",
+                            text = "R$${String.format("%.2f", scheduleData.services.sumOf { it.price })}",
                             fontSize = 16.sp,
                             color = customColorScheme.primary,
                             fontFamily = montserratFontFamily,
@@ -331,7 +391,7 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(mockScheduleData.photos) { photo ->
+                        items(scheduleData.photos) { photo ->
                             Image(
                                 painter = painterResource(id = photo),
                                 contentDescription = "Foto do atendimento",
@@ -350,6 +410,8 @@ fun ScheduleDetailsScreen(navController: NavController, scheduleId: Int? = null)
     }
 }
 
+
+
 // Modelos de dados
 data class ScheduleDetailData(
     val id: String,
@@ -360,9 +422,9 @@ data class ScheduleDetailData(
     val address: String,
     val petName: String,
     val paymentMethod: String,
-    val isPaid: Boolean,
+    val isPaid: String,
     val description: String,
-    val services: List<ServiceItem>,
+    val services: MutableList<ServiceItem>,
     val photos: List<Int> // Para recursos drawable, depois será List<String> para URLs
 )
 
@@ -371,9 +433,9 @@ data class ServiceItem(
     val price: Double
 )
 
-@Preview(showBackground = true)
-@Composable
-fun ScheduleDetailsScreenPreview() {
-    val navController = rememberNavController()
-    ScheduleDetailsScreen(navController, 1)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ScheduleDetailsScreenPreview() {
+//    val navController = rememberNavController()
+//    ScheduleDetailsScreen(navController, 1)
+//}
