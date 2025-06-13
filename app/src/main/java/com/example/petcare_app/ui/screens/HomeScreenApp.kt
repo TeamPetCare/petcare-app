@@ -100,7 +100,9 @@ fun HomeScreenApp(navController: NavController) {
             HeaderComposable(
                 navController
             )
-        }, bottomBar = { GadjetBarComposable(navController) }) { it ->
+        }, bottomBar = { GadjetBarComposable(navController) })
+
+        { it ->
             Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
                 if (viewModel.isLoading) {
                     LoadingBar()
@@ -133,7 +135,7 @@ fun HomeScreenApp(navController: NavController) {
                                     AgendamentoCard(
                                         AgendamentoItem(
                                             dataHoraAgendamento = LocalDateTime.parse(schedule.scheduleDate),
-                                            servicos = schedule.services.map { it.name },
+                                            servicos = schedule.services.mapNotNull { it.name },
                                             statusPagamento = schedule.payment?.paymentStatus == "PAGO",
                                             statusAgendamento = schedule.scheduleStatus,
                                             nomePet = schedule.pet.name

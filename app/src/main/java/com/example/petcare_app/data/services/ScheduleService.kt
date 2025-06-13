@@ -1,5 +1,6 @@
 package com.example.petcare_app.data.services
 
+import com.example.petcare_app.data.dto.ScheduleCreateDTO
 import com.example.petcare_app.data.dto.UserCreateDTO
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.User
@@ -27,4 +28,9 @@ interface ScheduleService {
         @Body date: LocalDateTime
     ): Response<List<Schedule>>
 
+    @POST("/api/schedules")
+    suspend fun createSchedule(
+        @Header("Authorization") token: String,
+        @Body scheduleCreateDTO: ScheduleCreateDTO
+    ): Response<Schedule>
 }
