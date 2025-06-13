@@ -16,7 +16,7 @@ interface NotificationService {
         @Path("id") id: Int
     ) : Response<NotificationResponseDTO>
 
-    @GET("notifications/user/{id}")
+    @GET("notifications/user/{id}?size=7")
     suspend fun getAllUserNotificationsById(
         @Header("Authorization") token: String,
         @Path("id") id: Int,
