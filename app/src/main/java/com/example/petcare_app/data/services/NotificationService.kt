@@ -3,6 +3,7 @@ package com.example.petcare_app.data.services
 import com.example.petcare_app.data.dto.NotificationResponseDTO
 import com.example.petcare_app.data.dto.ScheduleDetailsResponseDTO
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -22,4 +23,10 @@ interface NotificationService {
         @Path("id") id: Int,
         @Query("page") page: Int
     ) : Response<List<NotificationResponseDTO>>
+
+    @DELETE("notifications/{id}")
+    suspend fun deleteNotificationById(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+    ) : Response<Unit>
 }

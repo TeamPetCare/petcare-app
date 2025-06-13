@@ -3,6 +3,7 @@ package com.example.petcare_app.data.repository
 import com.example.petcare_app.data.dto.NotificationResponseDTO
 import com.example.petcare_app.data.services.NotificationService
 import retrofit2.Response
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 
@@ -13,7 +14,7 @@ class NotificationRepository(
     suspend fun getNotificationById(
         token: String,
         id: Int
-    ) : Response<NotificationResponseDTO> {
+    ): Response<NotificationResponseDTO> {
         return notificationService.getNotificationById(token, id)
     }
 
@@ -21,8 +22,15 @@ class NotificationRepository(
         token: String,
         id: Int,
         page: Int
-    ) : Response<List<NotificationResponseDTO>>{
+    ): Response<List<NotificationResponseDTO>> {
         return notificationService.getAllUserNotificationsById(token, id, page)
+    }
+
+    suspend fun deleteNotificationById(
+        token: String,
+        id: Int,
+    ): Response<Unit>{
+        return notificationService.deleteNotificationById(token, id)
     }
 
 

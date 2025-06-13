@@ -46,6 +46,19 @@ class NotificationViewModel(
             }
         }
     }
+
+    fun deleteNotificationById(token: String, id: Int, userId: Int){
+        viewModelScope.launch {
+            try {
+                val response = notificationRepository.deleteNotificationById(token, id)
+                if(response.isSuccessful){
+                    getAllUserNotificationsById(token, userId)
+                }
+            }catch (e: Exception){
+                Log.e("API_ERROR at NotificationViewModel", "Erro: ${e.message}")
+            }
+        }
+    }
 }
 
 fun mapToNotificationItem(dto: NotificationResponseDTO): NotificationItem {
@@ -73,6 +86,7 @@ fun mapToNotificationItem(dto: NotificationResponseDTO): NotificationItem {
     }
 
     return NotificationItem(
+        dto.id!!,
         dto.title!!,
         dto.description!!,
         fontColor,

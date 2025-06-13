@@ -69,9 +69,6 @@ fun NotificationScren(navController: NavController, notificationViewModel: Notif
     val token by dataStore.getToken.collectAsState(initial = null)
     val id by dataStore.getId.collectAsState(initial = null)
 
-    Text("Token: ${token ?: "null"}")
-    Text("ID: ${id ?: "null"}")
-
     LaunchedEffect(token, id) {
         if (!token.isNullOrBlank() && id != null) {
             Log.d("EditUserScreen", "Token: $token | ID: $id")
