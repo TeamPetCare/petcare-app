@@ -272,5 +272,6 @@ data class PetData(
 @Composable
 fun RegisteredPetsScreenPreview() {
     val navController = rememberNavController()
+
     RegisteredPetsScreen(navController)
 }
