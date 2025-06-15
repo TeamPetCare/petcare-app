@@ -1,4 +1,4 @@
-    package com.example.petcare_app.navigation
+package com.example.petcare_app.navigation
 
     import androidx.compose.runtime.Composable
     import androidx.compose.runtime.getValue
@@ -57,16 +57,17 @@
         object ScheduleSuccess : Screen("schedule_success")
         object Settings : Screen("settings") // Tela de Configurações
         object Notifications : Screen("notifications")
+        object PetRegister : Screen("pet_register")
         object EditUser : Screen("editUser")
         object ScheduleDetails : Screen("schedule_details/{scheduleId}") {
             fun createRoute(scheduleId: Int) = "schedule_details/$scheduleId"
         }
-
     }
+}
 
-    @Composable
-    fun NavGraph(navController: NavHostController) {
-        val signUpViewModel: SignUpViewModel = viewModel()
+@Composable
+fun NavGraph(navController: NavHostController) {
+    val signUpViewModel: SignUpViewModel = viewModel()
 
         NavHost(navController = navController, startDestination = Screen.Splash.route) {
             composable(Screen.Splash.route) { SplashScreen(navController) }
@@ -86,10 +87,11 @@
 //            composable(Screen.ScheduleSuccess.route) { ScheduleSuccessScreen(navController) }
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
+            composable(Screen.PetRegister.route) { PetRegisterScreen(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
             composable("schedule_details/{scheduleId}") { backStackEntry ->
                 val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
                 ScheduleDetailsScreen(navController, scheduleId!!)
             }
-        }
     }
+}
