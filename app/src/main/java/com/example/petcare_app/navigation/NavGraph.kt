@@ -52,7 +52,7 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.Settings.route) { SettingsScreen(navController) }
         composable(Screen.Notifications.route) { NotificationScren(navController) }
         composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
-        composable(Screen.PetRegister.route) { PetRegisterScreen(navController) } // 👈 NOVA ROTA AQUI
+        composable(Screen.PetRegister.route) { PetRegisterScreen(navController) }
         composable("schedule_details/{scheduleId}") { backStackEntry ->
             val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
             ScheduleDetailsScreen(navController, scheduleId)
