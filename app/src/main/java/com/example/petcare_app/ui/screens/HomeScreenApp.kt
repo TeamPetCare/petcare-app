@@ -100,19 +100,17 @@ fun HomeScreenApp(navController: NavController) {
             HeaderComposable(
                 navController
             )
-        }, bottomBar = { GadjetBarComposable(navController) })
-
-        { it ->
+        }, bottomBar = { GadjetBarComposable(navController) }) { it ->
             Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
-                if (viewModel.isLoading) {
-                    LoadingBar()
-                } else {
-                    WhiteCanvas(
-                        modifier = Modifier.fillMaxHeight(),
-                        icon = Icons.Filled.WatchLater,
-                        "Agendamentos do mês",
-                        navController = navController
-                    ) {
+                WhiteCanvas(
+                    modifier = Modifier.fillMaxHeight(),
+                    icon = Icons.Filled.WatchLater,
+                    "Agendamentos do mês",
+                    navController = navController
+                ) {
+                    if (viewModel.isLoading) {
+                        LoadingBar()
+                    } else {
                         FlowRow(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -135,13 +133,18 @@ fun HomeScreenApp(navController: NavController) {
                                     AgendamentoCard(
                                         AgendamentoItem(
                                             id = schedule.id ?: 0,
-                                            dataHoraAgendamento = LocalDateTime.parse(schedule.scheduleDate),
-                                            servicos = schedule.services.mapNotNull { it.name },
-                                            statusPagamento = schedule.payment?.paymentStatus == "PAGO",
+                                            scheduleDate = LocalDateTime.parse(schedule.scheduleDate),
+                                            servicos = schedule.services.map { it.name },
+                                            statusPagamento = schedule.payment?.paymentStatus == "APPROVED",
                                             statusAgendamento = schedule.scheduleStatus,
-                                            nomePet = schedule.pet.name
+                                            nomePet = schedule.pet.name,
+                                            review = schedule.review
                                         ),
-                                        navController = navController
+                                        navController = navController,
+                                        onAvaliar = { token, idAgendamento, nota ->
+                                            viewModel.reviewScheduleByID(token, idAgendamento, nota, id!!, dateNow)
+                                        },
+                                        token = token
                                     )
                                 }
                                 item {
@@ -167,7 +170,8 @@ fun HomeScreenApp(navController: NavController) {
                                         )
                                     }
                                 }
-                            } else {
+                            }
+                            else if (!viewModel.isLoading) {
                                 item {
                                     NenhumAgendamentoCard()
                                 }

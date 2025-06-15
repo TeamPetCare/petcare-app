@@ -14,5 +14,6 @@ data class Schedule(
     val pet: Pet,
     val payment: PaymentModel? = null,
     val services: List<Services> = emptyList(),
-    val employee: User? = null
+    val employee: User? = null,
+    val review: Int? = null
 )
