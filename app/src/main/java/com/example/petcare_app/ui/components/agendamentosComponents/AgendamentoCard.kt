@@ -58,6 +58,8 @@ fun AgendamentoCard(
         }
     }
 
+    val currentRoute = navController?.currentBackStackEntry?.destination?.route
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,7 +104,16 @@ fun AgendamentoCard(
                             tint = customColorScheme.primary,
                             modifier = Modifier
                                 .clickable {
-                                    navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id))
+                                    navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id)) {
+                                        currentRoute?.let {
+                                            popUpTo(it) {
+                                                inclusive = false
+                                                saveState = true
+                                            }
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
                         )
                     }

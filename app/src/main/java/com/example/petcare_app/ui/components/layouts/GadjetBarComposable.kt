@@ -1,5 +1,8 @@
 package com.example.petcare_app.ui.components.layouts
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -38,6 +41,7 @@ import com.example.petcare_app.ui.components.dialogs.createSchedule.CreateSchedu
 import com.example.petcare_app.ui.theme.customColorScheme
 
 
+@SuppressLint("NewApi")
 @Composable
 fun GadjetBarComposable(
     navController: NavController,
@@ -129,7 +133,10 @@ fun GadjetBarComposable(
                 selected = false,
                 onClick = {
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        popUpTo(Screen.HomeApp.route) {
+                            inclusive = false
+                            saveState = true
+                        }
                         launchSingleTop = true
                         restoreState = true
                     }
