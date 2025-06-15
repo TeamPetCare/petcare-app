@@ -23,9 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.petcare_app.data.dto.ScheduleDTO
 import com.example.petcare_app.data.dto.SchedulePUTDTO
 import com.example.petcare_app.data.model.Schedule
+import com.example.petcare_app.data.viewmodel.ScheduleDetailsViewModel
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.avaliacaoComponents.AvaliarAgendamento
 import com.example.petcare_app.ui.components.layouts.StatusAgendamento
@@ -40,22 +43,20 @@ import java.time.LocalDateTime
 @Composable
 fun AgendamentoCard(
     agendamento: AgendamentoItem,
-    schedule: Schedule? = null,
     navController: NavController? = null,
     onAvaliar: (token: String, id: Int, review: Int) -> Unit,
     token: String? = null
 ) {
-    val servicosFormatados = when (agendamento.servicos.size) {
+    val servicosFormatados = when (agendamento.servicos?.size) {
         0 -> ""
         1 -> agendamento.servicos[0]
         2 -> "${agendamento.servicos[0]} e ${agendamento.servicos[1]}"
         else -> {
-            val inicio = agendamento.servicos.dropLast(1).joinToString(", ")
-            val ultimo = agendamento.servicos.last()
+            val inicio = agendamento.servicos?.dropLast(1)?.joinToString(", ")
+            val ultimo = agendamento.servicos?.last()
             "$inicio e $ultimo"
         }
     }
-    val json = Uri.encode(Gson().toJson(schedule))
 
     Card(
         modifier = Modifier
@@ -63,7 +64,7 @@ fun AgendamentoCard(
             .fillMaxHeight()
             .padding(bottom = 8.dp)
             .clickable {
-                navController?.navigate(Screen.ScheduleDetails.createRoute(json))
+                navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id))
             },
         colors = CardDefaults.cardColors(containerColor = if (agendamento.statusAgendamento == "AGENDADO" || agendamento.statusAgendamento == "CONCLUIDO") customColorScheme.onSecondaryContainer else Color(0xFFF0F0F0)),
         shape = RoundedCornerShape(8.dp)
@@ -101,18 +102,20 @@ fun AgendamentoCard(
                             tint = customColorScheme.primary,
                             modifier = Modifier
                                 .clickable {
-                                    navController?.navigate(Screen.ScheduleDetails.createRoute(json))
+                                    navController?.navigate(Screen.ScheduleDetails.createRoute(agendamento.id))
                                 }
                         )
                     }
 
                     Row {
-                        Text(
-                            text = servicosFormatados,
-                            style = sentenceTitleTextStyle,
-                            fontSize = 22.sp,
-                            color = customColorScheme.primary
-                        )
+                        if (servicosFormatados != null) {
+                            Text(
+                                text = servicosFormatados,
+                                style = sentenceTitleTextStyle,
+                                fontSize = 22.sp,
+                                color = customColorScheme.primary
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(3.dp))

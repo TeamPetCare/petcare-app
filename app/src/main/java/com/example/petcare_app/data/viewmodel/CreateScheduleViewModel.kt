@@ -307,7 +307,7 @@ class CreateScheduleViewModel : ViewModel() {
             creationDate = creationDateTime,
             scheduleNote = if (formData.notes.isBlank()) null else formData.notes,
             petId = formData.pet.id,
-            paymentId = null, // Payment será null inicialmente
+            paymentId = 3, // Payment será null inicialmente
             serviceIds = formData.services.map { it.id },
             employeeId = formData.employee?.id,
             deletedAt = null

@@ -10,6 +10,7 @@
     import androidx.navigation.NavHostController
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
+    import com.example.petcare_app.data.dto.SchedulePUTDTO
     import com.example.petcare_app.data.model.Schedule
     import com.example.petcare_app.data.network.RetrofitInstance
     import com.example.petcare_app.data.repository.LoginRepository
@@ -57,8 +58,8 @@
         object Settings : Screen("settings") // Tela de Configurações
         object Notifications : Screen("notifications")
         object EditUser : Screen("editUser")
-        object ScheduleDetails : Screen("schedule_details/{schedule}") {
-            fun createRoute(scheduleJson: String) = "schedule_details/$scheduleJson"
+        object ScheduleDetails : Screen("schedule_details/{scheduleId}") {
+            fun createRoute(scheduleId: Int) = "schedule_details/$scheduleId"
         }
 
     }
@@ -86,10 +87,9 @@
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
-            composable("schedule_details/{schedule}") { backStackEntry ->
-                val scheduleJson = backStackEntry.arguments?.getString("schedule")
-                val schedule = Gson().fromJson(scheduleJson, Schedule::class.java)
-                ScheduleDetailsScreen(navController, schedule)
+            composable("schedule_details/{scheduleId}") { backStackEntry ->
+                val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
+                ScheduleDetailsScreen(navController, scheduleId!!)
             }
         }
     }

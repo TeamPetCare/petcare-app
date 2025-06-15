@@ -7,11 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 
 object RetrofitInstance {
-<<<<<<< HEAD
     private const val BASE_URL = "http://api.pet-care.software/"
-=======
-    private const val BASE_URL = "http://44.217.106.6/"
->>>>>>> dea19d2e9e37c5016d7bd519afc6a75f3ecdb48f
 
     val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

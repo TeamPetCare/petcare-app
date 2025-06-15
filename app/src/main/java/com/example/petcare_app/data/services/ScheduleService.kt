@@ -1,11 +1,9 @@
 package com.example.petcare_app.data.services
 
-<<<<<<< HEAD
 import com.example.petcare_app.data.dto.ScheduleDTO
 import com.example.petcare_app.data.dto.SchedulePUTDTO
-=======
 import com.example.petcare_app.data.dto.ScheduleCreateDTO
->>>>>>> dea19d2e9e37c5016d7bd519afc6a75f3ecdb48f
+import com.example.petcare_app.data.dto.ScheduleDetailsDTO
 import com.example.petcare_app.data.dto.UserCreateDTO
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.User
@@ -40,7 +38,6 @@ interface ScheduleService {
         @Body date: LocalDateTime
     ): Response<List<Schedule>>
 
-<<<<<<< HEAD
     @PUT("/api/schedules/review/{id}")
     suspend fun reviewScheduleByID(
         @Header("Authorization") token: String,
@@ -48,11 +45,22 @@ interface ScheduleService {
         @Query("review") nota: Int
     ) : Response<SchedulePUTDTO>
 
-=======
     @POST("/api/schedules")
     suspend fun createSchedule(
         @Header("Authorization") token: String,
         @Body scheduleCreateDTO: ScheduleCreateDTO
     ): Response<Schedule>
->>>>>>> dea19d2e9e37c5016d7bd519afc6a75f3ecdb48f
+
+    @PUT("/api/schedules/status/{id}")
+    suspend fun cancelSchedule(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Query("status") status: String
+    ) : Response<SchedulePUTDTO>
+
+    @GET("/api/schedules/details/{id}")
+    suspend fun getScheduleByID(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ) : Response<ScheduleDetailsDTO>
 }

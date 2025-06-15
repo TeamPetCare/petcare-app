@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petcare_app.data.dto.ScheduleDTO
 import com.example.petcare_app.data.dto.SchedulePUTDTO
+import com.example.petcare_app.data.model.PaymentModel
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.network.RetrofitInstance
+import com.example.petcare_app.data.services.PaymentService
 import com.example.petcare_app.data.services.PetService
 import com.example.petcare_app.data.services.ScheduleService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +50,7 @@ class SchedulesScreenViewModel : ViewModel() {
                     val schedules = response.body()
                     val filteredSchedules = schedules
                         ?.filter { it.deletedAt == null }
-                        ?.sortedBy { LocalDateTime.parse(it.scheduleDate) }
+                        ?.sortedByDescending { LocalDateTime.parse(it.scheduleDate) }
                         ?: emptyList()
                     _allSchedulesByUser.value = filteredSchedules
                 } else {

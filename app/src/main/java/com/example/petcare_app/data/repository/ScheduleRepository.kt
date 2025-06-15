@@ -1,37 +1,33 @@
 package com.example.petcare_app.data.repository
 
-<<<<<<< HEAD
 import com.example.petcare_app.data.dto.ScheduleDTO
 import com.example.petcare_app.data.dto.SchedulePUTDTO
-=======
 import com.example.petcare_app.data.dto.ScheduleCreateDTO
->>>>>>> dea19d2e9e37c5016d7bd519afc6a75f3ecdb48f
+import com.example.petcare_app.data.dto.ScheduleDetailsDTO
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.services.ScheduleService
 import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Path
 import java.time.LocalDateTime
 
-<<<<<<< HEAD
 interface ScheduleRepository {
     val api : ScheduleRepository
 
-    suspend fun getAllSchedulesByUser(
-        token: String,
-        id: Int
-    ) : Response<List<ScheduleDTO>> {
-        return api.getAllSchedulesByUser(token, id)
-    }
-
-=======
-class ScheduleRepository(private val api: ScheduleService) {
-    
->>>>>>> dea19d2e9e37c5016d7bd519afc6a75f3ecdb48f
     suspend fun getAllSchedulesMonthByUser(
         token: String, 
         id: Int, 
         month: LocalDateTime
     ): Response<List<Schedule>> {
         return api.getAllSchedulesMonthByUser(token, id, month)
+    }
+
+    suspend fun getAllSchedulesByUser(
+        token: String,
+        id: Int
+    ) : Response<List<ScheduleDTO>> {
+        return api.getAllSchedulesByUser(token, id)
     }
 
     suspend fun createSchedule(
@@ -55,5 +51,20 @@ class ScheduleRepository(private val api: ScheduleService) {
         nota: Int
     ) : Response<SchedulePUTDTO> {
         return api.reviewScheduleByID(token, id, nota)
+    }
+
+    suspend fun cancelSchedule(
+        token: String,
+        id: Int,
+        status: String
+    ) : Response<SchedulePUTDTO> {
+        return api.cancelSchedule(token, id, status)
+    }
+
+    suspend fun getScheduleByID(
+        token: String,
+        id: Int
+    ) : Response<ScheduleDetailsDTO> {
+        return api.getScheduleByID(token, id)
     }
 }

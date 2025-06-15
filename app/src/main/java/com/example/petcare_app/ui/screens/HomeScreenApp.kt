@@ -140,7 +140,6 @@ fun HomeScreenApp(navController: NavController) {
                                             nomePet = schedule.pet.name,
                                             review = schedule.review
                                         ),
-                                        schedule = schedule,
                                         navController = navController,
                                         onAvaliar = { token, idAgendamento, nota ->
                                             viewModel.reviewScheduleByID(token, idAgendamento, nota, id!!, dateNow)

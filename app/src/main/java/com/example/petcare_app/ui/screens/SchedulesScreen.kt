@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.viewmodel.SchedulesScreenViewModel
 import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
@@ -125,7 +126,6 @@ fun SchedulesScreen(navController: NavController) {
                                             nomePet = schedule.petName,
                                             review = schedule.review
                                         ),
-//                                        schedule = schedule,
                                         navController = navController,
                                         onAvaliar = { token, idAgendamento, nota ->
                                             viewModel.reviewScheduleByID(
