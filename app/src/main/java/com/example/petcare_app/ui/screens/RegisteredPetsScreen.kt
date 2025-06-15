@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
+import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -150,7 +151,8 @@ fun RegisteredPetsScreen(navController: NavController) {
                     // Botão Adicionar Pet
                     Button(
                         onClick = {
-                            // Navegar para tela de cadastro de pet
+                            navController.navigate(Screen.PetRegister.route)
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
