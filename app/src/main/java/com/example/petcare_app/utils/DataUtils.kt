@@ -3,6 +3,7 @@ package com.example.petcare_app.utils
 import android.annotation.SuppressLint
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 object DataUtils {
@@ -26,4 +27,18 @@ object DataUtils {
             }
         }
     }
+
+    @SuppressLint("NewApi")
+    fun calcularHorarioFinal(scheduleDate: String, scheduleTime: String): String {
+        val inicio = LocalDateTime.parse(scheduleDate)
+        val tempoExtra = LocalTime.parse(scheduleTime)
+
+        val resultado = inicio
+            .plusHours(tempoExtra.hour.toLong())
+            .plusMinutes(tempoExtra.minute.toLong())
+
+        val formatter = DateTimeFormatter.ofPattern("HH'h'mm")
+        return resultado.format(formatter)
+    }
+
 }

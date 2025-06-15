@@ -19,6 +19,11 @@ interface UserService {
         @Path("id") id: Int
     ): Response<User>
 
+    @GET("users/employees")
+    suspend fun getEmployees(
+        @Header("Authorization") token: String
+    ): Response<List<User>>
+
     @POST("auth/register")
     suspend fun createUser(
         @Body user: UserCreateDTO
