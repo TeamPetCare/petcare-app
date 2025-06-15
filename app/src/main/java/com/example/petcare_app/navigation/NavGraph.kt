@@ -10,6 +10,8 @@
     import androidx.navigation.NavHostController
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
+    import com.example.petcare_app.data.dto.SchedulePUTDTO
+    import com.example.petcare_app.data.model.Schedule
     import com.example.petcare_app.data.network.RetrofitInstance
     import com.example.petcare_app.data.repository.LoginRepository
     import com.example.petcare_app.data.viewmodel.EditUserViewModel
@@ -23,6 +25,8 @@
     import com.example.petcare_app.ui.screens.LoginScreen
     import com.example.petcare_app.ui.screens.NotificationScren
     import com.example.petcare_app.ui.screens.PlansScreen
+    import com.example.petcare_app.ui.screens.ScheduleDetailData
+    import com.example.petcare_app.ui.screens.ScheduleDetailsScreen
     import com.example.petcare_app.ui.screens.SchedulesScreen
 //    import com.example.petcare_app.ui.screens.CreateScheduleScreen
 //    import com.example.petcare_app.ui.screens.SchedulePaymentScreen
@@ -33,6 +37,7 @@
     import com.example.petcare_app.ui.screens.SignUpUserScreen
     import com.example.petcare_app.ui.screens.SplashScreen
     import com.example.petcare_app.ui.screens.WelcomeScreen
+    import com.google.gson.Gson
 
     sealed class Screen(val route: String) {
         object Splash : Screen("splash")
@@ -53,6 +58,10 @@
         object Settings : Screen("settings") // Tela de Configurações
         object Notifications : Screen("notifications")
         object EditUser : Screen("editUser")
+        object ScheduleDetails : Screen("schedule_details/{scheduleId}") {
+            fun createRoute(scheduleId: Int) = "schedule_details/$scheduleId"
+        }
+
     }
 
     @Composable
@@ -78,5 +87,9 @@
             composable(Screen.Settings.route) { SettingsScreen(navController) }
             composable(Screen.Notifications.route) { NotificationScren(navController) }
             composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
+            composable("schedule_details/{scheduleId}") { backStackEntry ->
+                val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
+                ScheduleDetailsScreen(navController, scheduleId!!)
+            }
         }
     }
