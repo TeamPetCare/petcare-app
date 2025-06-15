@@ -7,12 +7,13 @@ import com.example.petcare_app.data.services.PaymentService
 import retrofit2.Response
 
 interface PaymentRepository {
-    val api : PaymentService
+
+    val api: PaymentService
 
     suspend fun getPaymentByID(
         token: String,
         id: Int
-    ) : Response<Payment> {
+    ): Response<Payment> {
         return api.getPaymentsByID(token, id)
     }
 
@@ -20,8 +21,7 @@ interface PaymentRepository {
         token: String,
         id: Int,
         pixPaymentData: PixPaymentDTO
-    ) : Response<PaymentModel> {
+    ): Response<Payment> {
         return api.createPixPayment(token, id, pixPaymentData)
     }
-
 }

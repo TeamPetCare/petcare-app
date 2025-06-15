@@ -23,5 +23,5 @@ interface PaymentService {
         @Header("Authorization") token: String,
         @Path("id") id: Int,
         @Body pixPaymentData: PixPaymentDTO
-    ) : Response<PaymentModel>
+    ) : Response<Payment>
 }
