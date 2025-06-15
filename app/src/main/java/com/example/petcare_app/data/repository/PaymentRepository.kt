@@ -1,6 +1,8 @@
 package com.example.petcare_app.data.repository
 
+import com.example.petcare_app.data.dto.PixPaymentDTO
 import com.example.petcare_app.data.model.Payment
+import com.example.petcare_app.data.model.PaymentModel
 import com.example.petcare_app.data.services.PaymentService
 import retrofit2.Response
 
@@ -12,6 +14,14 @@ interface PaymentRepository {
         id: Int
     ) : Response<Payment> {
         return api.getPaymentsByID(token, id)
+    }
+
+    suspend fun createPixPayment(
+        token: String,
+        id: Int,
+        pixPaymentData: PixPaymentDTO
+    ) : Response<PaymentModel> {
+        return api.createPixPayment(token, id, pixPaymentData)
     }
 
 }
