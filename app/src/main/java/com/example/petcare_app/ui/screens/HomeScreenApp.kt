@@ -2,6 +2,7 @@ package com.example.petcare_app.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,17 +36,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.data.viewmodel.SchedulesHomeAppViewModel
 import com.example.petcare_app.datastore.TokenDataStore
@@ -53,14 +53,14 @@ import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoCard
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoItem
 import com.example.petcare_app.ui.components.agendamentosComponents.NenhumAgendamentoCard
+import com.example.petcare_app.ui.components.bot.BotIcon
+import com.example.petcare_app.ui.components.bot.HelpBot
 import com.example.petcare_app.ui.components.buttons.FilterChip
 import com.example.petcare_app.ui.components.layouts.GadjetBarComposable
 import com.example.petcare_app.ui.components.layouts.HeaderComposable
 import com.example.petcare_app.ui.components.layouts.LoadingBar
 import com.example.petcare_app.ui.components.layouts.WhiteCanvas
-import com.example.petcare_app.ui.components.plansComponents.PlanCard
 import com.example.petcare_app.ui.theme.customColorScheme
-import com.example.petcare_app.ui.theme.paragraphTextStyle
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -93,15 +93,25 @@ fun HomeScreenApp(navController: NavController) {
     val agendamentosFiltrados = if (filtroSelecionado == "Todos os pets") agendamentos
                                 else agendamentos.filter { it.pet.name == filtroSelecionado }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Scaffold(topBar = {
-            HeaderComposable(
-                navController
-            )
-        }, bottomBar = { GadjetBarComposable(navController) }) { it ->
-            Column(Modifier.background(Color(0, 84, 114)).padding(it)) {
+    var showBot by remember { mutableStateOf(false) }
+
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = { HeaderComposable(navController) },
+            bottomBar = { GadjetBarComposable(navController) },
+            floatingActionButton = {
+                BotIcon(
+                    onPopupToggle = { showBot = true }
+                )
+            }
+        ) { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color(0, 84, 114))
+                    .padding(paddingValues)
+            ) {
                 WhiteCanvas(
                     modifier = Modifier.fillMaxHeight(),
                     icon = Icons.Filled.WatchLater,
@@ -181,7 +191,18 @@ fun HomeScreenApp(navController: NavController) {
                 }
             }
         }
+
+        if (showBot) {
+            HelpBot(
+                onPopupToggle = { showBot = false },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 95.dp)
+                    .background(color = Color.Transparent)
+            )
+        }
     }
+
 }
 
 @Preview(showBackground = true)

@@ -68,7 +68,9 @@
     fun NavGraph(navController: NavHostController) {
         val signUpViewModel: SignUpViewModel = viewModel()
 
-        NavHost(navController = navController, startDestination = Screen.Splash.route) {
+//        NavHost(navController = navController, startDestination = Screen.Splash.route) {
+        NavHost(navController = navController, startDestination = Screen.HomeApp.route) {
+
             composable(Screen.Splash.route) { SplashScreen(navController) }
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.HomeApp.route) { HomeScreenApp(navController) }
