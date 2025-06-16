@@ -286,7 +286,6 @@ class CreateScheduleViewModel : ViewModel() {
     }
 
     fun processPayment() {
-        // Simula processamento do pagamento
         nextStep() // Move para confirmação
     }
 
@@ -370,7 +369,7 @@ class CreateScheduleViewModel : ViewModel() {
                 errorMessage = "Erro de conexão. Verifique sua internet."
             }
 
-            isLoading = false
+//            isLoading = false
         }
     }
 
@@ -380,6 +379,7 @@ class CreateScheduleViewModel : ViewModel() {
 
     // Método para processar pagamento PIX com dados do usuário
     fun processPixPayment(token: String, userId: Int) {
+
         val formData = currentFormData ?: return
         
         viewModelScope.launch {
