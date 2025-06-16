@@ -39,6 +39,7 @@ import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.dialogs.createSchedule.CreateScheduleDialog
 import com.example.petcare_app.ui.components.dialogs.createSchedule.CreateScheduleFlowDialog
 import com.example.petcare_app.ui.theme.customColorScheme
+import org.koin.androidx.compose.koinViewModel
 
 
 @SuppressLint("NewApi")
@@ -47,7 +48,7 @@ fun GadjetBarComposable(
     navController: NavController,
 ) {
     val openCreateScheduleDialog = remember { mutableStateOf(false) }
-    val createScheduleViewModel: CreateScheduleViewModel = viewModel() // ← NOVO
+    val createScheduleViewModel: CreateScheduleViewModel = koinViewModel() // ← NOVO
 
     NavigationBar (
         containerColor = Color.White,

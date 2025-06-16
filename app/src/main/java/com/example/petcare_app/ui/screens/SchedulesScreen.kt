@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.viewmodel.SchedulesScreenViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoCard
 import com.example.petcare_app.ui.components.agendamentosComponents.AgendamentoItem
@@ -49,14 +49,15 @@ import com.example.petcare_app.ui.components.layouts.LoadingBar
 import com.example.petcare_app.ui.components.layouts.WhiteCanvas
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
+import org.koin.compose.koinInject
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("NewApi")
 @Composable
 fun SchedulesScreen(navController: NavController) {
-    val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
+
 
     val token by dataStore.getToken.collectAsState(initial = null)
     val id by dataStore.getId.collectAsState(initial = null)

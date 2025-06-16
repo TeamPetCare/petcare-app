@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,10 +39,10 @@ import com.example.petcare_app.data.network.RetrofitInstance.retrofit
 import com.example.petcare_app.data.repository.LoginRepository
 import com.example.petcare_app.data.services.LoginService
 import com.example.petcare_app.data.viewmodel.LoginViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.layouts.LoadingBar
 import com.example.petcare_app.ui.theme.montserratFontFamily
+import org.koin.compose.koinInject
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -54,10 +55,11 @@ fun LoginScreen(navController: NavController) {
     }
 
     val context = LocalContext.current
+    val dataStore: TokenDataStore = koinInject()
     val viewModel = remember {
         LoginViewModel(
             loginRepository = LoginRepository(loginService),
-            dataStore = TokenDataStore.getInstance(context)
+            dataStore = dataStore
         )
     }
     // Estados

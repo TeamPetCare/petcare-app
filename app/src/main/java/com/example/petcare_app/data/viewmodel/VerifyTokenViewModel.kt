@@ -11,7 +11,9 @@ import com.example.petcare_app.data.repository.LoginRepository
 import com.example.petcare_app.data.services.LoginService
 import kotlinx.coroutines.launch
 
-class VerifyTokenViewModel() : ViewModel() {
+class VerifyTokenViewModel(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
@@ -22,8 +24,7 @@ class VerifyTokenViewModel() : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val api = RetrofitInstance.customRetrofitAuthToken.create(LoginService::class.java)
-                val response = api.verifyToken(token)
+                val response = loginRepository.verifyToken(token)
                 val responseBody = response.body()?.string()
 
                 if (response.isSuccessful) {

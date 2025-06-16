@@ -13,6 +13,7 @@ import com.example.petcare_app.data.model.Payment
 import com.example.petcare_app.data.model.PaymentModel
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.network.RetrofitInstance
+import com.example.petcare_app.data.repository.ScheduleRepository
 import com.example.petcare_app.data.services.PaymentService
 import com.example.petcare_app.data.services.ScheduleService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 
-class ScheduleDetailsViewModel : ViewModel() {
+class ScheduleDetailsViewModel(
+    private val api: ScheduleRepository
+) : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
@@ -29,8 +32,6 @@ class ScheduleDetailsViewModel : ViewModel() {
     val scheduleInfo: StateFlow<ScheduleDetailsDTO?> = _scheduleInfo
 
     fun cancelSchedule(token: String, id: Int) {
-        val api = RetrofitInstance.retrofit.create(ScheduleService::class.java)
-
         viewModelScope.launch {
             isLoading = true
 
@@ -56,8 +57,6 @@ class ScheduleDetailsViewModel : ViewModel() {
     }
 
     fun getScheduleInfoByID(token: String, id: Int) {
-        val api = RetrofitInstance.retrofit.create(ScheduleService::class.java)
-
         viewModelScope.launch {
             isLoading = true
 

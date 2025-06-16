@@ -41,6 +41,10 @@ android {
 
 
 dependencies {
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation("io.insert-koin:koin-android:3.5.3")
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.io.insert.koin.koin.android)
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation(libs.kotlinx.coroutines.core)

@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.components.dialogs.createSchedule
 
+import TokenDataStore
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,7 +30,6 @@ import com.example.petcare_app.data.dto.PetByUserIdDTO
 import com.example.petcare_app.data.model.Services
 import com.example.petcare_app.data.model.User
 import com.example.petcare_app.data.viewmodel.CreateScheduleViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.components.layouts.LoadingBar
 import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
@@ -38,6 +38,8 @@ import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
 import com.example.petcare_app.ui.components.formFields.inputFields.DateInputField
 import com.example.petcare_app.ui.components.formFields.inputFields.TimeInputField
 import com.example.petcare_app.utils.DateTimeUtils
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,9 +47,10 @@ fun CreateScheduleDialog(
     onConfirm: (ScheduleFormData) -> Unit = {},
     setOpenCreateScheduleDialog: (Boolean) -> Unit
 ) {
-    val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
-    val viewModel: CreateScheduleViewModel = viewModel()
+
+    val dataStore: TokenDataStore = koinInject()
+
+    val viewModel: CreateScheduleViewModel = koinViewModel()
 
     // Estados do DataStore
     val token by dataStore.getToken.collectAsState(initial = null)

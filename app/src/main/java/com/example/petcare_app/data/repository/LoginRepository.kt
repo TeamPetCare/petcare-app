@@ -6,7 +6,6 @@ import com.example.petcare_app.data.model.LoginResponse
 import com.example.petcare_app.data.model.Pet
 import com.example.petcare_app.data.services.LoginService
 import com.example.petcare_app.data.services.PetService
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.utils.SessionManager
 import okhttp3.ResponseBody
 import retrofit2.Response

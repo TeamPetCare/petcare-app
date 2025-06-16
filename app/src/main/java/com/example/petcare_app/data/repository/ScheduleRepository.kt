@@ -7,14 +7,16 @@ import com.example.petcare_app.data.dto.ScheduleDetailsDTO
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.services.ScheduleService
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import java.time.LocalDateTime
 
-interface ScheduleRepository {
-    val api : ScheduleRepository
-
+class ScheduleRepository(
+    private val api: ScheduleService
+) {
     suspend fun getAllSchedulesMonthByUser(
         token: String, 
         id: Int, 
@@ -66,5 +68,13 @@ interface ScheduleRepository {
         id: Int
     ) : Response<ScheduleDetailsDTO> {
         return api.getScheduleByID(token, id)
+    }
+
+    suspend fun updateScheduleByID(
+        token: String,
+        id: Int,
+        scheduleBody: ScheduleCreateDTO
+    ) : Response<SchedulePUTDTO>{
+        return api.updateScheduleByID(token, id, scheduleBody)
     }
 }

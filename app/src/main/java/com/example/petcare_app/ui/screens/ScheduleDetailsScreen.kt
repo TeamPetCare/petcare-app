@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.screens
 
+import TokenDataStore
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,8 +36,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.petcare_app.data.repository.ScheduleRepository
 import com.example.petcare_app.data.viewmodel.ScheduleDetailsViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.components.agendamentosComponents.CancelarAgendamento
 import com.example.petcare_app.ui.components.agendamentosComponents.LinkPagamento
@@ -48,19 +49,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.compose.koinInject
 import java.time.LocalDateTime
 
 @SuppressLint("NewApi")
 @Composable
 fun ScheduleDetailsScreen(
     navController: NavController,
-    scheduleId: Int
+    scheduleId: Int,
+    scheduleDetailsViewModel: ScheduleDetailsViewModel
 ) {
-    val scheduleDetailsViewModel: ScheduleDetailsViewModel = viewModel()
     val schedulesInfo by scheduleDetailsViewModel.scheduleInfo.collectAsState()
 
     val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
     val token by dataStore.getToken.collectAsState(initial = null)
 
     var showCancelarDialog by remember { mutableStateOf(false) }
