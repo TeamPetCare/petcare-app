@@ -23,4 +23,9 @@ interface PetService {
         @Path("id") id: Int
     ) : Response<List<PetByUserIdDTO>>
 
+    @GET("pets/user/{id}")
+    suspend fun getPetsByUserId(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ) : Response<List<PetByUserIdDTO>>
 }

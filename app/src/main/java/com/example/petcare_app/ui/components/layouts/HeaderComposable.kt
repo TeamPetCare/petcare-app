@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.components.layouts
 
+import TokenDataStore
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,16 +26,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 //import coil.compose.AsyncImage
 import com.example.petcare_app.R
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.navigation.Screen
 import com.example.petcare_app.ui.theme.montserratFontFamily
+import org.koin.compose.koinInject
+import org.koin.compose.rememberKoinInject
 
 @Composable
 //fun HeaderComposable(userName: String, profileImageUrl: String) {
 fun HeaderComposable(navController: NavController) {
     val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
-
+    val dataStore: TokenDataStore = koinInject()
     val userName by dataStore.getName.collectAsState(initial = "")
 
     Column(

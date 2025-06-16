@@ -24,18 +24,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.petcare_app.R
+import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 
-@Preview(showBackground = true)
-@Composable
-private fun ImageEditorComposablePreview() {
-    ImageEditorComposable()
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun ImageEditorComposablePreview(
+//) {
+//    ImageEditorComposable("")
+//}
 
 @Composable
-fun ImageEditorComposable() {
+fun ImageEditorComposable(
+    editUserViewModel: EditUserViewModel,
+    imageUrl : String?
+) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -46,6 +57,7 @@ fun ImageEditorComposable() {
         val croppedUri = result.data?.let { UCrop.getOutput(it) }
         if (croppedUri != null) {
             imageUri = croppedUri // Atualiza a imagem recortada
+            editUserViewModel.uploadUserImage(context, croppedUri) // Faz o upload
         }
     }
 
@@ -62,11 +74,13 @@ fun ImageEditorComposable() {
         modifier = Modifier.fillMaxWidth()
     ) {
         // Exibir a foto do usuário ou um ícone de perfil
-        val painterImg: Painter = if (imageUri != null) {
-            rememberAsyncImagePainter(imageUri)
-        } else {
-            painterResource(R.drawable.ic_no_profile_picture)
+        val painterImg: Painter = when {
+            imageUri != null -> rememberAsyncImagePainter(imageUri)
+            !imageUrl.isNullOrBlank() -> rememberAsyncImagePainter("${imageUrl}?timestamp=${System.currentTimeMillis()}")
+            else -> painterResource(R.drawable.ic_no_profile_picture)
         }
+
+
 
         Image(
             painter = painterImg,
@@ -113,13 +127,11 @@ fun ImageEditorComposable() {
     }
 }
 
-// ✅ Função para iniciar o recorte
 fun startCrop(context: Context, sourceUri: Uri, cropLauncher: (Intent) -> Unit) {
-    val activity = context as? Activity ?: return // 🔴 Evita crash se o contexto não for uma Activity
+    val activity = context as? Activity ?: return
 
-    // Criando um diretório temporário para salvar a imagem cortada
     val croppedFile = File(context.cacheDir, "cropped_images")
-    if (!croppedFile.exists()) croppedFile.mkdirs() // 🔴 Garante que o diretório existe
+    if (!croppedFile.exists()) croppedFile.mkdirs()
 
     val destinationUri = Uri.fromFile(File(croppedFile, "${UUID.randomUUID()}.jpg"))
 
@@ -127,6 +139,23 @@ fun startCrop(context: Context, sourceUri: Uri, cropLauncher: (Intent) -> Unit) 
         .withAspectRatio(1f, 1f)
         .withMaxResultSize(512, 512)
 
-    cropLauncher(uCrop.getIntent(activity)) // 🔴 Usa Activity como contexto
+    cropLauncher(uCrop.getIntent(activity))
 }
+
+fun createMultipartFromUri(context: Context, uri: Uri, name: String = "file"): MultipartBody.Part {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri)
+    val file = File(context.cacheDir, "upload_image.jpg")
+    val outputStream = FileOutputStream(file)
+
+    inputStream?.use { input ->
+        outputStream.use { output ->
+            input.copyTo(output)
+        }
+    }
+
+    val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+    return MultipartBody.Part.createFormData(name, file.name, requestFile)
+}
+
 

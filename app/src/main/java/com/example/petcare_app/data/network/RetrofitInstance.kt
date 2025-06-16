@@ -1,6 +1,5 @@
 package com.example.petcare_app.data.network
 
-import com.example.petcare_app.data.services.LoginService
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -8,6 +7,7 @@ import okhttp3.OkHttpClient
 
 object RetrofitInstance {
     private const val BASE_URL = "http://44.217.106.6/"
+
 
     val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

@@ -1,5 +1,6 @@
     package com.example.petcare_app.ui.screens
     
+    import TokenDataStore
     import android.util.Log
     import android.widget.Toast
     import androidx.compose.foundation.background
@@ -62,7 +63,6 @@
     import com.example.petcare_app.data.viewmodel.Pet
     import com.example.petcare_app.data.viewmodel.SignUpViewModel
     import com.example.petcare_app.data.viewmodel.UiEvent
-    import com.example.petcare_app.datastore.TokenDataStore
     import com.example.petcare_app.navigation.Screen
     import com.example.petcare_app.ui.components.buttons.BackButton
     import com.example.petcare_app.ui.components.formFields.CustomDropdown
@@ -79,6 +79,7 @@
     import com.example.petcare_app.ui.theme.paragraphTextStyle
     import com.example.petcare_app.ui.theme.titleTextStyle
     import kotlinx.coroutines.launch
+    import org.koin.compose.koinInject
 
     @Composable
     fun petFormComponent(
@@ -382,10 +383,12 @@
         val loginService: LoginService by lazy {
             retrofit.create(LoginService::class.java)
         }
+        val dataStore: TokenDataStore = koinInject()
+
         val loginViewModel = remember {
             LoginViewModel(
                 loginRepository = LoginRepository(loginService),
-                dataStore = TokenDataStore.getInstance(context)
+                dataStore = dataStore
             )
         }
         val loginState by loginViewModel.loginState.collectAsState()
@@ -546,10 +549,10 @@
             }
     }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun SignUpPetScreenPreview() {
-        val navController = rememberNavController()
-        val viewModel = SignUpViewModel()
-        SignUpPetScreen(navController = navController, viewModel = viewModel)
-    }
+//    @Preview(showBackground = true)
+//    @Composable
+//    fun SignUpPetScreenPreview() {
+//        val navController = rememberNavController()
+//        val viewModel = SignUpViewModel()
+//        SignUpPetScreen(navController = navController, viewModel = viewModel)
+//    }
