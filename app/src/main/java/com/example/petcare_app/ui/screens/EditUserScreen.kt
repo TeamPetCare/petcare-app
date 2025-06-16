@@ -1,7 +1,5 @@
 package com.example.petcare_app.ui.screens
 
-import TokenDataStore
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,9 +47,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.petcare_app.R
-import com.example.petcare_app.data.services.UserService
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
+import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.components.formFields.inputFields.CepInput
 import com.example.petcare_app.ui.components.formFields.inputFields.CustomTextInput
 import com.example.petcare_app.ui.components.formFields.inputFields.EmailInput
@@ -65,7 +63,6 @@ import com.example.petcare_app.ui.components.layouts.WhiteCanvas
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.paragraphTextStyle
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 //@Preview(showBackground = true)
 //@Composable
@@ -75,7 +72,6 @@ import org.koin.compose.koinInject
 //    EditUserScreen(navControllerMock, editUserViewModelMock)
 //}
 
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun EditUserScreen(navController: NavController, editUserViewModel: EditUserViewModel) {
     val context = LocalContext.current

@@ -44,8 +44,7 @@ fun LogoutButton(navController: NavController, tokenDataStore: TokenDataStore) {
     // Componente de confirmação de logout
     if (showConfirmationDialog) {
         ConfirmationDialog(
-            title = "Confirmar Logout",
-            body = "Você tem certeza que deseja sair?",
+            title = "Você tem certeza que deseja sair?",
             onConfirm = {
                 isLoading = true
                 CoroutineScope(Dispatchers.IO).launch {

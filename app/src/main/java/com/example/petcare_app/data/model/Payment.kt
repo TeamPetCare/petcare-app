@@ -3,12 +3,14 @@ package com.example.petcare_app.data.model
 import java.time.LocalDateTime
 
 data class Payment(
-    val id: Int = 0,
+    val id: Int,
     val price: Double,
     val paymentDate: String,
-    val paymentId: String? = null,
-    val paymentMethod: String? = null,
-    val paymentStatus: Boolean? = null,
-    val deletedAt: String? = null,
-    val userId: Int?
+    val paymentId: String?,
+    val paymentMethod: String?,
+    val paymentStatus: String?,
+    val deletedAt: String?,
+    val user: User?,
+    val qrCodeImageBase64: String?,
+    val paymentLink: String?
 )
