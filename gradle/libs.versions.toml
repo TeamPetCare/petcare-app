@@ -27,7 +27,6 @@ composeNavigation = "2.8.0"
 serialization = "1.6.3"
 appcompat = "1.1.0"
 ucrop = "2.2.6"
-firebaseMessagingKtx = "24.1.1"
 
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
@@ -68,7 +67,6 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

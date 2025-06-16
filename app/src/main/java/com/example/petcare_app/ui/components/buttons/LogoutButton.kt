@@ -66,7 +66,7 @@ fun LogoutButton(navController: NavController, tokenDataStore: TokenDataStore) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
             .clickable {
                 showConfirmationDialog = true
             },
