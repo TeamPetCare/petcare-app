@@ -1,6 +1,5 @@
 package com.example.petcare_app.data.services
 
-import com.example.petcare_app.data.dto.PetByUserIdDTO
 import com.example.petcare_app.data.dto.PlanInfoDTO
 import com.example.petcare_app.data.model.Plans
 import com.example.petcare_app.data.model.Services
