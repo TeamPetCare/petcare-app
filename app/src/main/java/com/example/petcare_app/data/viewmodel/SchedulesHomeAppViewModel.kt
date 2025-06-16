@@ -17,17 +17,21 @@ import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.Size
 import com.example.petcare_app.data.model.Specie
 import com.example.petcare_app.data.network.RetrofitInstance
+import com.example.petcare_app.data.repository.PetRepository
+import com.example.petcare_app.data.repository.ScheduleRepository
 import com.example.petcare_app.data.services.PetService
 import com.example.petcare_app.data.services.ScheduleService
 import com.example.petcare_app.data.services.SpecieService
-import com.example.petcare_app.datastore.TokenDataStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class SchedulesHomeAppViewModel : ViewModel() {
+class SchedulesHomeAppViewModel(
+    private val scheduleRepository: ScheduleRepository,
+    private val petRepository: PetRepository,
+) : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
@@ -42,13 +46,11 @@ class SchedulesHomeAppViewModel : ViewModel() {
 
     @SuppressLint("NewApi")
     fun getAllSchedulesMonthByUser(token: String, id: Int, dateTime: LocalDateTime) {
-        val api = RetrofitInstance.retrofit.create(ScheduleService::class.java)
-
         viewModelScope.launch {
             isLoading = true
 
             try {
-                val response = api.getAllSchedulesMonthByUser(
+                val response = scheduleRepository.getAllSchedulesMonthByUser(
                     token = token,
                     id = id,
                     month = dateTime
@@ -73,13 +75,12 @@ class SchedulesHomeAppViewModel : ViewModel() {
     }
 
     fun getAllPetsByUserId(token: String, idUser: Int){
-        val api = RetrofitInstance.retrofit.create(PetService::class.java)
 
         viewModelScope.launch {
             isLoading = true
 
             try {
-                val response = api.getPetByUserId(token, idUser)
+                val response = petRepository.getPetByUserId(token, idUser)
 
                 if (response.isSuccessful) {
                     val pets = response.body()
@@ -101,13 +102,12 @@ class SchedulesHomeAppViewModel : ViewModel() {
     }
 
     fun reviewScheduleByID(token: String, idAgendamento: Int, nota: Int, id: Int, dateTime: LocalDateTime) {
-        val api = RetrofitInstance.retrofit.create(ScheduleService::class.java)
 
         viewModelScope.launch {
             isLoading = true
 
             try {
-                val response = api.reviewScheduleByID(token, idAgendamento, nota)
+                val response = scheduleRepository.reviewScheduleByID(token, idAgendamento, nota)
 
                 if (response.isSuccessful) {
                     val novoScheduleItem = response.body()

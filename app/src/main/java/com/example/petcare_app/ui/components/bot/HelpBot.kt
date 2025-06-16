@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.components.bot
 
+import TokenDataStore
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -56,13 +57,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.petcare_app.R
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.montserratFontFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 data class Question(
     val question: String,
@@ -116,8 +117,7 @@ fun HelpBot(
     val messages = remember { mutableStateListOf<Pair<String, Boolean>>() }
     var isTyping = remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
 
     val userName by dataStore.getName.collectAsState(initial = "")
 

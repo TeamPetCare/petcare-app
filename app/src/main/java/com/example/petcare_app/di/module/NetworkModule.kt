@@ -6,6 +6,7 @@ import com.example.petcare_app.data.repository.CpfValidationRepository
 import com.example.petcare_app.data.repository.ImageRepository
 import com.example.petcare_app.data.repository.LoginRepository
 import com.example.petcare_app.data.repository.NotificationRepository
+import com.example.petcare_app.data.repository.PaymentRepository
 import com.example.petcare_app.data.repository.PetRepository
 import com.example.petcare_app.data.repository.PlanRepository
 import com.example.petcare_app.data.repository.RaceRepository
@@ -17,6 +18,7 @@ import com.example.petcare_app.data.services.CpfValidationService
 import com.example.petcare_app.data.services.ImageService
 import com.example.petcare_app.data.services.LoginService
 import com.example.petcare_app.data.services.NotificationService
+import com.example.petcare_app.data.services.PaymentService
 import com.example.petcare_app.data.services.PetService
 import com.example.petcare_app.data.services.PlanService
 import com.example.petcare_app.data.services.RaceService
@@ -25,10 +27,11 @@ import com.example.petcare_app.data.services.SizeService
 import com.example.petcare_app.data.services.SpecieService
 import com.example.petcare_app.data.services.UserService
 import com.example.petcare_app.data.viewmodel.CpfValidationViewModel
+import com.example.petcare_app.data.viewmodel.CreateScheduleViewModel
 import com.example.petcare_app.data.viewmodel.EditUserViewModel
 import com.example.petcare_app.data.viewmodel.LoginViewModel
 import com.example.petcare_app.data.viewmodel.NotificationViewModel
-import com.example.petcare_app.data.viewmodel.SchedulesDetailsViewModel
+import com.example.petcare_app.data.viewmodel.ScheduleDetailsViewModel
 import com.example.petcare_app.data.viewmodel.SchedulesHomeAppViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.data.viewmodel.VerifyTokenViewModel
@@ -73,6 +76,14 @@ val appModule = module{
 
     single <NotificationRepository> {
         NotificationRepository(get())
+    }
+
+    single <PaymentService> {
+        RetrofitInstance.retrofit.create(PaymentService::class.java)
+    }
+
+    single <PaymentRepository> {
+        PaymentRepository(get())
     }
 
     single <PetService> {
@@ -139,6 +150,10 @@ val appModule = module{
         CpfValidationViewModel(get())
     }
 
+    viewModel<CreateScheduleViewModel> {
+        CreateScheduleViewModel(get(), get())
+    }
+
     viewModel<LoginViewModel> {
         LoginViewModel(get(), get())
     }
@@ -151,8 +166,8 @@ val appModule = module{
         SchedulesHomeAppViewModel(get(), get())
     }
 
-    viewModel<SchedulesDetailsViewModel> {
-        SchedulesDetailsViewModel(get())
+    viewModel<ScheduleDetailsViewModel> {
+        ScheduleDetailsViewModel(get())
     }
 
     viewModel<SignUpViewModel> {
