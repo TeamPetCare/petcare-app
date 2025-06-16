@@ -1,7 +1,5 @@
 package com.example.petcare_app.data.model
 
-import java.time.LocalDateTime
-
 data class PixPaymentRequest(
     val amount: Double,
     val email: String,
