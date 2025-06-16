@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petcare_app.data.dto.PetByUserIdDTO
 import com.example.petcare_app.data.dto.ScheduleCreateDTO
-import com.example.petcare_app.data.model.Pet
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.Services
 import com.example.petcare_app.data.model.User
@@ -28,8 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class CreateScheduleViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
@@ -311,7 +308,7 @@ class CreateScheduleViewModel : ViewModel() {
             creationDate = creationDateTime,
             scheduleNote = if (formData.notes.isBlank()) null else formData.notes,
             petId = formData.pet.id,
-            paymentId = 3, // Payment será null inicialmente
+            paymentId = null,
             serviceIds = formData.services.map { it.id },
             employeeId = formData.employee?.id,
             deletedAt = null
@@ -341,13 +338,15 @@ class CreateScheduleViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _createdSchedule.value = response.body()
                     Log.d("CreateScheduleViewModel", "✅ Agendamento criado com sucesso!")
-                    
+
+                    val updatedSchedule = scheduleCreateDTO.copy(id = _createdSchedule.value?.id)
+
                     // Decidir próximo passo baseado no método de pagamento
                     when (formData.paymentMethod.id) {
                         "pix" -> {
                             // Para PIX: processar pagamento automaticamente
                             Log.d("CreateScheduleViewModel", "💳 Processando pagamento PIX automaticamente...")
-                            processPixPayment(token, userId)
+                            processPixPayment(token, userId, updatedSchedule)
                             currentStep = CreateScheduleStep.PIX_PAYMENT
                         }
                         "dinheiro" -> {
@@ -378,7 +377,7 @@ class CreateScheduleViewModel : ViewModel() {
     }
 
     // Método para processar pagamento PIX com dados do usuário
-    fun processPixPayment(token: String, userId: Int) {
+    fun processPixPayment(token: String, userId: Int, schedule: ScheduleCreateDTO) {
 
         val formData = currentFormData ?: return
         
@@ -423,10 +422,14 @@ class CreateScheduleViewModel : ViewModel() {
                 
                 // Fazer a requisição para a API de pagamento PIX
                 val paymentService = RetrofitInstance.retrofit.create(PaymentService::class.java)
-                val paymentResponse = paymentService.createPixPayment("Bearer $token", pixRequest)
+                val scheduleService = RetrofitInstance.retrofit.create(ScheduleService::class.java)
+                val paymentResponse = paymentService.createPixPayment("Bearer $token", userId, pixRequest)
                 
                 if (paymentResponse.isSuccessful) {
                     pixPaymentResponse = paymentResponse.body()
+                    val updatedSchedule = schedule.copy(paymentId = pixPaymentResponse?.id)
+
+                    scheduleService.updateScheduleByID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NTAyMjcxNzN9.xO5SCHjs_b9sTl9B27CZHVVwcAtkJyPVMAkDMh2CPn0", schedule.id!!, updatedSchedule!!)
                     Log.d("CreateScheduleViewModel", "✅ Pagamento PIX processado com sucesso!")
                 } else {
                     val errorBody = paymentResponse.errorBody()?.string()

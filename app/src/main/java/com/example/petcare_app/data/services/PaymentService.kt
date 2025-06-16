@@ -28,9 +28,10 @@ interface PaymentService {
         @Body pixPaymentData: PixPaymentDTO
     ) : Response<Payment>
 
-    @POST("/api/payments/pix/13")
+    @POST("/api/payments/pix/{id}")
     suspend fun createPixPayment(
         @Header("Authorization") token: String,
+        @Path("id") id: Int,
         @Body pixPaymentRequest: PixPaymentRequest
     ): Response<PixPaymentResponse>
 }
