@@ -14,10 +14,13 @@ import com.example.petcare_app.data.model.Pet
 import com.example.petcare_app.data.model.Schedule
 import com.example.petcare_app.data.model.Services
 import com.example.petcare_app.data.model.User
+import com.example.petcare_app.data.model.PixPaymentRequest
+import com.example.petcare_app.data.model.PixPaymentResponse
 import com.example.petcare_app.data.network.RetrofitInstance
 import com.example.petcare_app.data.services.PetService
 import com.example.petcare_app.data.services.ScheduleService
 import com.example.petcare_app.data.services.UserService
+import com.example.petcare_app.data.services.PaymentService
 import com.example.petcare_app.ui.components.dialogs.createSchedule.ScheduleFormData
 import com.example.petcare_app.utils.DateTimeUtils
 import com.example.petcare_app.data.model.ScheduleStatus
@@ -51,6 +54,10 @@ class CreateScheduleViewModel : ViewModel() {
 
     // Controla se o dialog original deve fechar
     var shouldCloseOriginalDialog by mutableStateOf(false)
+        private set
+
+    // Estados do pagamento PIX
+    var pixPaymentResponse by mutableStateOf<PixPaymentResponse?>(null)
         private set
 
     // Dados carregados da API
@@ -184,8 +191,6 @@ class CreateScheduleViewModel : ViewModel() {
         }
     }
 
-
-
     private suspend fun loadAvailableEmployees(token: String) {
         try {
             Log.d("CreateScheduleViewModel", "👥 Iniciando carregamento de funcionários...")
@@ -281,12 +286,11 @@ class CreateScheduleViewModel : ViewModel() {
     }
 
     fun processPayment() {
-        // Simula processamento do pagamento
         nextStep() // Move para confirmação
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createSchedule(token: String) {
+    fun createSchedule(token: String, userId: Int) {
         val formData = currentFormData ?: return
 
         // Converter data e hora para formato ISO usando utilitários
@@ -341,7 +345,9 @@ class CreateScheduleViewModel : ViewModel() {
                     // Decidir próximo passo baseado no método de pagamento
                     when (formData.paymentMethod.id) {
                         "pix" -> {
-                            // Para PIX: vai para tela de pagamento estática
+                            // Para PIX: processar pagamento automaticamente
+                            Log.d("CreateScheduleViewModel", "💳 Processando pagamento PIX automaticamente...")
+                            processPixPayment(token, userId)
                             currentStep = CreateScheduleStep.PIX_PAYMENT
                         }
                         "dinheiro" -> {
@@ -363,20 +369,84 @@ class CreateScheduleViewModel : ViewModel() {
                 errorMessage = "Erro de conexão. Verifique sua internet."
             }
 
-            isLoading = false
+//            isLoading = false
         }
     }
 
+    fun clearError() {
+        errorMessage = null
+    }
 
+    // Método para processar pagamento PIX com dados do usuário
+    fun processPixPayment(token: String, userId: Int) {
+
+        val formData = currentFormData ?: return
+        
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            
+            try {
+                // Obter dados do usuário primeiro
+                val userService = RetrofitInstance.retrofit.create(UserService::class.java)
+                val userResponse = userService.getUserById("Bearer $token", userId)
+                
+                if (!userResponse.isSuccessful) {
+                    errorMessage = "Erro ao obter dados do usuário"
+                    isLoading = false
+                    return@launch
+                }
+                
+                val user = userResponse.body()
+                if (user == null) {
+                    errorMessage = "Dados do usuário não encontrados"
+                    isLoading = false
+                    return@launch
+                }
+                
+                // Calcular o valor total dos serviços selecionados
+                val totalAmount = formData.services.sumOf { it.price }
+                
+                // Criar o request PIX com os dados do usuário
+                val pixRequest = PixPaymentRequest(
+                    amount = totalAmount,
+                    email = user.email,
+                    name = user.name,
+                    cpf = user.cpfClient
+                )
+                
+                Log.d("CreateScheduleViewModel", "💰 Processando pagamento PIX:")
+                Log.d("CreateScheduleViewModel", "Amount: ${pixRequest.amount}")
+                Log.d("CreateScheduleViewModel", "Email: ${pixRequest.email}")
+                Log.d("CreateScheduleViewModel", "Name: ${pixRequest.name}")
+                Log.d("CreateScheduleViewModel", "CPF: ${pixRequest.cpf}")
+                
+                // Fazer a requisição para a API de pagamento PIX
+                val paymentService = RetrofitInstance.retrofit.create(PaymentService::class.java)
+                val paymentResponse = paymentService.createPixPayment("Bearer $token", pixRequest)
+                
+                if (paymentResponse.isSuccessful) {
+                    pixPaymentResponse = paymentResponse.body()
+                    Log.d("CreateScheduleViewModel", "✅ Pagamento PIX processado com sucesso!")
+                } else {
+                    val errorBody = paymentResponse.errorBody()?.string()
+                    Log.e("CreateScheduleViewModel", "❌ Erro no pagamento PIX: $errorBody")
+                    errorMessage = "Erro ao processar pagamento PIX: ${paymentResponse.message()}"
+                }
+                
+            } catch (e: Exception) {
+                Log.e("CreateScheduleViewModel", "❌ Erro na requisição PIX", e)
+                errorMessage = "Erro de conexão ao processar pagamento: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
 
     private fun resetForm() {
         currentFormData = null
         _createdSchedule.value = null
         currentStep = CreateScheduleStep.FORM
-        errorMessage = null
-    }
-
-    fun clearError() {
         errorMessage = null
     }
 }
