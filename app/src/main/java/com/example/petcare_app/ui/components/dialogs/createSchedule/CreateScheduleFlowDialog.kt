@@ -1,10 +1,18 @@
 package com.example.petcare_app.ui.components.dialogs.createSchedule
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
+import android.util.Base64
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -14,9 +22,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -38,6 +54,7 @@ fun CreateScheduleFlowDialog(
     val context = LocalContext.current
     val dataStore = TokenDataStore.getInstance(context)
     val token by dataStore.getToken.collectAsState(initial = null)
+    val userId by dataStore.getId.collectAsState(initial = null)
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -58,7 +75,7 @@ fun CreateScheduleFlowDialog(
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 when (viewModel.currentStep) {
-                    CreateScheduleStep.PAYMENT -> PaymentScreen(viewModel, token ?: "")
+                    CreateScheduleStep.PAYMENT -> PaymentScreen(viewModel, token ?: "", userId ?: 0)
                     CreateScheduleStep.PIX_PAYMENT -> PixPaymentScreen(viewModel)
                     CreateScheduleStep.CASH_CONFIRMATION -> CashConfirmationScreen(viewModel)
                     CreateScheduleStep.SUCCESS -> SuccessScreen(viewModel, onDismiss)
@@ -69,8 +86,9 @@ fun CreateScheduleFlowDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun PaymentScreen(viewModel: CreateScheduleViewModel, token: String) {
+private fun PaymentScreen(viewModel: CreateScheduleViewModel, token: String, userId: Int) {
     val formData = viewModel.currentFormData ?: return
 
     Column(
@@ -166,7 +184,7 @@ private fun PaymentScreen(viewModel: CreateScheduleViewModel, token: String) {
         Button(
             onClick = { 
                 viewModel.clearError()
-                viewModel.createSchedule(token) 
+                viewModel.createSchedule(token, userId) 
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -303,7 +321,7 @@ private fun ConfirmationScreen(viewModel: CreateScheduleViewModel, token: String
         Button(
             onClick = { 
                 viewModel.clearError() // Limpa erro anterior
-                viewModel.createSchedule(token) 
+                viewModel.createSchedule(token, 13)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -343,6 +361,20 @@ private fun ConfirmationScreen(viewModel: CreateScheduleViewModel, token: String
 @Composable
 private fun PixPaymentScreen(viewModel: CreateScheduleViewModel) {
     val formData = viewModel.currentFormData ?: return
+    val pixResponse = viewModel.pixPaymentResponse
+    val context = LocalContext.current
+
+    // Decode o QR Code com segurança usando remember
+    val decodedBitmap: Bitmap? = remember(pixResponse?.qrCodeImageBase64) {
+        try {
+            pixResponse?.qrCodeImageBase64?.let {
+                val imageBytes = Base64.decode(it, Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -375,13 +407,13 @@ private fun PixPaymentScreen(viewModel: CreateScheduleViewModel) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Escaneie o QR Code ou use a chave PIX abaixo:",
+                    text = "Escaneie o QR Code ou use o link de pagamento abaixo:",
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Total: R$ ${formData.totalPrice}",
+                    text = "Total: R$ ${pixResponse?.price?.let { String.format("%.2f", it) } ?: formData.totalPrice}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = customColorScheme.primary
@@ -391,28 +423,48 @@ private fun PixPaymentScreen(viewModel: CreateScheduleViewModel) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Placeholder para QR Code (sua colega implementará)
-        Card(
-            modifier = Modifier
-                .size(200.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Gray.copy(alpha = 0.2f))
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+        // QR Code
+        if (decodedBitmap != null) {
+            Card(
+                modifier = Modifier.size(200.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Text(
-                    text = "QR Code PIX\n(Em desenvolvimento)",
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
-                    color = Color.Gray
+                Image(
+                    bitmap = decodedBitmap.asImageBitmap(),
+                    contentDescription = "QR Code PIX",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    contentScale = ContentScale.Fit
                 )
+            }
+        } else {
+            // Placeholder ou erro
+            Card(
+                modifier = Modifier.size(200.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Gray.copy(alpha = 0.2f))
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (pixResponse?.qrCodeImageBase64 != null)
+                            "Erro ao carregar\nQR Code"
+                        else
+                            "QR Code PIX\n(Carregando...)",
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                        color = if (pixResponse?.qrCodeImageBase64 != null) Color.Red else Color.Gray
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Chave PIX placeholder
+        // Link de Pagamento Clicável
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -422,22 +474,65 @@ private fun PixPaymentScreen(viewModel: CreateScheduleViewModel) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Chave PIX:",
+                    text = "Link de Pagamento:",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "pix@petcare.com.br",
-                    fontSize = 16.sp,
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
-                )
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                val paymentLink = pixResponse?.paymentLink ?: "pix@petcare.com.br"
+                val isValidUrl = paymentLink.startsWith("http://") || paymentLink.startsWith("https://")
+                
+                if (isValidUrl) {
+                    // Link clicável com máscara
+                    val annotatedString = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = customColorScheme.primary,
+                                textDecoration = TextDecoration.Underline,
+                                fontWeight = FontWeight.Medium
+                            )
+                        ) {
+                            append("Link: Chekout no navegador")
+                        }
+                    }
+                    
+                    ClickableText(
+                        text = annotatedString,
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontSize = 16.sp
+                        ),
+                        onClick = {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentLink))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                // Handle error if browser not available
+                            }
+                        }
+                    )
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Toque para abrir no navegador",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        style = androidx.compose.ui.text.TextStyle(fontStyle = FontStyle.Italic)
+                    )
+                } else {
+                    // Texto normal para chaves PIX tradicionais
+                    Text(
+                        text = paymentLink,
+                        fontSize = 16.sp,
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Botão continuar (temporário até implementação do PIX)
+        // Botão continuar
         Button(
             onClick = { viewModel.nextStep() },
             modifier = Modifier.fillMaxWidth(),

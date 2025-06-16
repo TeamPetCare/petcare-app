@@ -4,9 +4,7 @@ import com.example.petcare_app.data.dto.ScheduleDTO
 import com.example.petcare_app.data.dto.SchedulePUTDTO
 import com.example.petcare_app.data.dto.ScheduleCreateDTO
 import com.example.petcare_app.data.dto.ScheduleDetailsDTO
-import com.example.petcare_app.data.dto.UserCreateDTO
 import com.example.petcare_app.data.model.Schedule
-import com.example.petcare_app.data.model.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -63,4 +61,11 @@ interface ScheduleService {
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ) : Response<ScheduleDetailsDTO>
+
+    @PUT("/api/schedules/{id}")
+    suspend fun updateScheduleByID(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Body scheduleBody: ScheduleCreateDTO
+    ) : Response<SchedulePUTDTO>
 }

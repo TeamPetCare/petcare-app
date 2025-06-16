@@ -1,6 +1,7 @@
 package com.example.petcare_app.data.dto
 
 data class ScheduleCreateDTO (
+    val id: Int? = null,
     val scheduleStatus: String, // Ex: "AGENDADO"
     val scheduleDate: String,   // Formato ISO 8601 - Ex: "2025-05-25T14:30:00"
     val scheduleTime: String,   // Ex: "14:30:00"
