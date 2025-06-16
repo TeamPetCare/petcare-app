@@ -1,6 +1,5 @@
 package com.example.petcare_app.data.services
 
-import com.example.petcare_app.data.dto.PetByUserIdDTO
 import com.example.petcare_app.data.dto.PlanInfoDTO
 import retrofit2.Response
 import retrofit2.http.GET
