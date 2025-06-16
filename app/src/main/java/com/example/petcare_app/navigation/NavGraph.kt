@@ -5,6 +5,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.petcare_app.data.viewmodel.EditUserViewModel
+import com.example.petcare_app.data.viewmodel.NotificationViewModel
+import com.example.petcare_app.data.viewmodel.ScheduleDetailsViewModel
 import com.example.petcare_app.data.viewmodel.SignUpViewModel
 import com.example.petcare_app.ui.screens.EditUserScreen
 import com.example.petcare_app.ui.screens.HomeScreen
@@ -22,6 +25,7 @@ import com.example.petcare_app.ui.screens.SignUpPetScreen
 import com.example.petcare_app.ui.screens.SignUpUserScreen
 import com.example.petcare_app.ui.screens.SplashScreen
 import com.example.petcare_app.ui.screens.WelcomeScreen
+import org.koin.androidx.compose.koinViewModel
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
@@ -51,7 +55,7 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    val signUpViewModel: SignUpViewModel = viewModel()
+    val signUpViewModel: SignUpViewModel = koinViewModel<SignUpViewModel>()
 
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) { SplashScreen(navController) }
@@ -70,11 +74,11 @@ fun NavGraph(navController: NavHostController) {
 //            composable(Screen.PaymentConfirmation.route) { PaymentConfirmationScreen(navController) }
 //            composable(Screen.ScheduleSuccess.route) { ScheduleSuccessScreen(navController) }
         composable(Screen.Settings.route) { SettingsScreen(navController) }
-        composable(Screen.Notifications.route) { NotificationScren(navController) }
-        composable(Screen.EditUser.route) { EditUserScreen(navController, signUpViewModel) }
+        composable(Screen.Notifications.route) { NotificationScren(navController, koinViewModel<NotificationViewModel>()) }
+        composable(Screen.EditUser.route) { EditUserScreen(navController, koinViewModel<EditUserViewModel>()) }
         composable("schedule_details/{scheduleId}") { backStackEntry ->
             val scheduleId = backStackEntry.arguments?.getString("scheduleId")?.toIntOrNull()
-            ScheduleDetailsScreen(navController, scheduleId!!)
+            ScheduleDetailsScreen(navController, scheduleId!!,koinViewModel<ScheduleDetailsViewModel>())
         }
         composable(Screen.PetRegister.route) { PetRegisterScreen(navController) }
     }

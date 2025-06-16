@@ -1,5 +1,6 @@
 package com.example.petcare_app.ui.components.dialogs.createSchedule
 
+import TokenDataStore
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -40,10 +41,10 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.petcare_app.data.viewmodel.CreateScheduleStep
 import com.example.petcare_app.data.viewmodel.CreateScheduleViewModel
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.theme.buttonTextStyle
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.sentenceTitleTextStyle
+import org.koin.compose.koinInject
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -51,8 +52,7 @@ fun CreateScheduleFlowDialog(
     viewModel: CreateScheduleViewModel,
     onDismiss: () -> Unit
 ) {
-    val context = LocalContext.current
-    val dataStore = TokenDataStore.getInstance(context)
+    val dataStore: TokenDataStore = koinInject()
     val token by dataStore.getToken.collectAsState(initial = null)
     val userId by dataStore.getId.collectAsState(initial = null)
 

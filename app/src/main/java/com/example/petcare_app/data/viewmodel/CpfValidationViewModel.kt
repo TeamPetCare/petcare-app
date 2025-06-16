@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petcare_app.data.network.RetrofitInstance
+import com.example.petcare_app.data.repository.CpfValidationRepository
 import com.example.petcare_app.data.services.CpfValidationService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CpfValidationViewModel : ViewModel() {
+class CpfValidationViewModel(
+    private val cpfValidationRepository: CpfValidationRepository
+) : ViewModel() {
     private val _isLoading = mutableStateOf(false)
     val isLoading: Boolean get() = _isLoading.value
 
@@ -22,7 +25,6 @@ class CpfValidationViewModel : ViewModel() {
     }
 
     fun validateCpf(cpf: String) {
-        val api = RetrofitInstance.retrofit.create(CpfValidationService::class.java)
         Log.d("CpfValidation", "Iniciando validação do CPF: $cpf")
 
         viewModelScope.launch {
@@ -30,7 +32,7 @@ class CpfValidationViewModel : ViewModel() {
             Log.d("CpfValidation", "isLoading = true")
 
             try {
-                val response = api.validateCpf(cpf)
+                val response = cpfValidationRepository.validateCpf(cpf)
                 Log.d("CpfValidation", "Resposta recebida: isSuccessful=${response.isSuccessful}, body=${response.body()}")
 
                 if (response.isSuccessful) {

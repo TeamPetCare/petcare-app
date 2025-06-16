@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.petcare_app.datastore.TokenDataStore
 import com.example.petcare_app.ui.theme.customColorScheme
 import com.example.petcare_app.ui.theme.errorTextStyle
 import com.example.petcare_app.ui.theme.innerInputTextStyle

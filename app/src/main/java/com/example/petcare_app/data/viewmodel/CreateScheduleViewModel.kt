@@ -23,12 +23,17 @@ import com.example.petcare_app.data.services.PaymentService
 import com.example.petcare_app.ui.components.dialogs.createSchedule.ScheduleFormData
 import com.example.petcare_app.utils.DateTimeUtils
 import com.example.petcare_app.data.model.ScheduleStatus
+import com.example.petcare_app.data.repository.PaymentRepository
+import com.example.petcare_app.data.repository.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class CreateScheduleViewModel : ViewModel() {
+class CreateScheduleViewModel(
+    private val paymentRepository: PaymentRepository,
+    private val scheduleRepository: ScheduleRepository
+) : ViewModel() {
     var isLoading by mutableStateOf(false)
         private set
 
@@ -421,15 +426,14 @@ class CreateScheduleViewModel : ViewModel() {
                 Log.d("CreateScheduleViewModel", "CPF: ${pixRequest.cpf}")
                 
                 // Fazer a requisição para a API de pagamento PIX
-                val paymentService = RetrofitInstance.retrofit.create(PaymentService::class.java)
-                val scheduleService = RetrofitInstance.retrofit.create(ScheduleService::class.java)
-                val paymentResponse = paymentService.createPixPayment("Bearer $token", userId, pixRequest)
+
+                val paymentResponse = paymentRepository.createPixPayment("Bearer $token", userId, pixRequest)
                 
                 if (paymentResponse.isSuccessful) {
                     pixPaymentResponse = paymentResponse.body()
                     val updatedSchedule = schedule.copy(paymentId = pixPaymentResponse?.id)
 
-                    scheduleService.updateScheduleByID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NTAyMjcxNzN9.xO5SCHjs_b9sTl9B27CZHVVwcAtkJyPVMAkDMh2CPn0", schedule.id!!, updatedSchedule!!)
+                    scheduleRepository.updateScheduleByID("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsInN1YiI6ImNpcmlsb0Rvbm9AZ21haWwuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJ1c2VySWQiOjEzLCJleHAiOjE3NTAyMjcxNzN9.xO5SCHjs_b9sTl9B27CZHVVwcAtkJyPVMAkDMh2CPn0", schedule.id!!, updatedSchedule!!)
                     Log.d("CreateScheduleViewModel", "✅ Pagamento PIX processado com sucesso!")
                 } else {
                     val errorBody = paymentResponse.errorBody()?.string()
